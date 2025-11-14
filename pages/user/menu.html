@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Coffee</title>
+    <link rel="stylesheet" href="../../public/assets/css/styles.css">
+   
+</head>
+<body class="menu-body">
+    <div class="header">
+        <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
+        <nav>
+             <a href="home.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="rewards.html">Reward</a>
+        </nav>
+        <input type="text" class="search" placeholder="Search">
+        <div class="profile">
+            <img src="../../public/assets/icons/user.png" alt="User" style="width:24px;height:24px;">
+        </div>
+    </div>
+    <img src="../../public/assets/background.jpg" alt="Menu Banner" class="menu-banner">
+    <div class="main">
+        <div class="categories">
+            <h2>Categories</h2>
+            <ul>
+                <li class="active">Coffee</li>
+                <li>Non-Coffee</li>
+                <li>Milk Tea</li>
+                <li>Frappe</li>
+                <li>PICA PICA</li>
+                <li>Chicken Wings</li>
+                <li>Pasta</li>
+                <li>Rice Meal</li>
+                <li>Sandwich</li>
+                <li>Cake</li>
+                <li>Extra</li>
+            </ul>
+        </div>
+        <div class="products">
+            <h2 id="category-title">Coffee</h2>
+            <div class="product-list" id="product-list">
+                <!-- Products will be rendered here by JS -->
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div style="text-align:center; color:#fff; font-size:20px; margin-bottom:10px;">Contact us:</div>
+        <div class="footer-contact-row">
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/phone.png" alt="Phone" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>0906 377 9569</span>
+            </div>
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/location.png" alt="Location" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>Barangay Pinagtipunan, General Trias, Cavite</span>
+            </div>
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/facebook.png" alt="Facebook" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>CUPS & Stories CAFE</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+const productsData = {
+  "Coffee": [
+    { name: "Americano", points: "1 point", price: "Hot: 95 Pesos<br>Cold: 105 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Coffee Latte", points: "1 point", price: "Hot: 115 Pesos<br>Cold: 130 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Cappuccino", points: "1 point", price: "Hot: 120 Pesos<br>Cold: 130 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "White Mocha Latte", points: "1 point", price: "Hot: 120 Pesos<br>Cold: 130 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Peppermint Mocha", points: "1 point", price: "Hot: 120 Pesos<br>Cold: 130 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Mocha Latte", points: "1 point", price: "Hot: 120 Pesos<br>Cold: 130 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Non-Coffee": [
+    { name: "Hot Chocolate", points: "1 point", price: "Hot: 90 Pesos<br>Cold: 100 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Matcha Latte", points: "1 point", price: "Hot: 110 Pesos<br>Cold: 120 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Caramel Milk", points: "1 point", price: "Hot: 100 Pesos<br>Cold: 110 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Milk Tea": [
+    { name: "Classic Milk Tea", points: "1 point", price: "Large: 90 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Wintermelon", points: "1 point", price: "Large: 95 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Okinawa", points: "1 point", price: "Large: 95 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Frappe": [
+    { name: "Mocha Frappe", points: "1 point", price: "120 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Caramel Frappe", points: "1 point", price: "120 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Java Chip Frappe", points: "1 point", price: "130 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "PICA PICA": [
+    { name: "French Fries", points: "No points", price: "60 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Nachos", points: "No points", price: "80 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Chicken Wings": [
+    { name: "Buffalo Wings", points: "No points", price: "6pcs: 120 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Garlic Parmesan", points: "No points", price: "6pcs: 130 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Pasta": [
+    { name: "Spaghetti", points: "No points", price: "80 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Carbonara", points: "No points", price: "90 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Rice Meal": [
+    { name: "Tocino Rice", points: "No points", price: "100 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Longganisa Rice", points: "No points", price: "100 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Sandwich": [
+    { name: "Ham & Cheese", points: "No points", price: "60 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Clubhouse", points: "No points", price: "90 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Cake": [
+    { name: "Chocolate Cake", points: "No points", price: "Slice: 70 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Cheesecake", points: "No points", price: "Slice: 80 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ],
+  "Extra": [
+    { name: "Extra Rice", points: "No points", price: "20 Pesos", img: "../../public/assets/coffee-1.jpg" },
+    { name: "Egg", points: "No points", price: "15 Pesos", img: "../../public/assets/coffee-1.jpg" }
+  ]
+};
+
+function renderProducts(category) {
+  const list = document.getElementById('product-list');
+  const title = document.getElementById('category-title');
+  title.textContent = category;
+  list.innerHTML = '';
+  productsData[category].forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${product.img}" alt="${product.name}">
+      <div class="name">${product.name}</div>
+      <div class="points">${product.points}</div>
+      <div class="price">${product.price}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// Initial render
+renderProducts('Coffee');
+
+// Category click event
+document.querySelectorAll('.categories ul li').forEach(li => {
+  li.addEventListener('click', function() {
+    document.querySelectorAll('.categories ul li').forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+    renderProducts(this.textContent);
+  });
+});
+</script>
+</html>

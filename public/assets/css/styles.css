@@ -1,0 +1,665 @@
+/* Cafe Loyalty Reward System Styles */
+
+/* GLOBAL STYLES */
+body {
+    background: #2d221c;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Remove default border and outline from images and divs */
+img, div {
+    border: none;
+    outline: none;
+}
+
+/* Remove default border from all elements */
+* {
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+}
+
+/* Remove default background from html */
+html {
+    background: #2d221c;
+}
+
+/* HEADER & NAV */
+.header {
+    background: #4b2e1e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+}
+.header .logo {
+    height: 40px;
+}
+.header nav {
+    display: flex;
+    gap: 30px;
+}
+.header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+}
+.header .search {
+    background: #fff;
+    border-radius: 20px;
+    padding: 5px 15px;
+    border: none;
+    font-size: 16px;
+}
+.header .profile {
+    background: #fff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* FOOTER */
+.footer {
+    background: #3a1f0f;
+    color: #fff;
+    padding: 18px 40px 10px 40px;
+    font-size: 16px;
+    margin-top: 40px;
+}
+.footer-contact-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    margin-top: 8px;
+}
+.footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+}
+
+/* MENU PAGE */
+.menu-banner {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+.main {
+    background: #773d27;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    padding: 30px 60px;
+    gap: 40px;
+}
+.categories {
+    min-width: 220px;
+}
+.categories h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+.categories ul {
+    list-style: none;
+    padding: 0;
+}
+.categories li {
+    margin-bottom: 12px;
+    font-size: 20px;
+    padding: 6px 0;
+    cursor: pointer;
+}
+.categories .active {
+    background: #fff;
+    color: #7a4a2f;
+    border-radius: 4px;
+    padding-left: 10px;
+}
+.products {
+    flex: 1;
+}
+.products h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+.product-card {
+    background: #fff;
+    color: #4b2e1e;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.product-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.product-card .name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.product-card .points {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+.product-card .price {
+    font-size: 15px;
+    color: #7a4a2f;
+}
+
+/* HOME PAGE */
+.banner {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    position: relative;
+}
+.banner-text {
+    position: absolute;
+    top: 80px;
+    left: 60px;
+    color: #fff;
+    font-size: 38px;
+    font-family: 'Georgia', serif;
+    font-weight: 400;
+}
+.main-section {
+    background: #7a4a2f;
+    color: #fff;
+    padding: 40px 0 0 0;
+}
+.offer-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 40px 0;
+}
+.offer-title {
+    font-size: 38px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 18px;
+}
+.offer-desc {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.offer-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #4b2e1e;
+}
+.rewards-section {
+    background: #4b2e1e;
+    color: #fff;
+    padding: 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+}
+.rewards-title {
+    font-size: 32px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 18px;
+    text-align: center;
+}
+.discount-ticket {
+    background: #fff;
+    color: #4b2e1e;
+    border-radius: 12px;
+    padding: 30px 40px;
+    font-size: 28px;
+    font-family: 'Georgia', serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transform: rotate(-10deg);
+    display: inline-block;
+}
+.rewards-desc {
+    font-size: 22px;
+    margin-left: 30px;
+    max-width: 320px;
+}
+
+/* REWARDS PAGE */
+.banner-text {
+    font-size: 54px;
+}
+.progress-section {
+    background: #7a4a2f;
+    padding: 30px 0 20px 0;
+    text-align: center;
+    position: relative;
+}
+.progress-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+.progress-bar-bg {
+    background: #fff;
+    border-radius: 20px;
+    width: 60%;
+    height: 22px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+.progress-bar-fill {
+    background: #4b2e1e;
+    height: 100%;
+    border-radius: 20px 0 0 20px;
+    width: 70%;
+    transition: width 0.3s;
+}
+.progress-claim-btn {
+    background: #4b2e1e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 24px;
+    font-size: 18px;
+    margin-left: 12px;
+    cursor: pointer;
+}
+.progress-icon {
+    margin-left: 8px;
+    vertical-align: middle;
+}
+.progress-info {
+    position: absolute;
+    right: 40px;
+    top: 18px;
+    font-size: 22px;
+    color: #fff;
+    cursor: pointer;
+}
+.rewards-list-section {
+    background: #7a4a2f;
+    padding: 30px 0;
+}
+.rewards-list-title {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+.reward-item {
+    background: #fff;
+    color: #4b2e1e;
+    border-radius: 8px;
+    margin: 0 auto 18px auto;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.reward-item .reward-icon {
+    margin-right: 18px;
+    font-size: 28px;
+}
+.reward-details {
+    flex: 1;
+}
+.reward-valid {
+    font-size: 14px;
+    color: #7a4a2f;
+}
+.reward-action {
+    margin-left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.reward-btn, .reward-points {
+    background: #4b2e1e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.reward-points {
+    background: #7a4a2f;
+}
+.history-section {
+    background: #7a4a2f;
+    padding: 30px 0;
+}
+.history-title {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+.history-list {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 18px;
+}
+.history-date {
+    font-size: 20px;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+.history-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.progress-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* FAQS PAGE */
+.tab-section {
+    background: #7a4a2f;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+    font-size: 28px;
+    padding: 0 0 0 60px;
+    height: 56px;
+}
+.tab-section .active {
+    color: #fff;
+    font-weight: bold;
+    border-bottom: 3px solid #fff;
+}
+.tab-section .inactive {
+    color: #cbb6a0;
+}
+.faq-section {
+    background: #7a4a2f;
+    color: #fff;
+    padding: 40px 0 60px 0;
+    text-align: center;
+}
+.faq-title {
+    font-size: 32px;
+    margin-bottom: 32px;
+    font-family: 'Georgia', serif;
+}
+.faq-step {
+    font-size: 28px;
+    text-align: left;
+    margin: 0 auto 18px auto;
+    max-width: 700px;
+    font-family: 'Georgia', serif;
+}
+.faq-list {
+    font-size: 22px;
+    text-align: left;
+    margin: 0 auto 18px auto;
+    max-width: 700px;
+}
+.faq-list ul {
+    margin: 0 0 0 24px;
+    padding: 0;
+}
+.faq-list li {
+    margin-bottom: 10px;
+}
+.faq-note {
+    font-size: 22px;
+    margin: 18px auto 0 auto;
+    max-width: 700px;
+    text-align: left;
+}
+
+/* PROFILE PAGE */
+.profile-banner {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    position: relative;
+}
+.profile-main {
+    background: #7a4a2f;
+    color: #fff;
+    padding: 0;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 0 0 80px;
+}
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: #3a1f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    color: #fff;
+}
+.profile-info {
+    font-size: 34px;
+    font-family: 'Georgia', serif;
+}
+.profile-level {
+    font-size: 26px;
+    margin-top: 8px;
+}
+.profile-progress {
+    font-size: 18px;
+    margin-top: 2px;
+}
+.profile-actions {
+    margin-left: auto;
+    margin-right: 60px;
+    display: flex;
+    gap: 18px;
+}
+.profile-actions img {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+}
+.profile-cups-section {
+    text-align: center;
+    margin-top: 32px;
+}
+.profile-cups-title {
+    font-size: 38px;
+    font-family: 'Georgia', serif;
+}
+.profile-cups-expiry {
+    font-size: 18px;
+    color: #e6d3b3;
+    margin-top: 4px;
+}
+.profile-rewards-section {
+    text-align: center;
+    margin-top: 38px;
+}
+.profile-rewards-title {
+    font-size: 32px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 18px;
+}
+.profile-reward-item {
+    background: #fff;
+    color: #4b2e1e;
+    border-radius: 8px;
+    margin: 0 auto 18px auto;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.profile-reward-details {
+    flex: 1;
+}
+.profile-reward-valid {
+    font-size: 14px;
+    color: #7a4a2f;
+}
+.profile-reward-action {
+    margin-left: 18px;
+}
+.profile-reward-btn {
+    background: #4b2e1e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.profile-history-section {
+    text-align: center;
+    margin-top: 38px;
+}
+.profile-history-title {
+    font-size: 32px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 18px;
+}
+.profile-history-list {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 20px;
+}
+.profile-history-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+/* PROFILE INFO PAGE */
+.profile-edit-btn {
+    position: absolute;
+    left: 50%;
+    bottom: -28px;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #4b2e1e;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 18px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.profile-form-section {
+    margin: 48px auto 0 auto;
+    max-width: 800px;
+    background: #7a4a2f;
+    color: #fff;
+    padding: 32px 40px 32px 40px;
+    border-radius: 8px;
+}
+.profile-form-title {
+    font-size: 32px;
+    font-family: 'Georgia', serif;
+    margin-bottom: 24px;
+}
+.profile-form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.profile-form-label {
+    width: 160px;
+    font-size: 22px;
+    font-family: 'Georgia', serif;
+}
+.profile-form-input {
+    flex: 1;
+    font-size: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #f5eee6;
+    color: #4b2e1e;
+}
+.profile-form-select {
+    flex: 1;
+    font-size: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #f5eee6;
+    color: #4b2e1e;
+}
+.profile-form-password {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.profile-form-password input {
+    font-size: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #f5eee6;
+    color: #4b2e1e;
+    flex: 1;
+}
+.profile-form-password button {
+    background: none;
+    border: none;
+    color: #4b2e1e;
+    font-size: 22px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+.profile-form-save-btn {
+    background: #4b2e1e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 32px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 18px;
+    float: right;
+}
+.profile-logout {
+    margin-top: 32px;
+    font-size: 22px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+.profile-logout img {
+    width: 28px;
+    height: 28px;
+}

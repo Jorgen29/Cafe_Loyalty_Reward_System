@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Info - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/styles.css">
+   
+</head>
+<body>
+    <div class="header">
+        <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
+        <nav>
+             <a href="home.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="rewards.html">Reward</a>
+        </nav>
+        <input type="text" class="search" placeholder="Search">
+        <div class="profile">
+            <img src="../../public/assets/icons/user.png" alt="User" style="width:24px;height:24px;">
+        </div>
+    </div>
+    <div style="position:relative;">
+        <img src="../../public/assets/background.jpg" alt="Banner" class="profile-banner">
+    </div>
+    <div class="profile-main">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="../../public/assets/icons/user.png" alt="User">
+                <button class="profile-edit-btn">Edit</button>
+            </div>
+            <div>
+                <div class="profile-info">Jean Villanueva</div>
+                <div class="profile-level">Latte Level</div>
+            </div>
+        </div>
+        <form class="profile-form-section">
+            <div class="profile-form-title">Edit Account</div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Email:</label>
+                <input class="profile-form-input" type="email" value="jeanvillanueva@gmail.com">
+            </div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Birthday:</label>
+                <input class="profile-form-input" type="date" value="2003-08-10">
+            </div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Address:</label>
+                <input class="profile-form-input" type="text" value="537 Masagana Compound, Sta. Clara, City of General Trias, Cavite">
+            </div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Sex:</label>
+                <select class="profile-form-select">
+                    <option>Female</option>
+                    <option>Male</option>
+                </select>
+            </div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Occupation:</label>
+                <input class="profile-form-input" type="text" value="Student">
+            </div>
+            <div class="profile-form-row">
+                <label class="profile-form-label">Change Password:</label>
+                <div class="profile-form-password">
+                    <input type="password" value="password">
+                    <button type="button" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'">&#128065;</button>
+                </div>
+            </div>
+            <button class="profile-form-save-btn" type="submit">Save</button>
+        </form>
+        <div class="profile-logout">
+            <img src="../../public/assets/icons/logout.png" alt="Logout">
+            Log out
+        </div>
+    </div>
+    <div class="footer">
+        <div style="text-align:center; color:#fff; font-size:20px; margin-bottom:10px;">Contact us:</div>
+        <div class="footer-contact-row">
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/phone.png" alt="Phone" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>0906 377 9569</span>
+            </div>
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/location.png" alt="Location" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>Barangay Pinagtipunan, General Trias, Cavite</span>
+            </div>
+            <div class="footer-contact-item">
+                <img src="../../public/assets/icons/facebook.png" alt="Facebook" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <span>CUPS & Stories CAFE</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
