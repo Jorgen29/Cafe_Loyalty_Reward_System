@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashier - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="../../public/assets/css/cashier-styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+</head>
+    <script>
+        const menuData = {
+            espresso: [
+                { name: 'Americano', prices: { hot: 120, cold: 135 }, points: 95 },
+                { name: 'Cafe Latte', prices: { hot: 130, cold: 150 }, points: 115 },
+                { name: 'Cappuccino', prices: { hot: 130, cold: 150 }, points: 120 },
+                { name: 'Mocha Latte', prices: { hot: 140, cold: 160 }, points: 130 }
+            ],
+            specialty: [
+                { name: 'White Mocha Latte', prices: { hot: 140, cold: 155 }, points: 120 },
+                { name: 'Peppermint Mocha', prices: { hot: 145, cold: 160 }, points: 130 },
+                { name: 'Caramel Macchiato', prices: { hot: 135, cold: 150 }, points: 125 },
+                { name: 'Vanilla Latte', prices: { hot: 135, cold: 150 }, points: 120 }
+            ],
+            cold_brew: [
+                { name: 'Iced Coffee', prices: { cold: 120 }, points: 100 },
+                { name: 'Cold Brew', prices: { cold: 130 }, points: 115 },
+                { name: 'Nitro Cold Brew', prices: { cold: 150 }, points: 130 },
+                { name: 'Iced Americano', prices: { cold: 125 }, points: 105 }
+            ]
+        };
+
+        let cartItems = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-menu-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.remove('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Menu rendering
+            renderMenu('espresso');
+            setupCategoryDropdown();
+            setupAddToCartButtons();
+            setupCheckoutEvents();
+            setupQRScanner();
+        });
+
+        // QR Scanner Functions
+        let qrStream = null;
+        let qrScanning = false;
+
+        function setupQRScanner() {
+            const scanBtn = document.getElementById('scan-btn');
+            const qrModal = document.getElementById('qr-modal');
+            const qrCloseBtn = document.getElementById('qr-close-btn');
+            const qrStartBtn = document.getElementById('qr-start-btn');
+            const qrCloseModalBtn = document.getElementById('qr-close-modal-btn');
+
+            scanBtn.addEventListener('click', function() {
+                qrModal.classList.add('active');
+            });
+
+            qrCloseBtn.addEventListener('click', function() {
+                stopQRScanner();
+                qrModal.classList.remove('active');
+            });
+
+            qrCloseModalBtn.addEventListener('click', function() {
+                stopQRScanner();
+                qrModal.classList.remove('active');
+            });
+
+            qrStartBtn.addEventListener('click', function() {
+                startQRScanner();
+            });
+
+            // Close modal when clicking outside
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    stopQRScanner();
+                    qrModal.classList.remove('active');
+                }
+            });
+        }
+
+        function startQRScanner() {
+            const video = document.getElementById('qr-video');
+            const startBtn = document.getElementById('qr-start-btn');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Camera access is not supported on this device');
+                return;
+            }
+
+            startBtn.disabled = true;
+            startBtn.textContent = 'Starting camera...';
+
+            navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } 
+            }).then(function(stream) {
+                qrStream = stream;
+                video.srcObject = stream;
+                video.play();
+                qrScanning = true;
+                startBtn.textContent = 'Scanning...';
+                scanQRCode();
+            }).catch(function(err) {
+                alert('Error accessing camera: ' + err.message);
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Scanning';
+            });
+        }
+
+        function stopQRScanner() {
+            qrScanning = false;
+            if (qrStream) {
+                qrStream.getTracks().forEach(track => track.stop());
+                qrStream = null;
+            }
+            const startBtn = document.getElementById('qr-start-btn');
+            startBtn.disabled = false;
+            startBtn.textContent = 'Start Scanning';
+        }
+
+        function scanQRCode() {
+            const video = document.getElementById('qr-video');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const scanInterval = setInterval(function() {
+                if (!qrScanning) {
+                    clearInterval(scanInterval);
+                    return;
+                }
+
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                    if (code) {
+                        handleQRResult(code.data);
+                        clearInterval(scanInterval);
+                        stopQRScanner();
+                    }
+                }
+            }, 100);
+        }
+
+        function handleQRResult(data) {
+            const resultDiv = document.getElementById('qr-result');
+            const resultValue = document.getElementById('qr-result-value');
+            
+            resultValue.textContent = data;
+            resultDiv.classList.add('active');
+
+            // Parse QR data (format: ID|Name|Email etc)
+            const parts = data.split('|');
+            if (parts.length > 0) {
+                const memberId = parts[0];
+                
+                // Fill member ID in loyalty section
+                document.querySelector('input[placeholder="Enter ID"]').value = memberId;
+                
+                // Here you can fetch member details from backend
+                console.log('Scanned Member ID:', memberId);
+                
+                // Auto-fill member name (example)
+                if (parts.length > 1) {
+                    const memberName = parts[1];
+                    document.querySelector('input[placeholder="Name"]').value = memberName;
+                }
+            }
+        }
+
+        function renderMenu(category) {
+            const menuGrid = document.getElementById('menu-grid');
+            menuGrid.innerHTML = '';
+
+            const items = menuData[category] || [];
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'menu-item';
+                itemCard.innerHTML = `
+                    <img src="../../public/assets/coffee-1.jpg" alt="${item.name}" class="menu-item-image">
+                    <div class="menu-item-name">${item.name}</div>
+                    <div class="menu-item-prices">
+                        ${Object.entries(item.prices).map(([type, price]) => 
+                            `<div class="menu-item-price-item"><span>${type}</span><span>₱${price}</span></div>`
+                        ).join('')}
+                    </div>
+                    <div class="menu-item-points">Pts: ${item.points}</div>
+                    <button class="add-btn" data-item='${JSON.stringify(item)}'>+ Add</button>
+                `;
+                menuGrid.appendChild(itemCard);
+            });
+
+            setupAddToCartButtons();
+        }
+
+        function setupCategoryDropdown() {
+            const dropdown = document.querySelector('.category-dropdown select');
+            if (dropdown) {
+                dropdown.addEventListener('change', function(e) {
+                    renderMenu(e.target.value);
+                    document.querySelector('.category-dropdown').textContent = this.options[this.selectedIndex].text + ' ▼';
+                });
+            }
+        }
+
+        function setupAddToCartButtons() {
+            document.querySelectorAll('.add-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = JSON.parse(this.dataset.item);
+                    addToCart(item);
+                });
+            });
+        }
+
+        function addToCart(item) {
+            const existing = cartItems.find(i => i.name === item.name);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cartItems.push({...item, quantity: 1, price: Object.values(item.prices)[0]});
+            }
+            updateCheckout();
+        }
+
+        function removeFromCart(name) {
+            cartItems = cartItems.filter(i => i.name !== name);
+            updateCheckout();
+        }
+
+        function updateQuantity(name, change) {
+            const item = cartItems.find(i => i.name === name);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(name);
+                } else {
+                    updateCheckout();
+                }
+            }
+        }
+
+        function updateCheckout() {
+            const itemsHtml = cartItems.map(item => `
+                <div class="checkout-item">
+                    <span class="item-name">${item.name}</span>
+                    <div class="item-qty-controls">
+                        <button class="qty-btn" onclick="updateQuantity('${item.name}', -1)">-</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="qty-btn" onclick="updateQuantity('${item.name}', 1)">+</button>
+                    </div>
+                    <span class="item-price">₱${item.price * item.quantity}</span>
+                    <span class="remove-btn" onclick="removeFromCart('${item.name}')">✕</span>
+                </div>
+            `).join('');
+
+            document.getElementById('checkout-items').innerHTML = itemsHtml;
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const discount = 0; // Implement discount logic
+            const total = subtotal - discount;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('discount').textContent = discount.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+
+        function setupCheckoutEvents() {
+            document.getElementById('cancel-order-btn').addEventListener('click', function() {
+                if (confirm('Clear all items?')) {
+                    cartItems = [];
+                    updateCheckout();
+                }
+            });
+
+            document.getElementById('order-btn').addEventListener('click', function() {
+                if (cartItems.length === 0) {
+                    alert('Please add items to proceed');
+                    return;
+                }
+                alert('Order processed: ₱' + document.getElementById('total').textContent);
+                cartItems = [];
+                updateCheckout();
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="sidebar-close-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="cashier.html" class="nav-link active">
+                    <span class="nav-icon">☕</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="transactions.html" class="nav-link">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-text">Transactions</span>
+                </a>
+                <a href="ingredients.html" class="nav-link">
+                    <span class="nav-icon">🥫</span>
+                    <span class="nav-text">Ingredients</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
+                    <h1 class="page-title">POS System</h1>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <span class="admin-label">Cashier</span>
+                        <img src="../../public/assets/icons/user.png" alt="Cashier Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Cashier Content -->
+            <div class="cashier-container">
+                <!-- Menu Section -->
+                <div class="menu-section">
+                    <div class="category-header">
+                        <div class="category-dropdown">
+                            <span>Espresso</span>
+                            <span class="dropdown-arrow">▼</span>
+                            <select>
+                                <option value="espresso">Espresso</option>
+                                <option value="specialty">Specialty</option>
+                                <option value="cold_brew">Cold Brew</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="menu-grid" id="menu-grid">
+                        <!-- Menu items will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Checkout Section -->
+                <div class="checkout-section">
+                    <div class="checkout-title">Checkout</div>
+
+                    <div class="checkout-items" id="checkout-items">
+                        <div style="text-align: center; color: #999; padding: 30px 0;">No items added</div>
+                    </div>
+
+                    <div class="checkout-divider"></div>
+
+                    <!-- Payment Options -->
+                    <div class="payment-section">
+                        <label class="payment-label">Payment Method:</label>
+                        <div class="payment-options">
+                            <div class="payment-option">
+                                <input type="radio" id="cash" name="payment" value="cash" checked>
+                                <label for="cash">Cash</label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="card" name="payment" value="card">
+                                <label for="card">Card</label>
+                            </div>
+                            <div class="payment-option">
+                                <input type="radio" id="online" name="payment" value="online">
+                                <label for="online">Online Payment</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loyalty Points -->
+                    <div class="loyalty-section">
+                        <label class="loyalty-label">Loyalty Points</label>
+                        <div class="loyalty-field">
+                            <label>Member ID</label>
+                            <input type="text" placeholder="Enter ID">
+                        </div>
+                        <div class="loyalty-field">
+                            <label>Member Name</label>
+                            <input type="text" placeholder="Name" disabled>
+                        </div>
+                        <div class="loyalty-field">
+                            <label>Points to Earn</label>
+                            <input type="text" value="0" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Discount -->
+                    <div class="discount-section">
+                        <label class="discount-label">
+                            Discount
+                            <span>▼</span>
+                        </label>
+                        <select class="discount-dropdown">
+                            <option>-- Select Discount --</option>
+                            <option>5% Discount</option>
+                            <option>10% Discount</option>
+                            <option>15% Discount</option>
+                            <option>20% Discount</option>
+                        </select>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="totals-section">
+                        <div class="total-row">
+                            <span class="total-label">SubTotal</span>
+                            <span class="total-value">--</span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">Discounted Price</span>
+                            <span class="total-value" id="discount">0.00</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span class="total-label">Total</span>
+                            <span class="total-value" id="total">0.00</span>
+                        </div>
+                        <div class="total-row payment">
+                            <span class="total-label">Cash</span>
+                            <span class="total-value">1000</span>
+                        </div>
+                        <div class="total-row change">
+                            <span class="total-label">Change</span>
+                            <span class="total-value">P480</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="action-btn scan-btn" id="scan-btn">Scan</button>
+                        <button class="action-btn cancel-btn" id="cancel-order-btn">Cancel Order</button>
+                        <button class="action-btn order-btn" id="order-btn">Order</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-modal-content">
+            <div class="qr-modal-header">
+                <h2 class="qr-modal-title">QR Code Scanner</h2>
+                <button class="qr-close-btn" id="qr-close-btn">&times;</button>
+            </div>
+
+            <div class="qr-scanner-info">
+                <strong>Position the QR code</strong> in front of your camera to scan customer details
+            </div>
+
+            <div class="qr-scanner-container">
+                <video id="qr-video"></video>
+            </div>
+
+            <div class="qr-result" id="qr-result">
+                <div class="qr-result-label">✓ QR Code Scanned:</div>
+                <div class="qr-result-value" id="qr-result-value"></div>
+            </div>
+
+            <div class="qr-modal-actions">
+                <button class="qr-btn qr-btn-start" id="qr-start-btn">Start Scanning</button>
+                <button class="qr-btn qr-btn-close" id="qr-close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

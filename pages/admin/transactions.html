@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    filterTable(e.target.value);
+                });
+            }
+
+            // Sort dropdown functionality
+            const sortDropdown = document.querySelector('.sort-dropdown');
+            if (sortDropdown) {
+                sortDropdown.addEventListener('change', function(e) {
+                    sortTable(e.target.value);
+                });
+            }
+
+            // View detail buttons - using event delegation
+            const tableBody = document.querySelector('.transactions-table tbody');
+            if (tableBody) {
+                tableBody.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('view-detail-btn')) {
+                        openTransactionDetail(e.target);
+                    }
+                });
+            }
+        });
+
+        function filterTable(searchTerm) {
+            const table = document.querySelector('.transactions-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        function sortTable(sortBy) {
+            const table = document.querySelector('.transactions-table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr:not(.date-header-row)'));
+            const dateHeaders = Array.from(tbody.querySelectorAll('tr.date-header-row'));
+
+            rows.sort((a, b) => {
+                let aVal, bVal;
+                
+                if (sortBy === 'latest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent.replace('#', '');
+                    bVal = b.querySelector('td:nth-child(1)').textContent.replace('#', '');
+                    return parseInt(bVal) - parseInt(aVal);
+                } else if (sortBy === 'oldest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent.replace('#', '');
+                    bVal = b.querySelector('td:nth-child(1)').textContent.replace('#', '');
+                    return parseInt(aVal) - parseInt(bVal);
+                } else if (sortBy === 'highest') {
+                    aVal = a.querySelector('td:nth-child(3)').textContent.replace('₱', '').trim();
+                    bVal = b.querySelector('td:nth-child(3)').textContent.replace('₱', '').trim();
+                    return parseFloat(bVal) - parseFloat(aVal);
+                } else if (sortBy === 'lowest') {
+                    aVal = a.querySelector('td:nth-child(3)').textContent.replace('₱', '').trim();
+                    bVal = b.querySelector('td:nth-child(3)').textContent.replace('₱', '').trim();
+                    return parseFloat(aVal) - parseFloat(bVal);
+                }
+            });
+
+            // Clear tbody and add sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function openTransactionDetail(button) {
+            console.log('Opening transaction detail');
+            const row = button.closest('tr');
+            if (!row) {
+                console.error('No row found');
+                return;
+            }
+
+            const receiptId = row.querySelector('td:nth-child(1)').textContent;
+            const customer = row.querySelector('td:nth-child(2)').textContent;
+            const amount = row.querySelector('td:nth-child(3)').textContent;
+            const time = row.querySelector('td:nth-child(4)').textContent;
+
+            console.log('Transaction:', receiptId, customer, amount, time);
+
+            // Populate modal with transaction details
+            document.getElementById('detailReceiptId').textContent = receiptId;
+            document.getElementById('detailDate').textContent = 'April 2, 2025';
+            document.getElementById('detailCustomer').textContent = customer;
+            document.getElementById('detailAmount').textContent = amount;
+            document.getElementById('detailTime').textContent = time;
+
+            const modal = document.getElementById('transactionDetailModal');
+            if (modal) {
+                modal.style.display = 'block';
+                console.log('Modal displayed');
+            } else {
+                console.error('Modal not found');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('transactionDetailModal');
+            modal.style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('transactionDetailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="hamburger-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="menu.html" class="nav-link">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="#records" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Records</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventory</span>
+                </a>
+                <a href="members_list.html" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">People</span>
+                </a>
+                <a href="#reports" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="#settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-btn">☰</button>
+                    <h1 class="page-title">Transactions</h1>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Transactions Content -->
+            <div class="transactions-content">
+                <!-- Controls Section -->
+                <div class="transactions-controls">
+                    <div class="sort-container">
+                        <label for="sort-dropdown" class="sort-label">Latest</label>
+                        <select id="sort-dropdown" class="sort-dropdown">
+                            <option value="latest">Latest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="highest">Highest Amount</option>
+                            <option value="lowest">Lowest Amount</option>
+                        </select>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-wrapper">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Today's Transactions -->
+                            <tr class="date-header-row">
+                                <td colspan="5">Today, January 06, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12456</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:14 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+
+                            <!-- Yesterday's Transactions -->
+                            <tr class="date-header-row">
+                                <td colspan="5">Yesterday, January 05, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12455</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:40 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12454</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:33 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12453</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:30 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12452</td>
+                                <td>Jean L. Villanueva</td>
+                                <td>₱520</td>
+                                <td>3:25 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+
+                            <!-- Last Week's Transactions -->
+                            <tr class="date-header-row">
+                                <td colspan="5">Last week, January 03, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>#12451</td>
+                                <td>Jean L. Villanueva</td>
+                                <td>₱520</td>
+                                <td>3:22 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12450</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:20 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12449</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:18 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12448</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:14 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12456</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>3:10 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12447</td>
+                                <td>Phia O. Zambales</td>
+                                <td>₱520</td>
+                                <td>3:00 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12446</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>2:50 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12445</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>2:40 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12444</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>2:30 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12443</td>
+                                <td>Customer</td>
+                                <td>₱520</td>
+                                <td>2:20 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>#12442</td>
+                                <td>Nicole S. Osorio</td>
+                                <td>₱520</td>
+                                <td>2:10 PM</td>
+                                <td><button class="action-btn view-detail-btn" title="View Details">👁️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div id="transactionDetailModal" class="modal">
+        <div class="modal-content transaction-detail-modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="detailReceiptId">#12456</h3>
+                    <p id="detailDate" style="margin: 0; color: #666; font-size: 14px;">April 2, 2025</p>
+                </div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body transaction-details">
+                <!-- Transaction Info -->
+                <div class="detail-section" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e8ddd0;">
+                    <div>
+                        <p style="margin: 0; font-size: 14px; color: #666;">Customer: <span id="detailCustomer">Customer</span></p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Time: <span id="detailTime">3:14 PM</span></p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-size: 12px; color: #666;">Amount</p>
+                        <p style="margin: 5px 0 0 0; font-size: 18px; color: #6b4423; font-weight: 600;" id="detailAmount">₱520</p>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="detail-section">
+                    <h4>Dine in</h4>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <div>
+                                <p class="item-name">Cafe Latte</p>
+                                <p class="item-qty">2 x ₱130.00</p>
+                            </div>
+                            <p class="item-price">₱260.00</p>
+                        </div>
+                        <div class="order-item">
+                            <div>
+                                <p class="item-name">Mocha Latte</p>
+                                <p class="item-qty">2 x ₱130.00</p>
+                            </div>
+                            <p class="item-price">₱260.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loyalty Points Section -->
+                <div class="detail-section">
+                    <h4>Loyalty Points</h4>
+                    <div class="loyalty-info">
+                        <div class="info-row">
+                            <span>ID: 000004</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Name: Jean Villanueva</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Point Earn</span>
+                            <span>5</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Discount</span>
+                            <span>5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+                <div class="detail-section summary-section">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>₱520.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Discount Price</span>
+                        <span>-₱21.00</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total</span>
+                        <span>₱494.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Cash</span>
+                        <span>₱1,000.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Change</span>
+                        <span>₱506.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

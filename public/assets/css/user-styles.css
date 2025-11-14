@@ -1,0 +1,517 @@
+/* User Pages Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background-color: #f5f1ed;
+    color: #333;
+}
+
+/* ========== HEADER ========== */
+.header {
+    background-color: #6b4423;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin: 0 30px;
+}
+
+.search {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.search:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+#nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+#nav-links a:hover {
+    color: #e8ddd0;
+}
+
+#nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #e8ddd0;
+    transition: width 0.3s ease;
+}
+
+#nav-links a:hover::after {
+    width: 100%;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.profile img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 2px;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+/* ========== BANNER ========== */
+.banner-section {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 42px;
+    font-weight: 300;
+    text-align: center;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+/* ========== MAIN SECTION ========== */
+.main-section {
+    padding: 60px 30px;
+    background-color: white;
+}
+
+.offer-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.offer-section > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.offer-title {
+    font-size: 16px;
+    color: #8b6f47;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.offer-desc {
+    font-size: 36px;
+    color: #333;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.offer-img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== REWARDS SECTION ========== */
+.rewards-section {
+    background: linear-gradient(135deg, #6b4423 0%, #8b6f47 100%);
+    padding: 60px 30px;
+    color: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.rewards-section > div:first-child {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.rewards-title {
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.discount-ticket {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px 30px;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 100px;
+}
+
+.rewards-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.footer-contact-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 25px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.footer-contact-item img {
+    width: 24px;
+    height: 24px;
+    opacity: 0.9;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 1024px) {
+    .header {
+        padding: 12px 20px;
+    }
+
+    .header-center {
+        margin: 0 20px;
+    }
+
+    .search {
+        max-width: 300px;
+    }
+
+    #nav-links {
+        gap: 20px;
+    }
+
+    .offer-section,
+    .rewards-section {
+        gap: 25px;
+    }
+
+    .offer-img {
+        height: 300px;
+    }
+
+    .offer-desc {
+        font-size: 28px;
+    }
+
+    .rewards-title {
+        font-size: 24px;
+    }
+
+    .banner-text {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 15px;
+    }
+
+    .header-center {
+        display: none;
+    }
+
+    .header-right {
+        gap: 15px;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    #nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #5a3a1e;
+        flex-direction: column;
+        gap: 0;
+        padding: 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        z-index: 99;
+    }
+
+    #nav-links.show {
+        max-height: 500px;
+    }
+
+    #nav-links a {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+
+    #nav-links a::after {
+        display: none;
+    }
+
+    .offer-section,
+    .rewards-section {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .offer-img {
+        height: 250px;
+    }
+
+    .offer-desc {
+        font-size: 24px;
+    }
+
+    .rewards-section > div:first-child {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .rewards-title {
+        font-size: 22px;
+    }
+
+    .discount-ticket {
+        font-size: 20px;
+        padding: 15px 25px;
+    }
+
+    .rewards-desc {
+        text-align: center;
+    }
+
+    .banner-text {
+        font-size: 28px;
+    }
+
+    .banner-section {
+        height: 300px;
+    }
+
+    .main-section,
+    .rewards-section {
+        padding: 40px 20px;
+    }
+
+    .footer-contact-row {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 12px;
+    }
+
+    .logo {
+        width: 35px;
+        height: 35px;
+    }
+
+    .profile img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .hamburger span {
+        width: 20px;
+    }
+
+    #nav-links {
+        top: 55px;
+        padding: 15px;
+    }
+
+    #nav-links a {
+        font-size: 14px;
+    }
+
+    .offer-section,
+    .rewards-section {
+        padding: 30px 15px;
+    }
+
+    .offer-img {
+        height: 200px;
+    }
+
+    .offer-desc {
+        font-size: 20px;
+    }
+
+    .offer-title {
+        font-size: 13px;
+    }
+
+    .rewards-title {
+        font-size: 18px;
+    }
+
+    .discount-ticket {
+        font-size: 18px;
+        padding: 12px 20px;
+        min-width: 80px;
+    }
+
+    .rewards-desc {
+        font-size: 14px;
+    }
+
+    .banner-text {
+        font-size: 22px;
+    }
+
+    .banner-section {
+        height: 250px;
+    }
+
+    .footer-contact-item {
+        flex-direction: column;
+        font-size: 13px;
+    }
+
+    .footer-contact-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .footer {
+        padding: 30px 15px;
+    }
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    filterTable(e.target.value);
+                });
+            }
+
+            // Sort dropdown functionality
+            const sortDropdown = document.querySelector('.sort-dropdown');
+            if (sortDropdown) {
+                sortDropdown.addEventListener('change', function(e) {
+                    sortTable(e.target.value);
+                });
+            }
+
+            // View member details - using event delegation
+            const tableBody = document.querySelector('.members-table tbody');
+            if (tableBody) {
+                tableBody.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('view-btn')) {
+                        openMemberDetail(e.target);
+                    }
+                });
+            }
+        });
+
+        function filterTable(searchTerm) {
+            const table = document.querySelector('.members-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        function sortTable(sortBy) {
+            const table = document.querySelector('.members-table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                let aVal, bVal;
+                
+                if (sortBy === 'latest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent;
+                    bVal = b.querySelector('td:nth-child(1)').textContent;
+                    return parseInt(bVal) - parseInt(aVal);
+                } else if (sortBy === 'oldest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent;
+                    bVal = b.querySelector('td:nth-child(1)').textContent;
+                    return parseInt(aVal) - parseInt(bVal);
+                } else if (sortBy === 'name-asc') {
+                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    return aVal.localeCompare(bVal);
+                } else if (sortBy === 'name-desc') {
+                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function openMemberDetail(button) {
+            const row = button.closest('tr');
+            const memberId = row.querySelector('td:nth-child(1)').textContent;
+            const memberName = row.querySelector('td:nth-child(2)').textContent;
+            const tierLevel = row.querySelector('td:nth-child(3)').textContent;
+            const email = row.querySelector('td:nth-child(4)').textContent;
+
+            // Populate modal with member details
+            document.getElementById('memberName').textContent = memberName;
+            document.getElementById('memberId').textContent = 'ID: ' + memberId;
+            document.getElementById('memberEmail').textContent = 'Email: ' + email;
+            document.getElementById('memberTierLevel').textContent = 'Tier Level: ' + tierLevel;
+
+            const modal = document.getElementById('memberDetailModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeMemberModal() {
+            const modal = document.getElementById('memberDetailModal');
+            modal.style.display = 'none';
+        }
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('memberDetailModal');
+            if (event.target === modal) {
+                closeMemberModal();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="hamburger-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#menu" class="nav-link">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="#records" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Records</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventory</span>
+                </a>
+                <a href="members_list.html" class="nav-link active">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">People</span>
+                </a>
+                <a href="#reports" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="#settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-btn">☰</button>
+                    <h1 class="page-title">Member List</h1>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Members Content -->
+            <div class="members-content">
+                <!-- Controls Section -->
+                <div class="members-controls">
+                    <div class="sort-container">
+                        <label for="sort-dropdown" class="sort-label">Latest</label>
+                        <select id="sort-dropdown" class="sort-dropdown">
+                            <option value="latest">Latest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                        </select>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Members Table -->
+                <div class="table-wrapper">
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Tier Level</th>
+                                <th>Email</th>
+                                <th>Others</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>000004</td>
+                                <td>Jean L. Villanueva</td>
+                                <td>Latte Level</td>
+                                <td>Memberemail@gmail.com</td>
+                                <td><button class="action-btn view-btn" title="View">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>000003</td>
+                                <td>Nicole S. Osorio</td>
+                                <td>Latte Level</td>
+                                <td>Memberemail@gmail.com</td>
+                                <td><button class="action-btn view-btn" title="View">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>000002</td>
+                                <td>Members Name</td>
+                                <td>Espresso Level</td>
+                                <td>Memberemail@gmail.com</td>
+                                <td><button class="action-btn view-btn" title="View">👁️</button></td>
+                            </tr>
+                            <tr>
+                                <td>000001</td>
+                                <td>Phia O. Zambales</td>
+                                <td>Cappucino Level</td>
+                                <td>Memberemail@gmail.com</td>
+                                <td><button class="action-btn view-btn" title="View">👁️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Member Detail Modal -->
+    <div id="memberDetailModal" class="modal">
+        <div class="modal-content member-detail-modal">
+            <div class="modal-header" style="flex-direction: column; align-items: flex-end; border-bottom: none; padding-bottom: 0;">
+                <button class="modal-close" onclick="closeMemberModal()">✕</button>
+            </div>
+
+            <div class="modal-body member-details">
+                <!-- Member Avatar and Name -->
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 120px; height: 120px; background-color: #999; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 80px; height: 80px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #999;">👤</div>
+                    </div>
+                    <h2 id="memberName" style="margin: 0 0 15px 0; color: #333; font-size: 24px;">Jean Villanueva</h2>
+                    <div style="border-bottom: 2px solid #333; margin: 0 auto; width: 80%; height: 0;"></div>
+                </div>
+
+                <!-- Member Information -->
+                <div class="member-info-section">
+                    <p id="memberId" style="margin: 12px 0; font-size: 15px; color: #333;">ID: 000004</p>
+                    <p id="memberEmail" style="margin: 12px 0; font-size: 15px; color: #333;">Email: jeanvillanueva@gmail.com</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Password: ok456</p>
+                    <p id="memberTierLevel" style="margin: 12px 0; font-size: 15px; color: #333;">Tier Level: Latte Level</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Joined Date: 04/02/26</p>
+                </div>
+
+                <hr style="border: none; border-top: 2px solid #333; margin: 20px 0;">
+
+                <!-- Additional Information -->
+                <div class="member-info-section">
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Contact number: 09957289783</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Birthday: 08/10/2003</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Address: 537 Masagana Compound, Sta. Clara, City of General Trias, Cavite</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Sex: Female</p>
+                    <p style="margin: 12px 0; font-size: 15px; color: #333;">Occupation: Student</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

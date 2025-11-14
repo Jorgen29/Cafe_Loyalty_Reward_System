@@ -4,45 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="public/css/styles.css">
-    <title>Cups & Stories Cafe - Login</title>
-    
+    <title>Cups & Stories Cafe - Verify Email</title>
 </head>
 <body class="login-page">
-    <div class="login-container">
-        <div class="logo">
-            <div class="logo-title">CUPS</div>
-            <div class="logo-subtitle">& STORIES</div>
-            <div class="logo-divider"></div>
-            <div class="logo-cafe">C A F E</div>
-        </div>
-
-        <h1 class="login-heading">Verification Code:</h1>
-
-       
-
-         <form id="loginForm" action="index.html" method="">
-            <div class="form-group">
-                <label for="email" class="form-label">Email:</label>
-                <input 
-                    type="number" 
-                    id="email" 
-                    name="email" 
-                    class="form-input" 
-                    placeholder="Enter email"
-                    required
-                >
+    <div class="auth-wrapper">
+        <div class="login-container">
+            <div class="logo">
+                <div class="logo-title">CUPS</div>
+                <div class="logo-subtitle">& STORIES</div>
+                <div class="logo-divider"></div>
+                <div class="logo-cafe">C A F E</div>
             </div>
 
-           
+            <h1 class="login-heading">Verify Email</h1>
+            <p class="login-subtitle">Enter the verification code sent to your email</p>
 
-            <button type="submit" class="login-button">Confirm</button>
-        </form>
+            <form id="verificationForm" action="index.html" method="post">
+                <div class="form-group">
+                    <label for="verificationCode" class="form-label">Verification Code</label>
+                    <input 
+                        type="text" 
+                        id="verificationCode" 
+                        name="verificationCode" 
+                        class="form-input otp-input" 
+                        placeholder="000000"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        required
+                    >
+                    <small class="form-helper">6-digit code</small>
+                </div>
 
-        <div class="register-link">
-            Don't have account? <a href="signup.html">Register</a>
+                <button type="submit" class="login-button">Confirm</button>
+            </form>
+
+            <div class="otp-actions">
+                <p class="resend-text">
+                    Didn't receive a code? 
+                    <a href="#" class="resend-link">Resend</a>
+                </p>
+                <a href="index.html" class="back-link">Back to Login</a>
+            </div>
         </div>
     </div>
 
-   <script src="public/js/showpassword.js"></script>
+    <script src="public/js/showpassword.js"></script>
 </body>
 </html>

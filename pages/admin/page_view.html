@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pages - Admin</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <style>
+        .page-view-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        .page-selector-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fafaf8;
+            border-radius: 8px;
+            border: 1px solid #e8ddd0;
+        }
+
+        .page-selector-container label {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .page-selector-container select {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            background-color: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .page-selector-container select:focus {
+            outline: none;
+            border-color: #6b4423;
+            box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .form-card.active {
+            display: block;
+        }
+
+        .form-title {
+            font-size: 24px;
+            color: #333;
+            margin: 0 0 30px 0;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            background-color: white;
+            color: #333;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Georgia', serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6b4423;
+            box-shadow: 0 0 0 3px rgba(107, 68, 35, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .image-upload-group {
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            background-color: #fafaf8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-group:hover {
+            border-color: #6b4423;
+            background-color: #f5f1ed;
+        }
+
+        .image-upload-group input[type="file"] {
+            display: none;
+        }
+
+        .image-upload-label {
+            display: block;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #6b4423;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .upload-btn:hover {
+            background-color: #5a3a1e;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e8ddd0;
+        }
+
+        .save-btn {
+            padding: 12px 40px;
+            background-color: #6b4423;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            background-color: #5a3a1e;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            padding: 12px 40px;
+            background-color: #e8ddd0;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background-color: #ddd;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .page-view-container {
+                padding: 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+            }
+
+            .page-selector {
+                width: 100%;
+            }
+
+            .page-selector select {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-view-container {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .form-card {
+                padding: 15px;
+            }
+
+            .form-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-menu-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebar = document.querySelector('.sidebar');
+            const pageSelector = document.getElementById('page-selector');
+            const forms = document.querySelectorAll('.form-card');
+
+            // Hamburger menu toggle
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.remove('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Page selector toggle
+            pageSelector.addEventListener('change', function(e) {
+                const selectedPage = e.target.value;
+                
+                forms.forEach(form => {
+                    form.classList.remove('active');
+                });
+
+                const selectedForm = document.getElementById(selectedPage + '-form');
+                if (selectedForm) {
+                    selectedForm.classList.add('active');
+                }
+            });
+
+            // Handle image uploads for all forms
+            document.querySelectorAll('.image-upload-group').forEach(group => {
+                group.addEventListener('click', function() {
+                    this.querySelector('input[type="file"]').click();
+                });
+
+                group.querySelector('input[type="file"]').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            let preview = group.querySelector('.preview-image');
+                            if (!preview) {
+                                preview = document.createElement('img');
+                                preview.className = 'preview-image';
+                                group.appendChild(preview);
+                            }
+                            preview.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+
+            // Handle form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Changes saved successfully!');
+                });
+            });
+
+            // Handle cancel buttons
+            document.querySelectorAll('.cancel-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if(confirm('Discard changes?')) {
+                        this.closest('form').reset();
+                    }
+                });
+            });
+
+            // Set default form to home
+            pageSelector.value = 'home';
+            document.getElementById('home-form').classList.add('active');
+        });
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="sidebar-close-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="members_list.html" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Members</span>
+                </a>
+                <a href="menu.html" class="nav-link">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="transactions.html" class="nav-link">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-text">Transactions</span>
+                </a>
+                <a href="reports.html" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="page_view.html" class="nav-link active">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Edit Pages</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
+                    <h1 class="page-title">Edit Pages</h1>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="dashboard-content">
+                <div class="page-selector-container">
+                    <label for="page-selector">Select Page to Edit:</label>
+                    <select id="page-selector">
+                        <option value="home">Home Page</option>
+                        <option value="menu">Menu Page</option>
+                        <option value="reward">Reward Page</option>
+                    </select>
+                </div>
+
+            <!-- Home Page Form -->
+            <div class="form-card" id="home-form">
+                <h2 class="form-title">Edit Home Page</h2>
+                <form>
+                    <div class="form-group">
+                        <label>Cover Photo</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="home-cover-text">Cover Text</label>
+                        <input type="text" id="home-cover-text" placeholder="Enter cover text">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="home-menu-title">Menu Teaser Title</label>
+                        <input type="text" id="home-menu-title" value="Featured Menu">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Menu Teaser Image</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="home-menu-desc">Menu Description</label>
+                        <textarea id="home-menu-desc" placeholder="Enter menu description..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="home-reward-title">Reward Teaser Title</label>
+                        <input type="text" id="home-reward-title" value="Special Rewards">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reward Teaser Image</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="home-reward-desc">Reward Description</label>
+                        <textarea id="home-reward-desc" placeholder="Enter reward description..."></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Menu Page Form -->
+            <div class="form-card" id="menu-form">
+                <h2 class="form-title">Edit Menu Page</h2>
+                <form>
+                    <div class="form-group">
+                        <label>Cover Photo</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="menu-cover-text">Cover Text</label>
+                        <input type="text" id="menu-cover-text" placeholder="Enter cover text">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="menu-category">Category</label>
+                        <input type="text" id="menu-category" placeholder="e.g., Espresso, Latte, Cappuccino">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="menu-name">Menu Name</label>
+                            <input type="text" id="menu-name" placeholder="e.g., Iced Latte">
+                        </div>
+                        <div class="form-group">
+                            <label for="menu-price">Price</label>
+                            <input type="text" id="menu-price" placeholder="e.g., ₱120">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="menu-temperature">Temperature</label>
+                            <select id="menu-temperature">
+                                <option>Hot</option>
+                                <option>Cold</option>
+                                <option>Iced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="menu-size">Size</label>
+                            <select id="menu-size">
+                                <option>8oz</option>
+                                <option>12oz</option>
+                                <option>16oz</option>
+                                <option>20oz</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="menu-points">Points</label>
+                            <input type="text" id="menu-points" placeholder="e.g., 10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Menu Image</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Reward Page Form -->
+            <div class="form-card" id="reward-form">
+                <h2 class="form-title">Edit Reward Page</h2>
+                <form>
+                    <div class="form-group">
+                        <label>Cover Photo</label>
+                        <div class="image-upload-group">
+                            <span class="upload-btn">Upload Image</span>
+                            <input type="file" accept="image/*">
+                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reward-cover-text">Cover Text</label>
+                        <input type="text" id="reward-cover-text" placeholder="Enter cover text">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reward-category">Reward Category</label>
+                        <input type="text" id="reward-category" placeholder="e.g., Discount, Free Item">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reward-name">Reward Name</label>
+                            <input type="text" id="reward-name" placeholder="e.g., 5% Discount">
+                        </div>
+                        <div class="form-group">
+                            <label for="reward-percent">Discount Percent</label>
+                            <select id="reward-percent">
+                                <option>5%</option>
+                                <option>10%</option>
+                                <option>15%</option>
+                                <option>20%</option>
+                                <option>25%</option>
+                                <option>30%</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reward-date">Valid Until Date</label>
+                        <input type="date" id="reward-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reward-description">Description</label>
+                        <textarea id="reward-description" placeholder="Enter reward description..."></textarea>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="save-btn">Save</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-menu-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.remove('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="sidebar-close-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link active">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#menu" class="nav-link">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="#transactions" class="nav-link">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-text">Transactions</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventory</span>
+                </a>
+                <a href="#members" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Members</span>
+                </a>
+                <a href="#reports" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="#settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                   
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon menu-icon">🍳</div>
+                        <div class="stat-value">65</div>
+                        <div class="stat-label">Menu</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon inventory-icon">📦</div>
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">Inventory</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon staff-icon">👤</div>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Staff</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon membership-icon">👥</div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Membership</div>
+                    </div>
+                </div>
+
+                <!-- Sales Section -->
+                <div class="sales-section">
+                    <!-- Recent Transactions -->
+                    <div class="transaction-card">
+                        <div class="card-header">
+                            <div class="receipt-icon">📋</div>
+                            <div class="receipt-date">January 06, 2025</div>
+                        </div>
+                        <table class="transaction-table">
+                            <thead>
+                                <tr>
+                                    <th>Receipt #</th>
+                                    <th>Total</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#12456</td>
+                                    <td>₱520</td>
+                                    <td>3:14 PM</td>
+                                </tr>
+                                <tr>
+                                    <td>#12455</td>
+                                    <td>₱280</td>
+                                    <td>2:45 PM</td>
+                                </tr>
+                                <tr>
+                                    <td>#12454</td>
+                                    <td>₱420</td>
+                                    <td>1:30 PM</td>
+                                </tr>
+                                <tr>
+                                    <td>#12453</td>
+                                    <td>₱350</td>
+                                    <td>12:15 PM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Today's Sales Summary -->
+                    <div class="sales-summary">
+                        <div class="summary-header">
+                            <span class="summary-title">Today's Sales</span>
+                            <div class="sales-chart-icon">📈</div>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-row">
+                                <span class="summary-label">Total Earnings:</span>
+                                <span class="summary-value">₱520</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Amt. of Items Sold:</span>
+                                <span class="summary-value">4</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="summary-label">Amt. of Customers:</span>
+                                <span class="summary-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

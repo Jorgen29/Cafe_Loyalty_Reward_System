@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    filterTable(e.target.value);
+                });
+            }
+
+            // Sort dropdown functionality
+            const sortDropdown = document.querySelector('.sort-dropdown');
+            if (sortDropdown) {
+                sortDropdown.addEventListener('change', function(e) {
+                    sortTable(e.target.value);
+                });
+            }
+
+            // Add new menu item
+            const addBtn = document.querySelector('.add-btn');
+            if (addBtn) {
+                addBtn.addEventListener('click', function() {
+                    openAddMenuModal();
+                });
+            }
+
+            // Edit buttons
+            const editBtns = document.querySelectorAll('.edit-btn');
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    openEditModal(this);
+                });
+            });
+
+            // Delete buttons
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteMenuItem(this);
+                });
+            });
+        });
+
+        function filterTable(searchTerm) {
+            const table = document.querySelector('.menu-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        function sortTable(sortBy) {
+            const table = document.querySelector('.menu-table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                let aVal, bVal;
+                
+                if (sortBy === 'latest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent;
+                    bVal = b.querySelector('td:nth-child(1)').textContent;
+                    return parseInt(bVal) - parseInt(aVal);
+                } else if (sortBy === 'oldest') {
+                    aVal = a.querySelector('td:nth-child(1)').textContent;
+                    bVal = b.querySelector('td:nth-child(1)').textContent;
+                    return parseInt(aVal) - parseInt(bVal);
+                } else if (sortBy === 'name-asc') {
+                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    return aVal.localeCompare(bVal);
+                } else if (sortBy === 'name-desc') {
+                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    return bVal.localeCompare(aVal);
+                }
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function openAddMenuModal() {
+            const modal = document.getElementById('addMenuModal');
+            const form = document.getElementById('menuForm');
+            form.reset();
+            document.getElementById('modalTitle').textContent = 'Add Menu';
+            document.getElementById('menuIdDisplay').textContent = 'Menu ID: ' + generateNewId();
+            document.getElementById('menuIdInput').value = generateNewId();
+            modal.style.display = 'block';
+        }
+
+        function openEditModal(button) {
+            const modal = document.getElementById('addMenuModal');
+            const row = button.closest('tr');
+            const id = row.querySelector('td:nth-child(1)').textContent;
+            const name = row.querySelector('td:nth-child(2)').textContent;
+            const category = row.querySelector('td:nth-child(3)').textContent;
+            const price = row.querySelector('td:nth-child(4)').textContent;
+
+            document.getElementById('modalTitle').textContent = 'Update Menu';
+            document.getElementById('menuIdDisplay').textContent = 'Menu ID: ' + id;
+            document.getElementById('menuIdInput').value = id;
+            document.getElementById('categoryInput').value = category;
+            document.getElementById('menuNameInput').value = name;
+            document.getElementById('priceInput').value = price.replace(/₱/g, '').trim();
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('addMenuModal');
+            modal.style.display = 'none';
+        }
+
+        function generateNewId() {
+            const table = document.querySelector('.menu-table');
+            const rows = table.querySelectorAll('tbody tr');
+            if (rows.length === 0) return '11111';
+            const lastId = parseInt(rows[rows.length - 1].querySelector('td:nth-child(1)').textContent);
+            return (lastId + 1).toString();
+        }
+
+        function saveMenu() {
+            const menuName = document.getElementById('menuNameInput').value;
+            const category = document.getElementById('categoryInput').value;
+            const price = document.getElementById('priceInput').value;
+            const temperature = document.getElementById('temperatureInput').value;
+            const size = document.getElementById('sizeInput').value;
+
+            if (!menuName || !category || !price) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            alert('Menu saved successfully!');
+            closeModal();
+        }
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('addMenuModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        function deleteMenuItem(button) {
+            if (confirm('Are you sure you want to delete this menu item?')) {
+                const row = button.closest('tr');
+                row.remove();
+                alert('Menu item deleted successfully!');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="hamburger-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="menu.html" class="nav-link active">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="#records" class="nav-link">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Records</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventory</span>
+                </a>
+                <a href="members_list.html" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">People</span>
+                </a>
+                <a href="#reports" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="#settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-btn">☰</button>
+                    <h1 class="page-title">Menu</h1>
+                </div>
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Menu Content -->
+            <div class="menu-content">
+                <!-- Controls Section -->
+                <div class="menu-controls">
+                    <div class="left-controls">
+                        <div class="sort-container">
+                            <label for="sort-dropdown" class="sort-label">Latest</label>
+                            <select id="sort-dropdown" class="sort-dropdown">
+                                <option value="latest">Latest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                            </select>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Search">
+                            <span class="search-icon">🔍</span>
+                        </div>
+                    </div>
+                    <button class="add-btn" title="Add new menu item">➕</button>
+                </div>
+
+                <!-- Menu Table -->
+                <div class="table-wrapper">
+                    <table class="menu-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Others</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>11111</td>
+                                <td>Americano</td>
+                                <td>Coffee</td>
+                                <td>H: ₱95 C: ₱105</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11112</td>
+                                <td>Cafe Latte</td>
+                                <td>Coffee</td>
+                                <td>H: ₱115 C: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11113</td>
+                                <td>Cappuccino</td>
+                                <td>Coffee</td>
+                                <td>H: ₱120 C: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11114</td>
+                                <td>Mocha Latte</td>
+                                <td>Coffee</td>
+                                <td>H: ₱120 C: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11115</td>
+                                <td>White Mocha Latte</td>
+                                <td>Coffee</td>
+                                <td>H: ₱120 C: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11116</td>
+                                <td>Peppermint Mocha</td>
+                                <td>Coffee</td>
+                                <td>H: ₱130 C: ₱140</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11117</td>
+                                <td>Salted Caramel</td>
+                                <td>Coffee</td>
+                                <td>H: ₱130 C: ₱140</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11118</td>
+                                <td>Caramel Macchiato</td>
+                                <td>Coffee</td>
+                                <td>H: ₱135 C: ₱145</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11119</td>
+                                <td>Hazelnut Latte</td>
+                                <td>Coffee</td>
+                                <td>H: ₱130 C: ₱140</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11120</td>
+                                <td>European Chocolate</td>
+                                <td>Non-Coffee</td>
+                                <td>H: ₱125 C: ₱135</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11121</td>
+                                <td>Matcha Latte</td>
+                                <td>Non-Coffee</td>
+                                <td>H: ₱130 C: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11122</td>
+                                <td>Green Tea</td>
+                                <td>Non-Coffee</td>
+                                <td>H: ₱130</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11123</td>
+                                <td>Salted Caramel</td>
+                                <td>Frappe</td>
+                                <td>₱155</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11124</td>
+                                <td>White Chocolate Mocha</td>
+                                <td>Frappe</td>
+                                <td>₱140</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11125</td>
+                                <td>Java Chips</td>
+                                <td>Frappe</td>
+                                <td>₱160</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11126</td>
+                                <td>Dark Mocha</td>
+                                <td>Frappe</td>
+                                <td>₱160</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11127</td>
+                                <td>Oreo</td>
+                                <td>Frappe</td>
+                                <td>₱150</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                            <tr>
+                                <td>11128</td>
+                                <td>Coffee Jelly</td>
+                                <td>Frappe</td>
+                                <td>₱145</td>
+                                <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="addMenuModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Menu</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <form id="menuForm" class="modal-body">
+                <div class="form-group">
+                    <p id="menuIdDisplay">Menu ID: 11111</p>
+                    <input type="hidden" id="menuIdInput" value="11111">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryInput">Category:</label>
+                    <input type="text" id="categoryInput" class="form-input" value="Coffee" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="menuNameInput">Menu Name:</label>
+                    <input type="text" id="menuNameInput" class="form-input" placeholder="Americano" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="priceInput">Price:</label>
+                    <input type="number" id="priceInput" class="form-input" placeholder="100" required>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="temperatureInput">Temperature:</label>
+                        <select id="temperatureInput" class="form-select">
+                            <option value="None">None</option>
+                            <option value="Hot">Hot</option>
+                            <option value="Cold">Cold</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sizeInput">Size:</label>
+                        <select id="sizeInput" class="form-select">
+                            <option value="None">None</option>
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="save-btn" onclick="saveMenu()">Save</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

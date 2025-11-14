@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Cafe Loyalty Reward</title>
+    <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.querySelector('.admin-profile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../index.html';
+                    }
+                });
+            }
+
+            // Initialize charts
+            initSalesChart();
+            initDailySalesChart();
+            initCategoriesChart();
+
+            // Print functionality
+            const printBtns = document.querySelectorAll('.print-btn');
+            printBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const chartContainer = this.closest('.report-card');
+                    window.print();
+                });
+            });
+        });
+
+        function initSalesChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [150, 100, 140, 250, 180, 190, 550, 380, 300],
+                        backgroundColor: '#6b4423',
+                        borderColor: '#6b4423',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: undefined,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 200,
+                                font: {
+                                    size: 12,
+                                    family: "'Georgia', serif"
+                                }
+                            },
+                            grid: {
+                                color: '#f0ebe5'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 12,
+                                    family: "'Georgia', serif"
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initDailySalesChart() {
+            const ctx = document.getElementById('dailySalesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sold Earning', 'Customers', 'Commission'],
+                    datasets: [{
+                        data: [60.5, 24.8, 14.7],
+                        backgroundColor: ['#6b4423', '#c9b5a0', '#d4c5b0'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 12,
+                                    family: "'Georgia', serif"
+                                },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initCategoriesChart() {
+            const ctx = document.getElementById('categoriesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Coffee', 'Latte', 'Mocha', 'Cappuccino', 'Espresso', 'Americano', 'Frappe', 'Macchiato', 'Cortado', 'Affogato', 'Flat White'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [250, 50, 200, 140, 120, 150, 120, 100, 80, 60, 40],
+                        backgroundColor: '#6b4423',
+                        borderColor: '#6b4423',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 50,
+                                font: {
+                                    size: 10,
+                                    family: "'Georgia', serif"
+                                }
+                            },
+                            grid: {
+                                color: '#f0ebe5'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    size: 11,
+                                    family: "'Georgia', serif"
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="cafe-logo">
+                    <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo-icon">
+                </div>
+                <button class="close-btn" id="hamburger-btn">✕</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="menu.html" class="nav-link">
+                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-text">Menu</span>
+                </a>
+                <a href="transactions.html" class="nav-link">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-text">Transactions</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventory</span>
+                </a>
+                <a href="members_list.html" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">People</span>
+                </a>
+                <a href="#reports" class="nav-link active">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Reports</span>
+                </a>
+                <a href="#settings" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="hamburger-btn">☰</button>
+                    <h1 class="page-title">Reports</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="admin-profile">
+                        <span class="admin-label">Admin</span>
+                        <img src="../../public/assets/icons/user.png" alt="Admin Profile" class="profile-img">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Reports Content -->
+            <div class="reports-content">
+                <!-- Sales Summary Report -->
+                <div class="report-card full-width">
+                    <div class="report-header">
+                        <h3>Sales Summary Report</h3>
+                        <select class="report-filter">
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                    <button class="print-btn">Print</button>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <!-- Daily Sales -->
+                    <div class="report-card">
+                        <h3 style="text-align: center;">Daily Sales 📊</h3>
+                        <div class="chart-container">
+                            <canvas id="dailySalesChart"></canvas>
+                        </div>
+                        <button class="print-btn">Print</button>
+                    </div>
+
+                    <!-- Most Popular Categories -->
+                    <div class="report-card">
+                        <h3 style="text-align: center;">Most Popular Categories</h3>
+                        <div class="chart-container">
+                            <canvas id="categoriesChart"></canvas>
+                        </div>
+                        <button class="print-btn">Print</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -4,26 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Cafe Loyalty Reward</title>
-    <link rel="stylesheet" href="../../public/assets/css/styles.css">
-  
+    <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const navLinks = document.getElementById('nav-links');
+            
+            hamburgerBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('show');
+            });
+
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 768) {
+                    navLinks.classList.remove('show');
+                }
+            });
+
+            // Close menu when clicking on a link
+            const navLinks_items = document.querySelectorAll('#nav-links a');
+            navLinks_items.forEach(link => {
+                link.addEventListener('click', function() {
+                    if(window.innerWidth <= 768) {
+                        navLinks.classList.remove('show');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="header">
-        <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
-        <nav>
-            <a href="home.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="rewards.html">Reward</a>
-        </nav>
-        <input type="text" class="search" placeholder="Search">
-        <div class="profile">
-            <img src="../../public/assets/icons/user.png" alt="User" style="width:24px;height:24px;">
+    <header class="header">
+        <div class="header-left">
+            <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
         </div>
-    </div>
-    <div style="position:relative;">
+        <div class="header-center">
+            <input type="text" class="search" placeholder="Search">
+        </div>
+        <div class="header-right">
+            <nav id="nav-links">
+                <a href="home.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="rewards.html">Rewards</a>
+                <a href="profile.html">Profile</a>
+                <a href="faqs.html">FAQs</a>
+            </nav>
+            <div class="profile">
+                <img src="../../public/assets/icons/user.png" alt="User">
+            </div>
+            <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="banner-section">
         <img src="../../public/assets/Home-page-bg1.jpg" alt="Banner" class="banner">
         <div class="banner-text">Our Stories Bring Us<br>Together</div>
     </div>
+
     <div class="main-section">
         <div class="offer-section">
             <div>
@@ -33,6 +73,7 @@
             <img src="../../public/assets/Home-page-bg1.jpg" alt="Blueberry Cheesecake" class="offer-img">
         </div>
     </div>
+
     <div class="rewards-section">
         <div>
             <div class="rewards-title">Enjoy more rewards</div>
@@ -42,22 +83,23 @@
             Redeem your points to<br>claim exciting rewards
         </div>
     </div>
-    <div class="footer">
+
+    <footer class="footer">
         <div style="text-align:center; color:#fff; font-size:20px; margin-bottom:10px;">Contact us:</div>
         <div class="footer-contact-row">
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/phone.png" alt="Phone" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/phone.png" alt="Phone">
                 <span>0906 377 9569</span>
             </div>
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/location.png" alt="Location" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/location.png" alt="Location">
                 <span>Barangay Pinagtipunan, General Trias, Cavite</span>
             </div>
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/facebook.png" alt="Facebook" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/facebook.png" alt="Facebook">
                 <span>CUPS & Stories CAFE</span>
             </div>
         </div>
-    </div>
+    </footer>
 </body>
 </html>
