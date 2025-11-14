@@ -4,138 +4,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQs - Cafe Loyalty Reward</title>
-    <link rel="stylesheet" href="../../public/assets/css/styles.css">
-    
+    <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
+    <style>
+        .page-wrap { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .faq-header { text-align: center; margin: 30px 0; }
+        .faq-header h2 { font-size: 28px; font-weight: 300; color: #311402; }
+        .tabs { display:flex; gap:12px; justify-content:center; margin-bottom:24px; }
+        .tab { padding:8px 16px; border-radius:20px; background:#f5f1ed; color:#6b4423; cursor:pointer; font-weight:600; }
+        .tab.active { background:#6b4423; color:#fff; }
+        .faq-container { display:grid; grid-template-columns: repeat(2, 1fr); gap:18px; }
+        .faq-card { background:#fff; border-radius:10px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+        .faq-question { display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; color:#2c1810; }
+        .faq-answer { max-height:0; overflow:hidden; transition: max-height 0.28s ease; color:#444; margin-top:12px; }
+        .faq-card.open .faq-answer { max-height:400px; }
+        .faq-meta { font-size:13px; color:#8b6f47; margin-bottom:10px; }
+
+        @media (max-width: 768px) {
+            .faq-container { grid-template-columns: 1fr; }
+            .page-wrap { margin: 20px auto; }
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
-        <nav>
-             <a href="home.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="rewards.html">Reward</a>
-        </nav>
-        <input type="text" class="search" placeholder="Search">
-        <div class="profile">
-            <img src="../../public/assets/icons/user.png" alt="User" style="width:24px;height:24px;">
+    <header class="header">
+        <div class="header-left">
+            <img src="../../public/assets/icons/logo.png" alt="Cafe Logo" class="logo">
         </div>
+        <div class="header-center">
+            <input type="text" class="search" placeholder="Search FAQs, rewards, menu...">
+        </div>
+        <div class="header-right">
+            <nav id="nav-links">
+                <a href="home.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="rewards.html">Rewards</a>
+                <a href="profile.html">Profile</a>
+            </nav>
+            <div class="profile"><img src="../../public/assets/icons/user.png" alt="User"></div>
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="banner-section">
+        <img src="../../public/assets/Home-page-bg1.jpg" alt="Banner" class="banner">
+        <div class="banner-text">FAQs & Help</div>
     </div>
-    <div style="position:relative;">
-        <img src="../../public/assets/background.jpg" alt="Banner" class="banner">
-        <div class="banner-text">Rewards</div>
-    </div>
-    <div class="tab-section">
-        <span class="tab active" id="tab-rewards" style="cursor:pointer;">Rewards</span>
-        <span class="inactive">|</span>
-        <span class="tab" id="tab-tier" style="cursor:pointer;">Tier Level</span>
-    </div>
-    <div id="faq-section-rewards" class="faq-section">
-        <div class="faq-title">How Loyalty Program Works?</div>
-        <div class="faq-step">Step 1: Earn Points</div>
-        <div class="faq-list">
-            <ul>
-                <li>Cashier will scan your QR code.</li>
-                <li>You can get points by purchase an item.</li>
-            </ul>
-            <div style="margin-left:24px; margin-bottom:10px;">
-                P70 = 1 coffee cup point<br>
-                coffee cup terms in point
+
+    <main class="page-wrap">
+        <div class="faq-header">
+            <h2>Frequently Asked Questions</h2>
+            <p class="faq-meta">Answers about points, rewards, tier levels and how to use the app</p>
+        </div>
+
+        <div class="tabs" role="tablist">
+            <div class="tab active" data-target="rewards">Rewards</div>
+            <div class="tab" data-target="tier">Tier Level</div>
+            <div class="tab" data-target="account">Account</div>
+            <div class="tab" data-target="orders">Orders</div>
+        </div>
+
+        <section id="rewards" class="faq-section">
+            <div class="faq-container">
+                <div class="faq-card">
+                    <div class="faq-question">How does the loyalty program work?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Earn points for every purchase. P70 = 1 coffee cup point. Points can be redeemed for vouchers, free drinks and other rewards.</p>
+                    </div>
+                </div>
+
+                <div class="faq-card">
+                    <div class="faq-question">When do points expire?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Points expire after 4 months from the date they were awarded. Keep an eye on your account to use them before they expire.</p>
+                    </div>
+                </div>
+
+                <div class="faq-card">
+                    <div class="faq-question">How do I redeem rewards?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Open the rewards page, choose an available reward and present the voucher code or let the cashier scan your member QR code at checkout.</p>
+                    </div>
+                </div>
+
+                <div class="faq-card">
+                    <div class="faq-question">What rewards are available?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Vouchers, free drinks, and occasional double-point promotions. Specific rewards vary by promotion period.</p>
+                    </div>
+                </div>
             </div>
-            <ul>
-                <li>Points will expired every 4 months.</li>
-            </ul>
-        </div>
-        <div class="faq-step">Step 2: Redeem Your Rewards</div>
-        <div class="faq-list">
-            <ul>
-                <li>Voucher</li>
-                <li>Free Drinks</li>
-                <li>Double pointss</li>
-            </ul>
-        </div>
-    </div>
-    <div id="faq-section-tier" class="faq-section" style="display:none;">
-        <div class="faq-title">How Tier Level Works?</div>
-        <div class="faq-list" style="font-size:24px;">
-            <ol>
-                <li>Order 10 items to become a Cappuccino Level</li>
-                <li>Order 25 items to become a Latte Level</li>
-                <li>Order 50 items to become a Machiato Level</li>
-            </ol>
-        </div>
+        </section>
 
-        <div class="faq-title">Tier Level</div>
-        <div class="faq-step">Bronze Level = Cappuccino Level</div>
-         <div class="faq-step">Silver Level = Latte Level</div>
-          <div class="faq-step">Gold Level = Machiato Level</div>
+        <section id="tier" class="faq-section" style="display:none;">
+            <div class="faq-container">
+                <div class="faq-card">
+                    <div class="faq-question">What are the tier levels?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Bronze (Cappuccino) - Order 10 items; Silver (Latte) - 25 items; Gold (Machiato) - 50 items. Tiers unlock additional perks.</p>
+                    </div>
+                </div>
 
+                <div class="faq-card">
+                    <div class="faq-question">What perks do tiers offer?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Perks include free refills, vouchers, birthday rewards and exclusive event vouchers at higher tiers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <div class="faq-list" style="padding-top: 30px;">
-            <div class="faq-step">Normal Level</div>
-            <ul>
-                <li>Free refill</li>
-                
-            </ul>
+        <section id="account" class="faq-section" style="display:none;">
+            <div class="faq-container">
+                <div class="faq-card">
+                    <div class="faq-question">How do I update my profile?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Go to Profile → Edit and update your information. Be sure to save changes before leaving the page.</p>
+                    </div>
+                </div>
 
-            <div class="faq-step">Cappuccino Level</div>
-            <ul>
-                <li>Free refill</li>
-                <li>5% vouchers</li>
-                
-            </ul>
+                <div class="faq-card">
+                    <div class="faq-question">I forgot my password. What now?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Use the Forgot Password link on the login page to request a verification code and reset your password.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <div class="faq-step">Latte Level</div>
-            <ul>
-                <li>Free refill</li>
-                <li>5% vouchers</li>
-                <li>Birthday voucher</li>
-                
-                
-            </ul>
+        <section id="orders" class="faq-section" style="display:none;">
+            <div class="faq-container">
+                <div class="faq-card">
+                    <div class="faq-question">How do I view my order history?<span>+</span></div>
+                    <div class="faq-answer">
+                        <p>Visit Profile → Orders to see a list of your past transactions and points earned per order.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-            <div class="faq-step">Machiato Level</div>
-            <ul>
-                <li>Free refill</li>
-                <li>5% vouchers</li>
-                <li>Birthday voucher</li>
-                <li>Event  voucher</li>
-                
-            </ul>
-           
-            
-        </div>
-        
-    </div>
-    <div class="footer">
+    <footer class="footer">
         <div style="text-align:center; color:#fff; font-size:20px; margin-bottom:10px;">Contact us:</div>
         <div class="footer-contact-row">
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/phone.png" alt="Phone" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/phone.png" alt="Phone">
                 <span>0906 377 9569</span>
             </div>
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/location.png" alt="Location" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/location.png" alt="Location">
                 <span>Barangay Pinagtipunan, General Trias, Cavite</span>
             </div>
             <div class="footer-contact-item">
-                <img src="../../public/assets/icons/facebook.png" alt="Facebook" style="width:24px;vertical-align:middle;margin-right:8px;">
+                <img src="../../public/assets/icons/facebook.png" alt="Facebook">
                 <span>CUPS & Stories CAFE</span>
             </div>
         </div>
-    </div>
+    </footer>
+
     <script>
-        document.getElementById('tab-rewards').onclick = function() {
-            document.getElementById('tab-rewards').classList.add('active');
-            document.getElementById('tab-tier').classList.remove('active');
-            document.getElementById('faq-section-rewards').style.display = '';
-            document.getElementById('faq-section-tier').style.display = 'none';
-        };
-        document.getElementById('tab-tier').onclick = function() {
-            document.getElementById('tab-tier').classList.add('active');
-            document.getElementById('tab-rewards').classList.remove('active');
-            document.getElementById('faq-section-rewards').style.display = 'none';
-            document.getElementById('faq-section-tier').style.display = '';
-        };
+        // nav hamburger
+        document.getElementById('hamburger-btn').addEventListener('click', function(){
+            document.getElementById('nav-links').classList.toggle('show');
+        });
+
+        // tabs
+        document.querySelectorAll('.tabs .tab').forEach(function(tab){
+            tab.addEventListener('click', function(){
+                document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+                tab.classList.add('active');
+                // show target
+                var target = tab.getAttribute('data-target');
+                document.querySelectorAll('main section.faq-section').forEach(s=>s.style.display='none');
+                var el = document.getElementById(target);
+                if(el) el.style.display = '';
+            });
+        });
+
+        // accordion
+        document.querySelectorAll('.faq-card .faq-question').forEach(function(q){
+            q.addEventListener('click', function(){
+                var card = q.closest('.faq-card');
+                card.classList.toggle('open');
+            });
+        });
     </script>
 </body>
 </html>
