@@ -343,6 +343,7 @@
 .total-value {
     text-align: right;
     min-width: 60px;
+    white-space: nowrap;
 }
 
 .total-row.grand-total {

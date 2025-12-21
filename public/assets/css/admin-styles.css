@@ -42,17 +42,19 @@ body {
 .cafe-logo {
     width: 50px;
     height: 50px;
-    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
 }
+.hidden {
+    display: none;
+}
 
 .logo-icon {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 52pxx;
 }
 
 .close-btn {
@@ -147,6 +149,42 @@ body {
     display: flex;
     align-items: center;
     gap: 30px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Georgia', serif;
+}
+
+.print-action {
+    background-color: #d4af6a;
+    color: #333;
+}
+
+.print-action:hover {
+    background-color: #c9a55d;
+    transform: translateY(-2px);
+}
+
+.download-action {
+    background-color: #a89968;
+    color: white;
+}
+
+.download-action:hover {
+    background-color: #97884d;
+    transform: translateY(-2px);
 }
 
 .search-container {
@@ -648,22 +686,30 @@ body {
 
 .modal-content {
     background-color: white;
-    margin: 10% auto;
+    /* center modal */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 0;
     border-radius: 8px;
     width: 90%;
     max-width: 550px;
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     animation: slideDown 0.3s ease;
 }
 
 @keyframes slideDown {
+    /* Keep the modal centered by including the -50% offsets in the animation transforms */
     from {
-        transform: translateY(-50px);
+        transform: translate(-50%, -60%);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translate(-50%, -50%);
         opacity: 1;
     }
 }
@@ -724,6 +770,15 @@ body {
     margin-bottom: 0;
     font-weight: 500;
 }
+
+.store-filter {
+    align-self: flex-end;
+}
+.store-filter-divider {
+    display: flex;
+}
+
+
 
 .form-input,
 .form-select {
@@ -966,7 +1021,7 @@ body {
 .total-row {
     background-color: #f9f7f4;
     padding: 12px;
-    margin: 5px -30px;
+    /* margin: 5px -30px; */
     padding-left: 30px;
     padding-right: 30px;
     font-weight: 600;
@@ -1541,4 +1596,35 @@ body {
     .save-btn {
         width: 100%;
     }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    /* Hide everything except reports content */
+    .sidebar {
+        display: none !important;
+    }
+
+    .top-header {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    .hamburger-btn {
+        display: none !important;
+    }
+
+    .header-actions {
+        display: none !important;
+    }
+
+    .search-container {
+        display: none !important;
+    }
+
+    .admin-profile {
+        display: none !important;
+    }
+
+    
 }

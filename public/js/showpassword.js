@@ -16,7 +16,7 @@ passwordToggle.addEventListener('click', () => {
 
 
 // CONFIRM PASSWORD
-const confirmInput = document.getElementById('confirm_password');
+const confirmInput = document.getElementById('confirmPassword');
 const passwordToggle2 = document.getElementById('passwordToggle2');
 const eyeIcon2 = document.getElementById('eyeIcon2');
 

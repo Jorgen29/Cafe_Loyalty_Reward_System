@@ -57,7 +57,7 @@
         }
 
         .signup-container {
-            background-color: rgba(233, 175, 136, 0.5);
+            background-color: rgba(255, 255, 255, 0.97);
             border-radius: 20px;
             padding: 50px 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -189,7 +189,7 @@
 
         .form-options {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-bottom: 30px;
             font-size: 14px;
@@ -307,7 +307,7 @@
             content: '';
             position: absolute;
             top: 50%;
-            width: 35%;
+            width: 20%;
             height: 1px;
             background-color: #d9ccc3;
         }
@@ -358,6 +358,52 @@
         .back-link:hover {
             color: #8b6f47;
             text-decoration: underline;
+        }
+
+        /* ========== ERROR & SUCCESS ALERTS ========== */
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .error-text {
+            display: block;
+            font-size: 12px;
+            color: #d32f2f;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .form-input.error {
+            border-color: #d32f2f;
+            background-color: #fff5f5;
         }
 
         @media (max-width: 480px) {
