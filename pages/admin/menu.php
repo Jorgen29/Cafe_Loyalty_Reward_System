@@ -95,6 +95,9 @@ if ($query) {
                 });
             }
 
+            // Setup category dropdown
+            setupCategoryDropdown();
+
             // Add new menu item
             const addBtn = document.querySelector('.add-btn');
             if (addBtn) {
@@ -168,7 +171,89 @@ if ($query) {
             rows.forEach(row => tbody.appendChild(row));
         }
 
+        function setupCategoryDropdown() {
+            const buttonsContainer = document.getElementById('category-buttons-container');
+            if (!buttonsContainer) return;
+            
+            // Get all unique categories from the table
+            const rows = document.querySelectorAll('.product-row');
+            const categories = new Set();
+            rows.forEach(row => {
+                const cat = row.dataset.category;
+                if (cat) categories.add(cat);
+            });
+            
+            buttonsContainer.innerHTML = '';
+            
+            // Add "All" button
+            const allBtn = document.createElement('button');
+            allBtn.className = 'category-btn active';
+            allBtn.dataset.category = 'all';
+            allBtn.textContent = 'All Categories';
+            allBtn.style.cssText = 'padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.3s; width: 100%; text-align: left;';
+            allBtn.addEventListener('click', function() {
+                filterByCategory('all');
+                updateCategoryButtons('all');
+            });
+            buttonsContainer.appendChild(allBtn);
+            
+            // Add category buttons
+            Array.from(categories).sort().forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.dataset.category = cat;
+                btn.textContent = cat;
+                btn.style.cssText = 'padding: 8px 12px; border-radius: 4px; border: none; background: #6b4423; color: #fff; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.3s; width: 100%; text-align: left;';
+                btn.addEventListener('click', function() {
+                    filterByCategory(cat);
+                    updateCategoryButtons(cat);
+                });
+                btn.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.background = 'rgba(255,255,255,0.2)';
+                    }
+                });
+                btn.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.background = '#6b4423';
+                    }
+                });
+                buttonsContainer.appendChild(btn);
+            });
+        }
+
+        function filterByCategory(category) {
+            const rows = document.querySelectorAll('.product-row');
+            rows.forEach(row => {
+                if (category === 'all' || row.dataset.category === category) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function updateCategoryButtons(selected) {
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.category === selected) {
+                    btn.classList.add('active');
+                    btn.style.background = 'rgba(255, 255, 255, 0.1)';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.background = '#6b4423';
+                }
+            });
+        }
+
         function openAddMenuModal() {
+               const qtyInput = document.getElementById('priceInput');
+
+                qtyInput.addEventListener('keydown', (e) => {
+                    if (e.key === '-' || e.key === 'e') {
+                        e.preventDefault(); // block minus and "e" for exponential
+                    }
+                });
             const modal = document.getElementById('addMenuModal');
             const form = document.getElementById('menuForm');
             form.reset();
@@ -361,6 +446,10 @@ if ($query) {
             if (tempSelect) tempSelect.value = 'None';
             if (sizeSelect) sizeSelect.value = 'None';
         }
+        
+         
+
+
     </script>
 </head>
 <body>
@@ -384,6 +473,10 @@ if ($query) {
                     <span class="nav-icon">🍽️</span>
                     <span class="nav-text">Menu</span>
                 </a>
+                <!-- Category Filter Buttons -->
+                <div class="category-buttons-container" id="category-buttons-container" style="display: flex; flex-direction: column; gap: 6px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <!-- Category buttons will be inserted here -->
+                </div>
                 <a href="transactions.php" class="nav-link">
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
@@ -455,10 +548,6 @@ if ($query) {
                                 <option value="name-desc">Name (Z-A)</option>
                             </select>
                         </div>
-                        <!-- <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Search">
-                            <span class="search-icon">🔍</span>
-                        </div> -->
                     </div>
                     <button class="add-btn" title="Add new menu item">➕</button>
                 </div>
@@ -479,10 +568,10 @@ if ($query) {
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="menu-table-body">
                             <?php if (count($products) > 0): ?>
                                 <?php foreach ($products as $product): ?>
-                                <tr>
+                                <tr class="product-row" data-category="<?php echo htmlspecialchars($product['product_category'] ?? 'Uncategorized'); ?>">
                                     <td><?php echo htmlspecialchars($product['product_id']); ?></td>
                                     <td><?php echo htmlspecialchars($product['product_name']); ?></td>
                                     <td class="product-category"><?php echo htmlspecialchars($product['product_category'] ?? 'Uncategorized'); ?></td>
@@ -490,7 +579,7 @@ if ($query) {
                                         <?php if (!empty($product['image_path'])): ?>
                                             <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
                                         <?php else: ?>
-                                            <span style="color: #999;">No image</span>
+                                            <img src="../../public/assets/images/Default.jpg" alt="Default" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
                                         <?php endif; ?>
                                     </td>
                                     <td>₱<?php echo number_format($product['product_price'], 2); ?></td>
@@ -502,7 +591,7 @@ if ($query) {
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="8" style="text-align: center; padding: 20px;">No products found. <a href="#" onclick="openAddMenuModal(); return false;">Add one now</a></td>
+                                    <td colspan="9" style="text-align: center; padding: 20px;">No products found. <a href="#" onclick="openAddMenuModal(); return false;">Add one now</a></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -532,7 +621,7 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="priceInput">Price (₱):</label>
-                    <input type="number" id="priceInput" class="form-input" placeholder="100" step="0.01" required>
+                    <input type="number" id="priceInput" class="form-input" placeholder="100" step="0.01" min="0" required>
                 </div>
 
                 <div class="form-group">

@@ -426,7 +426,7 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="ingredientQtyInput">Quantity (QTY):</label>
-                    <input type="number" id="ingredientQtyInput" class="form-input" placeholder="e.g., 614" required>
+                    <input type="number" id="ingredientQtyInput" class="form-input" placeholder="e.g., 614" min="0" value="0" required>
                 </div>
 
                 <div class="form-group">
@@ -436,6 +436,7 @@ if ($query) {
                         <option value="KG (Kilogram)">KG (Kilogram)</option>
                         <option value="ML (Milliliter)">ML (Milliliter)</option>
                         <option value="L (Liter)">L (Liter)</option>
+                        <option value="g (Grams)">grams</option>
                     </select>
                 </div>
 
@@ -445,3 +446,13 @@ if ($query) {
     </div>
 </body>
 </html>
+<script>
+    const qtyInput = document.getElementById('ingredientQtyInput');
+
+qtyInput.addEventListener('keydown', (e) => {
+    if (e.key === '-' || e.key === 'e') {
+        e.preventDefault(); // block minus and "e" for exponential
+    }
+});
+
+</script>

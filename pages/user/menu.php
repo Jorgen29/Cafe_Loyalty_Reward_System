@@ -25,12 +25,14 @@ foreach ($categories as $category) {
         $pres = $pstmt->get_result();
         $categoryProducts = [];
         while ($prow = $pres->fetch_assoc()) {
+            // Use product image if available, otherwise use default coffee image
+            $imagePath = !empty($prow['image_path']) ? $prow['image_path'] : '../../public/assets/images/Default.jpg';
             $categoryProducts[] = [
                 'id' => (int)$prow['product_id'],
                 'name' => htmlspecialchars($prow['product_name']),
                 'price' => (float)$prow['product_price'],
                 'points' => (int)($prow['product_points'] ?? 0),
-                'image' => $prow['image_path'] ?? '../../public/assets/coffee-1.jpg'
+                'image' => $imagePath
             ];
         }
         if (!empty($categoryProducts)) {
@@ -382,7 +384,7 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             card.className = 'product-card';
             const pointsText = product.points > 0 ? product.points + ' point' + (product.points !== 1 ? 's' : '') : 'No points';
             card.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-img">
+                <img src="${product.image}" alt="${product.name}" class="product-img" onerror="this.src='../../public/assets/images/default-product.jpg'">
                 <div class="product-info">
                     <div class="product-name">${product.name}</div>
                     <div class="product-points">${pointsText}</div>
@@ -525,7 +527,8 @@ alt="User">
                 <span></span>
                 <span></span>
                 <span></span>
-            </button>
+            <                <img src="${product.image}" alt="${product.name}" class="product-img" onerror="this.src='../../public/assets/images/default-product.jpg'">
+/button>
         </div>
     </header>
 

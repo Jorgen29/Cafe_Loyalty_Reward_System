@@ -8,102 +8,155 @@
  * - reward_id (optional)
  */
 
-session_start();
-header('Content-Type: application/json');
+// Start output buffering to prevent stray output from corrupting JSON response
+ob_start();
 
-// Require staff or admin
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin','staff'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-    exit;
-}
+// Set error handling to throw exceptions
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
 
-require_once '../auth/db_config.php';
+try {
+    session_start();
+    header('Content-Type: application/json');
 
-/**
- * Determine tier level based on customer points
- * Points: < 10 = Normal, 10-24 = Cappuccino, 25-49 = Latte, 50+ = Macchiato
- */
-function getTierLevel($totalPoints) {
-    $totalPoints = (int)$totalPoints;
-    if ($totalPoints >= 50) return 'Macchiato Level';
-    if ($totalPoints >= 25) return 'Latte Level';
-    if ($totalPoints >= 3) return 'Cappuccino Level';
-    return 'Normal';
-}
+    // Require staff or admin
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin','staff'])) {
+        ob_end_clean();
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
 
-// Accept JSON payload or form data
-$input = $_POST;
-$raw = file_get_contents('php://input');
-if (empty($input) && $raw) {
-    $json = json_decode($raw, true);
-    if ($json) $input = $json;
-}
+    require_once '../auth/db_config.php';
+    
+    // Clear any buffered output
+    ob_end_clean();
+    ob_start();
 
-$items = isset($input['items']) ? $input['items'] : null;
+    /**
+     * Determine tier level based on customer points
+     * Points: < 10 = Normal, 10-24 = Cappuccino, 25-49 = Latte, 50+ = Macchiato
+     */
+    function getTierLevel($totalPoints) {
+        $totalPoints = (int)$totalPoints;
+        if ($totalPoints >= 50) return 'Macchiato Level';
+        if ($totalPoints >= 25) return 'Latte Level';
+        if ($totalPoints >= 10) return 'Cappuccino Level';
+        return 'Normal';
+    }
+
+    // Accept JSON payload or form datay
+    $input = $_POST;
+    $raw = file_get_contents('php://input');
+    if (empty($input) && $raw) {
+        $json = json_decode($raw, true);
+        if ($json) $input = $json;
+    }
+
+    $items = isset($input['items']) ? $input['items'] : null;
     $customer_id = isset($input['customer_id']) && $input['customer_id'] !== '' ? (int)$input['customer_id'] : null;
     $payment_method = isset($input['payment_method']) ? trim($input['payment_method']) : 'cash';
     $reward_id = isset($input['reward_id']) && $input['reward_id'] !== '' ? (int)$input['reward_id'] : null;
     $discount_percent = isset($input['discount_percent']) ? floatval($input['discount_percent']) : 0.0;
+    $discount_amount = isset($input['discount_amount']) ? floatval($input['discount_amount']) : 0.0;
+    $discount_type = isset($input['discount_type']) ? trim($input['discount_type']) : 'none';
+    
+    // Extract digital payment details (for GCash/PayMaya)
+    $payment_details = isset($input['payment_details']) ? $input['payment_details'] : [];
+    $reference_number = isset($payment_details['reference_number']) ? trim($payment_details['reference_number']) : null;
+    $payment_datetime = isset($payment_details['payment_datetime']) ? trim($payment_details['payment_datetime']) : null;
     
     // Check if this is a free refill order (payment_method = 'none')
-    $isFreeRefill = ($payment_method === 'none');if (!$items) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'No items provided']);
-    exit;
-}
+    $isFreeRefill = ($payment_method === 'none');
+    
+    if (!$items) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'No items provided']);
+        exit;
+    }
 
-// items may be JSON string
-if (is_string($items)) {
-    $items = json_decode($items, true);
-}
+    // items may be JSON string
+    if (is_string($items)) {
+        $items = json_decode($items, true);
+    }
 
-if (!is_array($items) || count($items) === 0) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Invalid items']);
-    exit;
-}
+    if (!is_array($items) || count($items) === 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid items']);
+        exit;
+    }
 
-// Start transaction
-$conn->begin_transaction();
-try {
+    // Start transaction
+    $conn->begin_transaction();
+    
     $order_date = date('Y-m-d');
     $order_time = date('H:i:s');
 
-    $stmt = $conn->prepare("INSERT INTO `order` (order_date, order_time, payment_method, customer_id, store_id, reward_id) VALUES (?, ?, ?, ?, ?, ?)");
-    if (!$stmt) throw new Exception('Prepare failed: ' . $conn->error);
+    // Check if payment_reference and payment_datetime columns exist, create if needed
+    $colChkRef = $conn->prepare("SELECT COUNT(*) AS c FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'order' AND column_name = 'payment_reference'");
+    $hasRefCol = false;
+    if ($colChkRef) {
+        $colChkRef->execute();
+        $cres = $colChkRef->get_result();
+        $crow = $cres ? $cres->fetch_assoc() : null;
+        $hasRefCol = (int)($crow['c'] ?? 0) > 0;
+        $colChkRef->close();
+    }
 
-   
-    // Determine store_id: prefer input value (sent from cashier page), otherwise lookup from cashier table using session user_id
-    $store_id = null;
-    if (isset($input['store_id']) && $input['store_id'] !== '') {
-        $store_id = (int)$input['store_id'];
-    } else {
-        if (isset($_SESSION['user_id'])) {
-            $cs = $conn->prepare("SELECT store_id FROM cashier WHERE user_id = ? LIMIT 1");
-            if ($cs) {
-                $uid = (int)$_SESSION['user_id'];
-                $cs->bind_param('i', $uid);
-                $cs->execute();
-                $cres = $cs->get_result();
-                if ($crow = $cres->fetch_assoc()) {
-                    $store_id = isset($crow['store_id']) ? (int)$crow['store_id'] : null;
-                }
-                $cs->close();
-            }
+    if (!$hasRefCol) {
+        try {
+            $conn->query("ALTER TABLE `order` ADD COLUMN payment_reference VARCHAR(255) NULL");
+        } catch (Exception $e) {
+            error_log('Failed to add payment_reference column: ' . $e->getMessage());
         }
     }
 
-    // payment_method is a string (e.g. 'cash','card','online'), so use 's' for it.
-    // types: order_date(s), order_time(s), order_type(s), payment_method(s), customer_id(i), store_id(i), reward_id(i)
-    $stmt->bind_param('sssiii', $order_date, $order_time, $payment_method, $customer_id, $store_id, $reward_id);
+    $colChkDt = $conn->prepare("SELECT COUNT(*) AS c FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'order' AND column_name = 'payment_datetime'");
+    $hasDtCol = false;
+    if ($colChkDt) {
+        $colChkDt->execute();
+        $cres = $colChkDt->get_result();
+        $crow = $cres ? $cres->fetch_assoc() : null;
+        $hasDtCol = (int)($crow['c'] ?? 0) > 0;
+        $colChkDt->close();
+    }
+
+    if (!$hasDtCol) {
+        try {
+            $conn->query("ALTER TABLE `order` ADD COLUMN payment_datetime TIMESTAMP NULL");
+        } catch (Exception $e) {
+            error_log('Failed to add payment_datetime column: ' . $e->getMessage());
+        }
+    }
+
+    // Build INSERT query with or without payment columns
+    $insertCols = "order_date, order_time, payment_method, customer_id, reward_id";
+    $insertVals = "?, ?, ?, ?, ?";
+    $bindTypes = 'sssii';
+    $bindVars = [$order_date, $order_time, $payment_method, $customer_id, $reward_id];
+
+    // Add payment details if this is a digital payment
+    if (($reference_number || $payment_datetime) && ($payment_method === 'paymaya' || $payment_method === 'gcash')) {
+        $insertCols .= ", payment_reference, payment_datetime";
+        $insertVals .= ", ?, ?";
+        $bindTypes .= 'ss';
+        $bindVars[] = $reference_number;
+        $bindVars[] = $payment_datetime;
+    }
+
+    $stmt = $conn->prepare("INSERT INTO `order` ($insertCols) VALUES ($insertVals)");
+    if (!$stmt) throw new Exception('Prepare failed: ' . $conn->error);
+
+    // Dynamically bind parameters
+    $stmt->bind_param($bindTypes, ...$bindVars);
     $exec = $stmt->execute();
     if (!$exec) throw new Exception('Order insert failed: ' . $stmt->error);
     $order_id = $stmt->insert_id;
     $stmt->close();
 
     // Insert order details
-    // price column will store: qty * base_price * (1 - discount_percent/100)
+    // price column will store: unit price after discount applied
     $detailStmt = $conn->prepare("INSERT INTO orderdetails (order_id, product_id, qty, price) VALUES (?, ?, ?, ?)");
     if (!$detailStmt) throw new Exception('Prepare failed: ' . $conn->error);
 
@@ -116,8 +169,18 @@ try {
         if ($isFreeRefill) {
             $total = 0.0;
         } else {
-            // Store unit_price (no qty multiplication here, price column stores PER-UNIT price after discount)
-            $total = $unit_price * (1 - ($discount_percent / 100));
+            // Calculate discounted price based on discount type
+            $total = $unit_price;
+            
+            if ($discount_type === 'percent' && $discount_percent > 0) {
+                // Apply percentage discount
+                $total = $unit_price * (1 - ($discount_percent / 100));
+            } else if ($discount_type === 'amount' && $discount_amount > 0) {
+                // Apply fixed amount discount (per unit)
+                $total = $unit_price - ($discount_amount / $qty);
+                // Ensure price doesn't go below 0
+                if ($total < 0) $total = 0;
+            }
         }
         $detailStmt->bind_param('iiid', $order_id, $product_id, $qty, $total);
         if (!$detailStmt->execute()) throw new Exception('Detail insert failed: ' . $detailStmt->error);
@@ -362,6 +425,13 @@ try {
                         }
                         $resetStmt->close();
                     }
+
+                    $delStmt = $conn->prepare("DELETE FROM customerrewards WHERE reward_id = ? AND customer_id = ?");
+                    if ($delStmt) {
+                        $delStmt->bind_param('ii', $reward_id, $customer_id);
+                        $delStmt->execute();
+                        $delStmt->close();
+                    }
                 }
             } catch (Exception $e) {
                 error_log('Error resetting coffee count for free refill: ' . $e->getMessage());
@@ -369,12 +439,226 @@ try {
         }
 
     $conn->commit();
+    
+    // Send receipt email to customer if they provided a customer_id
+    $emailStatus = 'skipped';
+    $emailMessage = '';
+    if ($customer_id) {
+        try {
+            // Fetch customer email
+            $custStmt = $conn->prepare("SELECT COALESCE(u.email, '') AS email, COALESCE(c.first_name, 'Valued Customer') AS first_name FROM customer c LEFT JOIN `user` u ON c.user_id = u.user_id WHERE c.customer_id = ? LIMIT 1");
+            $customerEmail = '';
+            $customerName = 'Valued Customer';
+            if ($custStmt) {
+                $custStmt->bind_param('i', $customer_id);
+                $custStmt->execute();
+                $custres = $custStmt->get_result();
+                if ($custrow = $custres->fetch_assoc()) {
+                    $customerEmail = $custrow['email'] ?? '';
+                    $customerName = $custrow['first_name'] ?? 'Valued Customer';
+                }
+                $custStmt->close();
+            }
+            
+            // Only send email if customer has an email address
+            if (!empty($customerEmail)) {
+                error_log('[EMAIL-DEBUG] Attempting to send receipt email to: ' . $customerEmail);
+                $emailResult = sendReceiptEmail($order_id, $customerEmail, $customerName, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill);
+                $emailStatus = $emailResult['status'];
+                $emailMessage = $emailResult['message'];
+                error_log('[EMAIL-DEBUG] Email status: ' . $emailStatus . ' | Message: ' . $emailMessage);
+            } else {
+                $emailStatus = 'skipped';
+                $emailMessage = 'No customer email found';
+                error_log('[EMAIL-DEBUG] Skipped - no customer email');
+            }
+        } catch (Exception $e) {
+            $emailStatus = 'error';
+            $emailMessage = $e->getMessage();
+            error_log('[EMAIL-DEBUG] Error preparing email: ' . $e->getMessage());
+        }
+    } else {
+        $emailStatus = 'skipped';
+        $emailMessage = 'Non Member';
+        error_log('[EMAIL-DEBUG] Skipped - no customer ID');
+    }
+    
     http_response_code(201);
-    echo json_encode(['success' => true, 'message' => 'Order saved', 'order_id' => $order_id]);
+    echo json_encode(['success' => true, 'message' => 'Order saved', 'order_id' => $order_id, 'email_status' => $emailStatus, 'email_message' => $emailMessage]);
+    ob_end_flush();
 } catch (Exception $e) {
-    $conn->rollback();
-    error_log('Order save error: ' . $e->getMessage());
+    if (isset($conn)) {
+        try {
+            $conn->rollback();
+        } catch (Exception $rollbackErr) {
+            error_log('Rollback error: ' . $rollbackErr->getMessage());
+        }
+    }
+    ob_end_clean();
+    error_log('[ORDER-ERROR-EXCEPTION] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    error_log('[ORDER-ERROR-TRACE] ' . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Failed to save order']);
+    echo json_encode(['success' => false, 'message' => 'Failed to save order: ' . $e->getMessage()]);
+} finally {
+    restore_error_handler();
+}
+
+/**
+ * Send receipt email to customer
+ * Returns array with 'status' and 'message'
+ */
+function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill) {
+    global $conn;
+    
+    try {
+        // Verify PHPMailer is available
+        if (!file_exists(__DIR__ . '/../../../vendor/autoload.php')) {
+            error_log('[EMAIL-ERROR] PHPMailer not available');
+            return ['status' => 'error', 'message' => 'PHPMailer library not found'];
+        }
+        
+        require_once __DIR__ . '/../../../vendor/autoload.php';
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+        
+        error_log('[EMAIL-DEBUG] PHPMailer loaded successfully');
+        
+        require_once __DIR__ . '/../auth/mail_config.php';
+        
+        error_log('[EMAIL-DEBUG] Mail config loaded. SMTP_HOST: ' . (defined('SMTP_HOST') ? SMTP_HOST : 'NOT_DEFINED'));
+        
+        if (defined('SMTP_HOST') && SMTP_HOST && SMTP_HOST !== 'smtp.example.com') {
+            error_log('[EMAIL-DEBUG] Configuring SMTP...');
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
+            $secure = SMTP_SECURE ?? 'tls';
+            if ($secure === 'ssl') {
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+            } else {
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            }
+            $mail->Port = SMTP_PORT;
+            error_log('[EMAIL-DEBUG] SMTP configured. Host: ' . SMTP_HOST . ', Port: ' . SMTP_PORT);
+        } else {
+            error_log('[EMAIL-DEBUG] SMTP not properly configured - using sendmail');
+        }
+        
+        $fromEmail = defined('FROM_EMAIL') ? FROM_EMAIL : 'no-reply@example.com';
+        $fromName = defined('FROM_NAME') ? FROM_NAME : 'Cups & Stories Cafe';
+        
+        $mail->setFrom($fromEmail, $fromName);
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = 'Your Receipt #' . $order_id . ' - Cups & Stories Cafe';
+        
+        error_log('[EMAIL-DEBUG] Email headers set. Recipient: ' . $email);
+        
+        // Build receipt items HTML
+        $itemsHtml = '';
+        $subtotal = 0;
+        foreach ($items as $item) {
+            $product_id = (int)($item['product_id'] ?? 0);
+            $qty = (int)($item['quantity'] ?? $item['qty'] ?? 1);
+            $price = floatval($item['price'] ?? 0);
+            
+            // Fetch product name
+            $productName = 'Unknown Item';
+            $pStmt = $conn->prepare("SELECT product_name FROM product WHERE product_id = ? LIMIT 1");
+            if ($pStmt) {
+                $pStmt->bind_param('i', $product_id);
+                $pStmt->execute();
+                $pres = $pStmt->get_result();
+                if ($prow = $pres->fetch_assoc()) {
+                    $productName = $prow['product_name'] ?? 'Unknown Item';
+                }
+                $pStmt->close();
+            }
+            
+            $itemTotal = $price * $qty;
+            $subtotal += $itemTotal;
+            $itemsHtml .= '<tr style="border-bottom:1px solid #eee;">'
+                . '<td style="padding:10px; text-align:left;">' . htmlspecialchars($productName) . '</td>'
+                . '<td style="padding:10px; text-align:center;">x' . $qty . '</td>'
+                . '<td style="padding:10px; text-align:right;">' . number_format($price, 2, '.', '') . '</td>'
+                . '<td style="padding:10px; text-align:right;">' . number_format($itemTotal, 2, '.', '') . '</td>'
+                . '</tr>';
+        }
+        
+        // Calculate final total with discount
+        $discountDisplay = '';
+        $finalDiscount = 0;
+        if ($discount_type === 'percent' && $discount_percent > 0) {
+            $finalDiscount = $subtotal * ($discount_percent / 100);
+            $discountDisplay = $discount_percent . '% (' . htmlspecialchars($discount_percent) . '%)';
+        } else if ($discount_type === 'amount' && $discount_amount > 0) {
+            $finalDiscount = $discount_amount;
+            $discountDisplay = number_format($discount_amount, 2, '.', '') . ' (Fixed Amount)';
+        }
+        
+        $total = $subtotal - $finalDiscount;
+        if ($isFreeRefill) {
+            $discountDisplay = 'Free Refill';
+            $total = 0;
+        }
+        
+        error_log('[EMAIL-DEBUG] Email body built. Subtotal: ' . $subtotal . ', Discount: ' . $finalDiscount . ', Total: ' . $total);
+        
+        // Embedded logo
+        $localLogo = __DIR__ . '/../../assets/css/images/logo images/logoName.png';
+        $imgTag = '';
+        if (file_exists($localLogo)) {
+            $mail->addEmbeddedImage($localLogo, 'logo_cid');
+            $imgTag = '<img src="cid:logo_cid" alt="Cups & Stories Cafe" class="logo" style="max-width:180px; height:auto;">';
+            error_log('[EMAIL-DEBUG] Logo embedded from local file');
+        } else {
+            $remote = 'https://cupsandstoriescafe.shop/public/assets/css/images/logo%20images/logoName.png';
+            $imgTag = '<img src="' . htmlspecialchars($remote) . '" alt="Cups & Stories Cafe" class="logo" style="max-width:180px; height:auto;">';
+            error_log('[EMAIL-DEBUG] Using remote logo URL');
+        }
+        
+        $mail->Body = '<!doctype html>'
+            . '<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            . '<style>body{font-family:Arial,Helvetica,sans-serif;background:#f6f6f6;margin:0;padding:0} .container{max-width:600px;margin:24px auto;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e9e9e9} .header{background:#fff;padding:18px;text-align:center} .logo{max-width:180px;height:auto} .content{padding:24px;color:#333} .receipt-header{border-bottom:2px solid #6b4423;padding-bottom:12px;margin-bottom:16px} .receipt-no{color:#6b4423;font-weight:700;font-size:16px} .items-table{width:100%;border-collapse:collapse;margin:16px 0} .items-table th{background:#faf7f3;padding:10px;text-align:left;font-weight:700;color:#333;border-bottom:2px solid #eee} .items-table td{padding:10px} .totals{margin-top:16px;padding-top:16px;border-top:2px solid #eee} .total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px} .total-final{display:flex;justify-content:space-between;padding:12px 0;font-size:18px;font-weight:700;color:#6b4423;border-top:2px solid #6b4423} .footer{padding:16px;text-align:center;color:#999;font-size:13px;background:#faf7f3;border-top:1px solid #f0f0f0}</style>'
+            . '</head><body><div class="container"><div class="header">' . $imgTag . '</div>'
+            . '<div class="content">'
+            . '<div class="receipt-header"><div class="receipt-no">Receipt #' . htmlspecialchars($order_id) . '</div><div style="color:#666;font-size:14px;margin-top:4px;">' . date('M d, Y - g:i A') . '</div></div>'
+            . '<p>Hello ' . htmlspecialchars($name) . ',</p>'
+            . '<p>Thank you for your purchase! Here is your receipt:</p>'
+            . '<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>' . $itemsHtml . '</tbody></table>'
+            . '<div class="totals">'
+            . '<div class="total-row"><span>Subtotal:</span><span>' . number_format($subtotal, 2, '.', '') . '</span></div>';
+        
+        if (!empty($discountDisplay)) {
+            $mail->Body .= '<div class="total-row"><span>Discount (' . $discountDisplay . '):</span><span>-' . number_format($finalDiscount, 2, '.', '') . '</span></div>';
+        }
+        
+        $mail->Body .= '<div class="total-final"><span>Total:</span><span>' . number_format($total, 2, '.', '') . '</span></div>'
+            . '</div>'
+            . '<p style="color:#666;font-size:13px;margin-top:16px;">We appreciate your business and hope to see you again soon!</p>'
+            . '</div><div class="footer">Cups & Stories Cafe &middot; <a href="https://cupsandstoriescafe.shop" style="color:#999;text-decoration:none;">cupsandstoriescafe.shop</a></div></div></body></html>';
+        
+        $mail->AltBody = "Receipt #" . $order_id . "\n\nHello " . $name . ",\n\nThank you for your purchase!\n\n";
+        foreach ($items as $item) {
+            $qty = (int)($item['quantity'] ?? $item['qty'] ?? 1);
+            $price = floatval($item['price'] ?? 0);
+            $mail->AltBody .= "- " . $qty . "x " . number_format($price, 2, '.', '') . "\n";
+        }
+        $mail->AltBody .= "\nSubtotal: " . number_format($subtotal, 2, '.', '') . "\n";
+        if (!empty($discountDisplay)) {
+            $mail->AltBody .= "Discount: -" . number_format($finalDiscount, 2, '.', '') . "\n";
+        }
+        $mail->AltBody .= "Total: " . number_format($total, 2, '.', '') . "\n\nThank you!";
+        
+        error_log('[EMAIL-DEBUG] Attempting to send email...');
+        $mail->send();
+        error_log('[EMAIL-SUCCESS] Receipt email sent for order #' . $order_id . ' to ' . $email);
+        return ['status' => 'sent', 'message' => 'Receipt email sent successfully to ' . $email];
+    } catch (Exception $e) {
+        $errorMsg = $e->getMessage();
+        error_log('[EMAIL-ERROR] Receipt email error for order #' . $order_id . ': ' . $errorMsg);
+        return ['status' => 'error', 'message' => 'Email error: ' . $errorMsg];
+    }
 }
 ?>

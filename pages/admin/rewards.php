@@ -26,7 +26,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
 // Fetch all rewards from database
 $rewards = [];
-$query = $conn->prepare("SELECT reward_id, reward_name, reward_type, start_date, expiration_date, points, COALESCE(discount_percent,0) AS discount_percent FROM reward ORDER BY reward_id DESC");
+$query = $conn->prepare("SELECT reward_id, reward_name, reward_type, start_date, expiration_date, points, COALESCE(discount_percent,0) AS discount_percent, discount_amount FROM reward ORDER BY reward_id DESC");
 if ($query) {
     $query->execute();
     $result = $query->get_result();
@@ -95,6 +95,18 @@ if ($query) {
                 });
             }
 
+            // Reward type change handler
+            const rewardTypeInput = document.getElementById('rewardTypeInput');
+            if (rewardTypeInput) {
+                rewardTypeInput.addEventListener('change', handleRewardTypeChange);
+            }
+
+            // Discount type change handler
+            const discountTypeInput = document.getElementById('discountTypeInput');
+            if (discountTypeInput) {
+                discountTypeInput.addEventListener('change', handleDiscountTypeChange);
+            }
+
             // Use event delegation for add/edit/delete to avoid duplicate bindings
             const controls = document.querySelector('.menu-controls');
             const tableWrapper = document.querySelector('.table-wrapper');
@@ -154,6 +166,42 @@ if ($query) {
             rows.forEach(row => tbody.appendChild(row));
         }
 
+        function handleRewardTypeChange() {
+            const rewardType = document.getElementById('rewardTypeInput').value;
+            const startDateGroup = document.getElementById('startDateInput').closest('.form-group');
+            const expirationDateGroup = document.getElementById('expirationDateInput').closest('.form-group');
+            const pointsGroup = document.getElementById('pointsInput').closest('.form-group');
+            const pointsInput = document.getElementById('pointsInput');
+
+            if (rewardType === 'Birthday Voucher') {
+                // Hide date fields and points
+                startDateGroup.style.display = 'none';
+                expirationDateGroup.style.display = 'none';
+                pointsGroup.style.display = 'none';
+                // Set points to 0
+                pointsInput.value = '0';
+            } else {
+                // Show all fields
+                startDateGroup.style.display = 'block';
+                expirationDateGroup.style.display = 'block';
+                pointsGroup.style.display = 'block';
+            }
+        }
+
+        function handleDiscountTypeChange() {
+            const discountType = document.getElementById('discountTypeInput').value;
+            const discountPercentGroup = document.getElementById('discountPercentGroup');
+            const discountAmountGroup = document.getElementById('discountAmountGroup');
+
+            if (discountType === 'Percentage') {
+                discountPercentGroup.style.display = 'block';
+                discountAmountGroup.style.display = 'none';
+            } else if (discountType === 'Amount') {
+                discountPercentGroup.style.display = 'none';
+                discountAmountGroup.style.display = 'block';
+            }
+        }
+
         function openAddRewardModal() {
             const modal = document.getElementById('addRewardModal');
             const form = document.getElementById('rewardForm');
@@ -161,9 +209,15 @@ if ($query) {
             document.getElementById('modalTitle').textContent = 'Add Reward';
             document.getElementById('rewardIdDisplay').style.display = 'none';
             document.getElementById('rewardIdInput').value = '';
-                    // ensure discount select defaults to 0
+                    // ensure discount inputs default to 0
                     const dp = document.getElementById('discountPercentInput'); if (dp) dp.value = '0';
+                    const da = document.getElementById('discountAmountInput'); if (da) da.value = '0';
+                    // set discount type default to Percentage
+                    const dt = document.getElementById('discountTypeInput'); if (dt) dt.value = 'Percentage';
+                    handleDiscountTypeChange();
             modal.style.display = 'block';
+            // Reset reward type to show all fields
+            handleRewardTypeChange();
         }
 
         function openEditModal(button) {
@@ -189,6 +243,10 @@ if ($query) {
             // set discount (strip trailing % if present)
             const dp = discountText.toString().replace('%','').trim();
             document.getElementById('discountPercentInput').value = dp;
+            document.getElementById('discountAmountInput').value = dp;
+            // set discount type to default Percentage (could be enhanced to fetch from DB later)
+            document.getElementById('discountTypeInput').value = 'Percentage';
+            handleDiscountTypeChange();
 
             modal.style.display = 'block';
         }
@@ -205,10 +263,19 @@ if ($query) {
             const startDate = document.getElementById('startDateInput').value;
             const expirationDate = document.getElementById('expirationDateInput').value;
             const points = document.getElementById('pointsInput').value;
+            const discountType = document.getElementById('discountTypeInput').value;
 
             if (!rewardName) {
                 alert('Please fill in the reward name');
                 return;
+            }
+
+            // Get the discount value based on the selected type
+            let discountValue = '0';
+            if (discountType === 'Percentage') {
+                discountValue = document.getElementById('discountPercentInput').value || '0';
+            } else if (discountType === 'Amount') {
+                discountValue = document.getElementById('discountAmountInput').value || '0';
             }
 
             const formData = new FormData();
@@ -218,7 +285,8 @@ if ($query) {
             formData.append('start_date', startDate);
             formData.append('expiration_date', expirationDate);
             formData.append('points', points);
-            formData.append('discount_percent', document.getElementById('discountPercentInput').value || '0');
+            formData.append('discount_percent', discountValue);
+            formData.append('discount_type', discountType);
 
             fetch('../../public/actions/rewards/save_reward.php', {
                 method: 'POST',
@@ -398,7 +466,15 @@ if ($query) {
                                     <td data-col="start"><?php echo htmlspecialchars($reward['start_date'] ?? '--'); ?></td>
                                     <td data-col="end"><?php echo htmlspecialchars($reward['expiration_date'] ?? '--'); ?></td>
                                     <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
-                                    <td data-col="discount"><?php echo htmlspecialchars($reward['discount_percent'] ?? '0'); ?>%</td>
+                                    <td data-col="discount">
+                                        <?php 
+                                            if (!empty($reward['discount_amount'])) {
+                                                echo '₱' . htmlspecialchars($reward['discount_amount']);
+                                            } else {
+                                                echo htmlspecialchars($reward['discount_percent'] ?? '0') . '%';
+                                            }
+                                        ?>
+                                    </td>
                                     <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -458,9 +534,21 @@ if ($query) {
                 </div>
 
                 <div class="form-group">
-                    <label for="discountPercentInput">Discount Percent (for Discount Voucher):</label>
-                    <input type="number" id="discountPercentInput" class="form-input" placeholder="e.g., 100" min="0">
-                  
+                    <label for="discountTypeInput">Discount Type:</label>
+                    <select id="discountTypeInput" class="form-select">
+                        <option value="Percentage">Percentage</option>
+                        <option value="Amount">Amount</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="discountPercentGroup">
+                    <label for="discountPercentInput">Discount Value (Percentage):</label>
+                    <input type="number" id="discountPercentInput" class="form-input" placeholder="e.g., 10" min="0">
+                </div>
+
+                <div class="form-group" id="discountAmountGroup" style="display: none;">
+                    <label for="discountAmountInput">Discount Value (Amount):</label>
+                    <input type="number" id="discountAmountInput" class="form-input" placeholder="e.g., 50" min="0" step="0.01">
                 </div>
 
                 <button type="button" class="save-btn" onclick="saveReward()">Save</button>

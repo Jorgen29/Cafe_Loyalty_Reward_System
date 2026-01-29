@@ -40,7 +40,7 @@ if (empty($_SESSION['otp_verified_user_id'])) {
                 <div id="msg" style="display:none;margin-top:10px;"></div>
             </form>
 
-            <div style="margin-top:12px; text-align:center;"><a href="../../index.php">Back to Login</a></div>
+            <div class="back-link" style="margin-top:12px; text-align:center;"><a href="../../index.php">Back to Login</a></div>
         </div>
     </div>
 

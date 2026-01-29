@@ -135,13 +135,32 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             const firstCategory = 'all';
             renderMenu(firstCategory);
             setupCategoryDropdown();
+            updateCategoryButtons('all');
             setupCheckoutEvents();
             setupQRScanner();
+            
+            // Populate discount dropdown with default system discounts (so 20% PWD/Seniors shows even without QR scan)
+            populateDiscountDropdown([]);
 
             const discountDropdown = document.getElementById('discount-dropdown');
             const cashInput = document.getElementById('cash-input');
             if (discountDropdown) discountDropdown.addEventListener('change', calculateTotals);
             if (cashInput) cashInput.addEventListener('input', calculateTotals);
+
+            // Handle payment method change to show/hide digital payment details
+            const paymentRadios = document.querySelectorAll('input[name="payment"]');
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const digitalPaymentSection = document.getElementById('digital-payment-section');
+                    const paymentMethod = this.value;
+                    
+                    if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
+                        digitalPaymentSection.style.display = 'block';
+                    } else {
+                        digitalPaymentSection.style.display = 'none';
+                    }
+                });
+            });
         });
 
         /* ---------- MENU / CART ---------- */
@@ -160,7 +179,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 const itemCard = document.createElement('div');
                 itemCard.className = 'menu-item';
                 itemCard.innerHTML = `
-                    <img src="${item.image_path ? item.image_path : '../../public/assets/coffee-1.jpg'}" alt="${item.product_name}" class="menu-item-image">
+                    <img src="${item.image_path ? item.image_path : '../../public/assets/images/Default.jpg'}" alt="${item.product_name}" class="menu-item-image">
                     <div class="menu-item-name">${item.product_name}</div>
                     <div class="menu-item-prices">
                         <div class="menu-item-price-item"><span>₱${parseFloat(item.product_price).toFixed(2)}</span></div>
@@ -175,35 +194,63 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
         }
 
         function setupCategoryDropdown() {
-            const dropdown = document.querySelector('.category-dropdown select');
-                if (dropdown) {
-                // start with an 'All' option so users can view all items
-                dropdown.innerHTML = '';
-                const allOpt = document.createElement('option');
-                allOpt.value = 'all';
-                allOpt.textContent = 'All';
-                dropdown.appendChild(allOpt);
-                allCategories.forEach(cat => {
-                    const option = document.createElement('option');
-                    option.value = cat;
-                    option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-                    dropdown.appendChild(option);
+            const buttonsContainer = document.getElementById('category-buttons-container');
+            
+            // Populate category buttons for visual display
+            if (buttonsContainer) {
+                buttonsContainer.innerHTML = '';
+                
+                // Add "All Categories" button
+                const allBtn = document.createElement('button');
+                allBtn.className = 'category-btn active';
+                allBtn.dataset.category = 'all';
+                allBtn.textContent = 'All Categories';
+                allBtn.style.cssText = 'padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.3s; width: 100%; text-align: left;';
+                allBtn.addEventListener('click', function() {
+                    renderMenu('all');
+                    updateCategoryButtons('all');
                 });
-                // ensure the default selection is 'All'
-                dropdown.selectedIndex = 0;
-
-                const labelSpan = document.querySelector('.category-dropdown > span');
-                const arrowSpan = document.querySelector('.category-dropdown .dropdown-arrow');
-                // initialize label to match selected option
-                if (labelSpan) labelSpan.textContent = dropdown.options[dropdown.selectedIndex].textContent;
-
-                dropdown.addEventListener('change', function(e) {
-                    renderMenu(e.target.value);
-                    // update only the visible label, keep the <select> element intact so it remains selectable
-                    if (labelSpan) labelSpan.textContent = this.options[this.selectedIndex].textContent;
-                    if (arrowSpan) arrowSpan.textContent = '▼';
+                buttonsContainer.appendChild(allBtn);
+                
+                // Add individual category buttons
+                allCategories.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn';
+                    btn.dataset.category = cat;
+                    btn.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+                    btn.style.cssText = 'padding: 8px 12px; border-radius: 4px; border: none; background: #6b4423; color: #fff; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.3s; width: 100%; text-align: left;';
+                    btn.addEventListener('click', function() {
+                        renderMenu(cat);
+                        updateCategoryButtons(cat);
+                    });
+                    btn.addEventListener('mouseenter', function() {
+                        if (!this.classList.contains('active')) {
+                            this.style.background = 'rgba(255,255,255,0.2)';
+                        }
+                    });
+                    btn.addEventListener('mouseleave', function() {
+                        if (!this.classList.contains('active')) {
+                            this.style.background = 'rgba(255,255,255,0.1)';
+                        }
+                    });
+                    buttonsContainer.appendChild(btn);
                 });
             }
+        }
+
+        function updateCategoryButtons(selectedCategory) {
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.category === selectedCategory) {
+                    btn.classList.add('active');
+                    btn.style.background = 'rgba(255, 255, 255, 0.1)';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.background = '#6b4423';
+                    btn.style.color = '#fff';
+                }
+            });
         }
 
         function setupAddToCartButtons() {
@@ -322,16 +369,24 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
         function calculateTotals() {
             const discountDropdown = document.getElementById('discount-dropdown');
             let discountPercent = 0;
+            let discountAmount = 0;
+            let discountType = 'none'; // 'percent', 'amount', or 'none'
             let isFreeRefill = false;
 
             console.log('=== calculateTotals called ===');
+            console.log('Discount dropdown:', discountDropdown);
             console.log('Discount dropdown value:', discountDropdown ? discountDropdown.value : 'null');
 
             // Check if free refill is selected FIRST
             if (discountDropdown && discountDropdown.value) {
                 const selectedOpt = discountDropdown.options[discountDropdown.selectedIndex];
                 console.log('Selected option:', selectedOpt);
+                console.log('Selected option text:', selectedOpt ? selectedOpt.text : 'null');
+                console.log('Selected option value:', selectedOpt ? selectedOpt.value : 'null');
                 console.log('Selected option dataset:', selectedOpt ? selectedOpt.dataset : 'null');
+                console.log('dataset.amount:', selectedOpt?.dataset?.amount);
+                console.log('dataset.percent:', selectedOpt?.dataset?.percent);
+                console.log('dataset.discountType:', selectedOpt?.dataset?.discountType);
                 
                 if (selectedOpt && selectedOpt.dataset) {
                     // Check if this is a Free Refill reward (reward name contains "Free Refill")
@@ -365,23 +420,76 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
                 if (discountDropdown && discountDropdown.value) {
                     const selectedOpt = discountDropdown.options[discountDropdown.selectedIndex];
+                    console.log('Processing discount...');
+                    console.log('selectedOpt:', selectedOpt);
+                    console.log('selectedOpt.dataset:', selectedOpt?.dataset);
+                    
                     if (selectedOpt && selectedOpt.dataset) {
+                        console.log('Checking discount type...');
+                        // Check for percentage discount
                         if (selectedOpt.dataset.percent) {
                             discountPercent = parseFloat(selectedOpt.dataset.percent) || 0;
-                        } else if (selectedOpt.dataset.type === 'Discount Voucher') {
+                            discountType = 'percent';
+                            console.log('✓ Discount type: PERCENT, value:', discountPercent);
+                        } 
+                        // Check for amount discount
+                        else if (selectedOpt.dataset.amount) {
+                            discountAmount = parseFloat(selectedOpt.dataset.amount) || 0;
+                            discountType = 'amount';
+                            console.log('✓ Discount type: AMOUNT, value:', discountAmount);
+                        }
+                        // Legacy support: check dataset.discountType
+                        else if (selectedOpt.dataset.discountType === 'percent' && selectedOpt.dataset.percent) {
+                            discountPercent = parseFloat(selectedOpt.dataset.percent) || 0;
+                            discountType = 'percent';
+                            console.log('✓ Discount type: PERCENT (legacy), value:', discountPercent);
+                        } else if (selectedOpt.dataset.discountType === 'amount' && selectedOpt.dataset.amount) {
+                            discountAmount = parseFloat(selectedOpt.dataset.amount) || 0;
+                            discountType = 'amount';
+                            console.log('✓ Discount type: AMOUNT (legacy), value:', discountAmount);
+                        }
+                        // Final fallback for old voucher system
+                        else if (selectedOpt.dataset.type === 'Discount Voucher') {
                             const name = (selectedOpt.dataset.name || '').toString();
                             const m = name.match(/(\d+)%/);
-                            if (m) discountPercent = parseInt(m[1]);
+                            if (m) {
+                                discountPercent = parseInt(m[1]);
+                                discountType = 'percent';
+                                console.log('✓ Discount type: PERCENT (voucher), value:', discountPercent);
+                            }
+                        } else {
+                            console.log('✗ No discount type matched');
+                            console.log('  dataset.amount:', selectedOpt.dataset.amount);
+                            console.log('  dataset.percent:', selectedOpt.dataset.percent);
+                            console.log('  dataset.discountType:', selectedOpt.dataset.discountType);
+                            console.log('  dataset.type:', selectedOpt.dataset.type);
                         }
                     }
                 }
 
-                const discountAmount = subtotal * (discountPercent / 100);
-                const total = subtotal - discountAmount;
+                // Calculate final amounts based on discount type
+                let finalDiscountAmount = 0;
+                console.log('Discount type:', discountType);
+                console.log('Discount percent:', discountPercent);
+                console.log('Discount amount:', discountAmount);
+                
+                if (discountType === 'percent') {
+                    finalDiscountAmount = subtotal * (discountPercent / 100);
+                    console.log('Percent calculation:', subtotal, '*', (discountPercent / 100), '=', finalDiscountAmount);
+                } else if (discountType === 'amount') {
+                    finalDiscountAmount = discountAmount;
+                    console.log('Amount calculation: fixed amount =', finalDiscountAmount);
+                }
+
+                const total = subtotal - finalDiscountAmount;
+
+                console.log('Final subtotal:', subtotal);
+                console.log('Final discount amount:', finalDiscountAmount);
+                console.log('Final total:', total);
 
                 document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-                document.getElementById('discount').textContent = discountAmount.toFixed(2);
-                document.getElementById('total').textContent = total.toFixed(2);
+                document.getElementById('discount').textContent = finalDiscountAmount.toFixed(2);
+                document.getElementById('total').textContent = Math.max(0, total).toFixed(2);
             }
 
             // Hide/show payment section and cash input based on whether it's a free refill
@@ -433,9 +541,27 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     opt.dataset.name = r.reward_name || '';
                     opt.dataset.points = r.points || '';
                     console.log('Setting dataset.points to:', r.points, 'stringified:', String(r.points));
-                    if (typeof r.discount_percent !== 'undefined' && r.discount_percent !== null && parseInt(r.discount_percent)) {
-                        opt.dataset.percent = parseInt(r.discount_percent);
+                    
+                    // Handle both discount_percent and discount_amount
+                    // Check if discount_amount is GREATER THAN 0 (not just != null, because COALESCE returns 0)
+                    const discountAmountValue = parseFloat(r.discount_amount || 0);
+                    const discountPercentValue = parseFloat(r.discount_percent || 0);
+                    
+                    console.log('Reward:', r.reward_name, '| Amount:', discountAmountValue, '| Percent:', discountPercentValue);
+                    
+                    if (discountAmountValue > 0) {
+                        opt.dataset.amount = discountAmountValue;
+                        opt.dataset.discountType = 'amount';
+                        console.log('✓ Set as AMOUNT discount:', discountAmountValue);
+                    } 
+                    else if (discountPercentValue > 0) {
+                        opt.dataset.percent = discountPercentValue;
+                        opt.dataset.discountType = 'percent';
+                        console.log('✓ Set as PERCENT discount:', discountPercentValue);
+                    } else {
+                        console.log('✗ No discount value set');
                     }
+                    
                     opt.dataset.start = r.start_date || '';
                     opt.dataset.expiration = r.expiration_date || '';
                     opt.dataset.rewardId = r.reward_id;
@@ -448,8 +574,9 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             sys.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = 'sys_' + p;
-                opt.textContent = p + '% Discount';
+                opt.textContent = p === 20 ? '20% PWD/Seniors Discount' : p + '% Discount';
                 opt.dataset.percent = p;
+                opt.dataset.discountType = 'percent';
                 dd.appendChild(opt);
             });
 
@@ -561,6 +688,11 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 if (json.success) {
                     populateDiscountDropdown(json.rewards);
                     displayMemberRewards(json.rewards);
+                    
+                    // Check if today is customer's birthday
+                    if (json.is_birthday) {
+                        alert('🎉 Happy Birthday! 🎉\n\nThis customer is celebrating their birthday today! Consider offering them a special birthday discount or voucher.');
+                    }
                 } else {
                     populateDiscountDropdown([]);
                     displayMemberRewards([]);
@@ -577,13 +709,41 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 container.innerHTML = '<span style="color:#666;">No active rewards for this member.</span>';
                 return;
             }
+            
+            // Sort rewards: first by expiration date (soonest first), then by discount value
+            rewards.sort((a, b) => {
+                // Convert expiration dates for comparison
+                const dateA = a.expiration_date ? new Date(a.expiration_date).getTime() : Infinity;
+                const dateB = b.expiration_date ? new Date(b.expiration_date).getTime() : Infinity;
+                
+                // If expiration dates are different, sort by expiration date
+                if (dateA !== dateB) {
+                    return dateA - dateB;
+                }
+                
+                // If expiration dates are the same, sort by discount value
+                // For amount-based discounts, use discount_amount; for percent-based, use discount_percent
+                const valueA = parseFloat(a.discount_amount || a.discount_percent || 0);
+                const valueB = parseFloat(b.discount_amount || b.discount_percent || 0);
+                return valueA - valueB;
+            });
+            
             // Build list
             let html = '<ul style="padding-left:16px;margin:0;font-size:13px;color:#333;">';
             rewards.forEach(r => {
                 const name = r.reward_name || r.reward_type || 'Reward';
                 const exp = r.expiration_date ? ('Expires: ' + r.expiration_date) : '';
+                
+                // Format discount display (amount or percent)
+                let discountDisplay = '';
+                if (r.discount_amount && parseFloat(r.discount_amount) > 0) {
+                    discountDisplay = ' (₱' + parseFloat(r.discount_amount).toFixed(2) + ')';
+                } else if (r.discount_percent && parseFloat(r.discount_percent) > 0) {
+                    discountDisplay = ' (' + parseFloat(r.discount_percent) + '%)';
+                }
+                
                 html += '<li style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">'
-                    + '<span style="flex:1;">' + escapeHtml(name) + (exp ? ' <span style="color:#888;font-size:12px;">(' + escapeHtml(exp) + ')</span>' : '') + '</span>'
+                    + '<span style="flex:1;">' + escapeHtml(name) + discountDisplay + (exp ? ' <span style="color:#888;font-size:12px;">(' + escapeHtml(exp) + ')</span>' : '') + '</span>'
                     + '<button type="button" class="use-reward-btn" data-reward-id="' + (r.reward_id || '') + '" style="margin-left:8px;padding:4px 8px;border-radius:4px;border:1px solid #6b4423;background:#fff;color:#6b4423;cursor:pointer;">Use</button>'
                     + '</li>';
             });
@@ -640,6 +800,8 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 const dd = document.getElementById('discount-dropdown');
                 let reward_id = null;
                 let discountPercent = 0;
+                let discountAmount = 0;
+                let discountType = 'none';
                 let isFreeRefillVoucher = false;
                 let paymentMethod = document.querySelector('input[name="payment"]:checked') ? document.querySelector('input[name="payment"]:checked').value : 'cash';
 
@@ -647,16 +809,29 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     if (dd.value.startsWith('reward_')) {
                         reward_id = parseInt(dd.value.replace('reward_',''), 10);
                     }
-                    // extract discount percent for order calculation
+                    // extract discount values for order calculation
                     const selectedOpt = dd.options[dd.selectedIndex];
                     if (selectedOpt && selectedOpt.dataset) {
+                        // Check for percentage discount
                         if (selectedOpt.dataset.percent) {
                             discountPercent = parseFloat(selectedOpt.dataset.percent) || 0;
-                        } else if (selectedOpt.dataset.type === 'Discount Voucher') {
+                            discountType = 'percent';
+                        }
+                        // Check for amount discount
+                        else if (selectedOpt.dataset.amount) {
+                            discountAmount = parseFloat(selectedOpt.dataset.amount) || 0;
+                            discountType = 'amount';
+                        }
+                        // Legacy support for old voucher system
+                        else if (selectedOpt.dataset.type === 'Discount Voucher') {
                             const name = (selectedOpt.dataset.name || '').toString();
                             const m = name.match(/(\d+)%/);
-                            if (m) discountPercent = parseInt(m[1]);
+                            if (m) {
+                                discountPercent = parseInt(m[1]);
+                                discountType = 'percent';
+                            }
                         }
+                        
                         // Check if this is a Free Refill reward (reward name contains "Free Refill")
                         const rewardName = (selectedOpt.dataset.name || '').toString();
                         const rewardPoints = (selectedOpt.dataset.points || '').toString();
@@ -684,17 +859,67 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     }
                 }
 
+                // Validate digital payment fields (GCash/PayMaya)
+                if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
+                    const refNum = document.getElementById('reference-number').value.trim();
+                    
+                    if (!refNum) {
+                        alert('Please enter a reference number for ' + (paymentMethod === 'paymaya' ? 'PayMaya' : 'GCash') + ' payment.');
+                        return;
+                    }
+                }
+
                 const items = cartItems.map(i => ({ product_id: i.product_id, quantity: i.quantity, price: i.price }));
+                
+                // Prepare digital payment details if applicable
+                const paymentDetails = {};
+                if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
+                    paymentDetails.reference_number = document.getElementById('reference-number').value.trim();
+                }
 
                 fetch('../../public/actions/orders/save_order.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items: items, customer_id: memberId || null, payment_method: paymentMethod, reward_id: reward_id, discount_percent: discountPercent, store_id: cashierStoreId })
+                    body: JSON.stringify({ 
+                        items: items, 
+                        customer_id: memberId || null, 
+                        payment_method: paymentMethod, 
+                        reward_id: reward_id, 
+                        discount_percent: discountPercent,
+                        discount_amount: discountAmount,
+                        discount_type: discountType,
+                        store_id: cashierStoreId,
+                        payment_details: paymentDetails
+                    })
                 })
                 .then(r => r.json())
                 .then(json => {
+                    console.log('[ORDER-RESPONSE]', json);
+                    console.log('[EMAIL-STATUS]', 'Status:', json.email_status, 'Message:', json.email_message);
+                    
                     if (json.success) {
-                        alert('Order processed (ID: ' + (json.order_id || '-') + '). ' + (isFreeRefillVoucher ? 'Free Refill applied!' : 'Total: ₱' + document.getElementById('total').textContent));
+                        let successMsg = 'Order processed (ID: ' + (json.order_id || '-') + '). ';
+                        if (isFreeRefillVoucher) {
+                            successMsg += 'Free Refill applied!';
+                        } else {
+                            successMsg += 'Total: ₱' + document.getElementById('total').textContent;
+                        }
+                        
+                        // Add email status to alert
+                        if (json.email_status) {
+                            if (json.email_status === 'sent') {
+                                successMsg += '\n✓ Receipt email sent!';
+                                console.log('[EMAIL-SUCCESS] Receipt email sent successfully');
+                            } else if (json.email_status === 'error') {
+                                successMsg += '\n✗ Email failed: ' + json.email_message;
+                                console.error('[EMAIL-ERROR]', json.email_message);
+                            } else if (json.email_status === 'skipped') {
+                                successMsg += '\n⚠ Email skipped: ' + json.email_message;
+                                console.warn('[EMAIL-SKIPPED]', json.email_message);
+                            }
+                        }
+                        
+                        alert(successMsg);
                         // reset local UI state then reload to reflect persisted data
                         cartItems = [];
                         updateCheckout();
@@ -709,7 +934,11 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                         alert('Error processing order: ' + (json.message || 'Unknown'));
                     }
                 })
-                .catch(err => { console.error('Order save error', err); alert('Error processing order'); });
+                .catch(err => { 
+                    console.error('[ORDER-ERROR]', err); 
+                    console.error('[ORDER-ERROR-DETAILS]', err.message);
+                    alert('Error processing order'); 
+                });
             });
         }
 
@@ -734,6 +963,10 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     <span class="nav-icon">☕</span>
                     <span class="nav-text">Menu</span>
                 </a>
+                <!-- Category Filter Buttons -->
+                <div class="category-buttons-container" id="category-buttons-container" style="display: flex; flex-direction: column; gap: 6px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <!-- Category buttons will be inserted here -->
+                </div>
                 <a href="transactions.php" class="nav-link ">
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
@@ -772,21 +1005,6 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             <div class="cashier-container">
                 <!-- Menu Section -->
                 <div class="menu-section">
-                    <div class="category-header">
-                            <div class="category-dropdown">
-                                <span>All</span>
-                                <span class="dropdown-arrow">▼</span>
-                                <select>
-                                    <option value="all">All</option>
-                                    <?php if (!empty($categories)): ?>
-                                        <?php foreach ($categories as $cat): ?>
-                                            <option value="<?php echo htmlspecialchars($cat); ?>"><?php echo htmlspecialchars(ucfirst($cat)); ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-                    </div>
-
                     <div class="menu-grid" id="menu-grid">
                         <!-- Menu items will be inserted here -->
                     </div>
@@ -811,13 +1029,22 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                                 <label for="cash">Cash</label>
                             </div>
                             <div class="payment-option">
-                                <input type="radio" id="card" name="payment" value="card">
-                                <label for="card">Card</label>
+                                <input type="radio" id="paymaya" name="payment" value="paymaya">
+                                <label for="paymaya">PayMaya</label>
                             </div>
                             <div class="payment-option">
-                                <input type="radio" id="online" name="payment" value="online">
-                                <label for="online">Online Payment</label>
+                                <input type="radio" id="gcash" name="payment" value="gcash">
+                                <label for="gcash">GCash</label>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Digital Payment Details (GCash/PayMaya) -->
+                    <div class="digital-payment-section" id="digital-payment-section" style="display: none; margin-top: 12px; padding: 12px; background-color: #f5f1ed; border-radius: 4px;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 8px; color: #333;">Digital Payment Details</label>
+                        <div class="payment-field">
+                            <label style="font-size: 13px; color: #666; display: block; margin-bottom: 4px;">Reference Number</label>
+                            <input type="text" id="reference-number" placeholder="Enter reference number" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #ddd;">
                         </div>
                     </div>
 
@@ -905,10 +1132,12 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 <video id="qr-video"></video>
             </div>
 
-            <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+            <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content: space-between;">
                 <button type="button" class="qr-btn" id="qr-upload-btn">Upload QR image</button>
                 <input type="file" id="qr-file-input" accept="image/*" style="display:none;">
                 <div id="qr-upload-status" style="font-size:13px;color:#666;"></div>
+                <button class="qr-btn qr-btn-start" id="qr-start-btn">Start Scanning</button>
+                <button class="qr-btn qr-btn-close" id="qr-close-modal-btn">Close</button>
             </div>
 
             <div class="qr-result" id="qr-result">
@@ -917,8 +1146,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             </div>
 
             <div class="qr-modal-actions">
-                <button class="qr-btn qr-btn-start" id="qr-start-btn">Start Scanning</button>
-                <button class="qr-btn qr-btn-close" id="qr-close-modal-btn">Close</button>
+                
             </div>
         </div>
     </div>

@@ -20,24 +20,43 @@ if (isset($_GET['store']) && is_numeric($_GET['store'])) {
     $selectedStore = intval($_GET['store']);
 }
 
+// Date range filter
+$selectedRange = isset($_GET['range']) ? trim($_GET['range']) : 'this_month';
+$rangeStart = null;
+$rangeEnd = date('Y-m-d'); // today
+
+if ($selectedRange === 'yesterday') {
+    $rangeStart = date('Y-m-d', strtotime('-1 day'));
+    $rangeEnd = date('Y-m-d', strtotime('-1 day'));
+} elseif ($selectedRange === 'last_week') {
+    $rangeStart = date('Y-m-d', strtotime('-7 days'));
+    $rangeEnd = date('Y-m-d');
+} elseif ($selectedRange === 'last_month') {
+    // First day of last month to last day of last month
+    $rangeStart = date('Y-m-01', strtotime('first day of last month'));
+    $rangeEnd = date('Y-m-d', strtotime('last day of last month'));
+} elseif ($selectedRange === 'this_month') {
+    $rangeStart = date('Y-m-01'); // First day of this month
+    $rangeEnd = date('Y-m-d');
+}
+
 // Prepare sales by month (last 9 months)
 $monthlyLabels = [];
 $monthlyData = [];
  
 
-// Prepare sales by month (last 9 months) with optional store filter
+// Prepare sales by day with optional store filter and date range
 try {
     if ($selectedStore) {
-        $sql = "SELECT DATE_FORMAT(o.order_date, '%b %Y') AS m, SUM(od.qty * od.price) AS total
+        $sql = "SELECT DATE_FORMAT(o.order_date, '%M %d, %Y') AS m, SUM(od.qty * od.price) AS total
             FROM `order` o
             JOIN orderdetails od ON o.order_id = od.order_id
-            WHERE o.store_id = ?
-            GROUP BY YEAR(o.order_date), MONTH(o.order_date)
-            ORDER BY YEAR(o.order_date) DESC, MONTH(o.order_date) DESC
-            LIMIT 9";
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
+            GROUP BY DATE(o.order_date)
+            ORDER BY o.order_date ASC";
         $monthQuery = $conn->prepare($sql);
         if ($monthQuery) {
-            $monthQuery->bind_param('i', $selectedStore);
+            $monthQuery->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
             $monthQuery->execute();
             $mres = $monthQuery->get_result();
             $rows = [];
@@ -47,13 +66,14 @@ try {
             $monthQuery->close();
         }
     } else {
-        $monthQuery = $conn->prepare("SELECT DATE_FORMAT(o.order_date, '%b %Y') AS m, SUM(od.qty * od.price) AS total
+        $monthQuery = $conn->prepare("SELECT DATE_FORMAT(o.order_date, '%M %d, %Y') AS m, SUM(od.qty * od.price) AS total
             FROM `order` o
             JOIN orderdetails od ON o.order_id = od.order_id
-            GROUP BY YEAR(o.order_date), MONTH(o.order_date)
-            ORDER BY YEAR(o.order_date) DESC, MONTH(o.order_date) DESC
-            LIMIT 9");
+            WHERE o.order_date >= ? AND o.order_date <= ?
+            GROUP BY DATE(o.order_date)
+            ORDER BY o.order_date ASC");
         if ($monthQuery) {
+            $monthQuery->bind_param('ss', $rangeStart, $rangeEnd);
             $monthQuery->execute();
             $mres = $monthQuery->get_result();
             $rows = [];
@@ -74,13 +94,12 @@ try {
     }
 } catch (Exception $e) {}
 
-// Daily summary (today) - split by member vs non-member
+// Daily summary - split by member vs non-member with date range filter
 $dailyMemberSales = 0.0;
 $dailyNonMemberSales = 0.0;
 $dailyMemberCount = 0;
 $dailyNonMemberCount = 0;
 try {
-    $today = date('Y-m-d');
     if ($selectedStore) {
         $dstmt = $conn->prepare("SELECT 
             SUM(CASE WHEN o.customer_id IS NOT NULL THEN od.qty * od.price ELSE 0 END) AS member_total,
@@ -89,9 +108,9 @@ try {
             COUNT(DISTINCT CASE WHEN o.customer_id IS NULL THEN o.order_id END) AS nonmember_orders
             FROM `order` o
             JOIN orderdetails od ON o.order_id = od.order_id
-            WHERE o.order_date = ? AND o.store_id = ?");
+            WHERE o.order_date >= ? AND o.order_date <= ? AND o.store_id = ?");
         if ($dstmt) {
-            $dstmt->bind_param('si', $today, $selectedStore);
+            $dstmt->bind_param('ssi', $rangeStart, $rangeEnd, $selectedStore);
             $dstmt->execute();
             $dres = $dstmt->get_result();
             if ($dr = $dres->fetch_assoc()) {
@@ -110,9 +129,9 @@ try {
             COUNT(DISTINCT CASE WHEN o.customer_id IS NULL THEN o.order_id END) AS nonmember_orders
             FROM `order` o
             JOIN orderdetails od ON o.order_id = od.order_id
-            WHERE o.order_date = ?");
+            WHERE o.order_date >= ? AND o.order_date <= ?");
         if ($dstmt) {
-            $dstmt->bind_param('s', $today);
+            $dstmt->bind_param('ss', $rangeStart, $rangeEnd);
             $dstmt->execute();
             $dres = $dstmt->get_result();
             if ($dr = $dres->fetch_assoc()) {
@@ -126,7 +145,7 @@ try {
     }
 } catch (Exception $e) {}
 
-// Categories sales (top categories)
+// Categories sales (top categories) with date range filter
 $catLabels = [];
 $catData = [];
 try {
@@ -135,12 +154,12 @@ try {
             FROM orderdetails od
             JOIN product p ON od.product_id = p.product_id
             JOIN `order` o ON od.order_id = o.order_id
-            WHERE o.store_id = ?
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
             GROUP BY p.product_category
             ORDER BY qty_sold DESC
             LIMIT 11");
         if ($cstmt) {
-            $cstmt->bind_param('i', $selectedStore);
+            $cstmt->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
             $cstmt->execute();
             $cres = $cstmt->get_result();
             while ($cr = $cres->fetch_assoc()) {
@@ -154,10 +173,12 @@ try {
             FROM orderdetails od
             JOIN product p ON od.product_id = p.product_id
             JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.order_date >= ? AND o.order_date <= ?
             GROUP BY p.product_category
             ORDER BY qty_sold DESC
             LIMIT 11");
         if ($cstmt) {
+            $cstmt->bind_param('ss', $rangeStart, $rangeEnd);
             $cstmt->execute();
             $cres = $cstmt->get_result();
             while ($cr = $cres->fetch_assoc()) {
@@ -169,7 +190,127 @@ try {
     }
 } catch (Exception $e) {}
 
-// Export JSON for JS
+// Fetch most sold items
+$mostSoldItems = [];
+try {
+    if ($selectedStore) {
+        $msi = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.store_id = ?
+            GROUP BY od.product_id
+            ORDER BY quantity_sold DESC
+            LIMIT 5");
+        if ($msi) {
+            $msi->bind_param('i', $selectedStore);
+            $msi->execute();
+            $msires = $msi->get_result();
+            while ($msirow = $msires->fetch_assoc()) {
+                $mostSoldItems[] = $msirow;
+            }
+            $msi->close();
+        }
+    } else {
+        $msi = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            GROUP BY od.product_id
+            ORDER BY quantity_sold DESC
+            LIMIT 5");
+        if ($msi) {
+            $msi->execute();
+            $msires = $msi->get_result();
+            while ($msirow = $msires->fetch_assoc()) {
+                $mostSoldItems[] = $msirow;
+            }
+            $msi->close();
+        }
+    }
+} catch (Exception $e) {}
+
+// Fetch most loyal customers (top 5) with date range filter
+$mostLoyalCustomers = [];
+try {
+    if ($selectedStore) {
+        $mlc = $conn->prepare("SELECT c.customer_id, c.first_name, c.last_name, COUNT(o.order_id) AS total_orders, SUM(od.qty * od.price) AS total_spent
+            FROM customer c
+            JOIN `order` o ON c.customer_id = o.customer_id
+            JOIN orderdetails od ON o.order_id = od.order_id
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
+            GROUP BY c.customer_id
+            ORDER BY total_spent DESC
+            LIMIT 5");
+        if ($mlc) {
+            $mlc->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
+            $mlc->execute();
+            $mlcres = $mlc->get_result();
+            while ($mlcrow = $mlcres->fetch_assoc()) {
+                $mostLoyalCustomers[] = $mlcrow;
+            }
+            $mlc->close();
+        }
+    } else {
+        $mlc = $conn->prepare("SELECT c.customer_id, c.first_name, c.last_name, COUNT(o.order_id) AS total_orders, SUM(od.qty * od.price) AS total_spent
+            FROM customer c
+            JOIN `order` o ON c.customer_id = o.customer_id
+            JOIN orderdetails od ON o.order_id = od.order_id
+            WHERE o.order_date >= ? AND o.order_date <= ?
+            GROUP BY c.customer_id
+            ORDER BY total_spent DESC
+            LIMIT 5");
+        if ($mlc) {
+            $mlc->bind_param('ss', $rangeStart, $rangeEnd);
+            $mlc->execute();
+            $mlcres = $mlc->get_result();
+            while ($mlcrow = $mlcres->fetch_assoc()) {
+                $mostLoyalCustomers[] = $mlcrow;
+            }
+            $mlc->close();
+        }
+    }
+} catch (Exception $e) {}
+
+// Fetch sales by product (all products) with date range filter
+$salesByProduct = [];
+try {
+    if ($selectedStore) {
+        $sbp = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
+            GROUP BY od.product_id
+            ORDER BY total_sales DESC");
+        if ($sbp) {
+            $sbp->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
+            $sbp->execute();
+            $sbpres = $sbp->get_result();
+            while ($sbprow = $sbpres->fetch_assoc()) {
+                $salesByProduct[] = $sbprow;
+            }
+            $sbp->close();
+        }
+    } else {
+        $sbp = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.order_date >= ? AND o.order_date <= ?
+            GROUP BY od.product_id
+            ORDER BY total_sales DESC");
+        if ($sbp) {
+            $sbp->bind_param('ss', $rangeStart, $rangeEnd);
+            $sbp->execute();
+            $sbpres = $sbp->get_result();
+            while ($sbprow = $sbpres->fetch_assoc()) {
+                $salesByProduct[] = $sbprow;
+            }
+            $sbp->close();
+        }
+    }
+} catch (Exception $e) {}
+
 $monthlyLabelsJson = json_encode($monthlyLabels);
 $monthlyDataJson = json_encode($monthlyData);
 $dailyJson = json_encode([$dailyMemberSales, $dailyNonMemberSales]);
@@ -613,36 +754,104 @@ $catDataJson = json_encode($catData);
                         <h3>Sales Summary Report</h3>
                         
                         <select id="report-filter" class="form-select report-filter">
-                            <option value="yesterday">Yesterday</option>
-                            <option value="last_week">Last Week</option>
-                            <option value="this_month" selected>This Month</option>
+                            <option value="yesterday" <?php echo $selectedRange === 'yesterday' ? 'selected' : ''; ?>>Yesterday</option>
+                            <option value="last_week" <?php echo $selectedRange === 'last_week' ? 'selected' : ''; ?>>Last Week</option>
+                            <option value="last_month" <?php echo $selectedRange === 'last_month' ? 'selected' : ''; ?>>Last Month</option>
+                            <option value="this_month" <?php echo $selectedRange === 'this_month' ? 'selected' : ''; ?>>This Month</option>
                         </select>
+                        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                            <strong>Date Range:</strong> <?php echo date('M d, Y', strtotime($rangeStart)); ?> to <?php echo date('M d, Y', strtotime($rangeEnd)); ?>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <canvas id="salesChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Charts Row -->
-                <div class="charts-row">
-                    <!-- Daily Sales -->
-                    <div class="report-card">
-                        <h3 style="text-align: center;">Daily Sales 📊</h3>
-                        <div class="chart-container">
-                            <canvas id="dailySalesChart"></canvas>
+                <!-- Most Loyal Customers and Most Popular Categories Row -->
+                <div style="display: flex; gap: 20px; margin-top: 30px;">
+                    <!-- Most Loyal Customers Section -->
+                    <div class="report-card" style="flex: 1;">
+                        <h3>Most Loyal Customers</h3>
+                        <div class="table-wrapper" style="margin-top: 15px;">
+                            <table class="menu-table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: #f5f1ed; border-bottom: 2px solid #ddd;">
+                                        <th style="padding: 12px; text-align: left; color: #333; font-weight: 600;">Customer Name</th>
+                                        <th style="padding: 12px; text-align: center; color: #333; font-weight: 600;">Orders</th>
+                                        <th style="padding: 12px; text-align: right; color: #333; font-weight: 600;">Spent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($mostLoyalCustomers)): ?>
+                                        <?php foreach ($mostLoyalCustomers as $customer): ?>
+                                            <tr style="border-bottom: 1px solid #eee;">
+                                                <td style="padding: 12px; font-size: 12px;"><?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?></td>
+                                                <td style="padding: 12px; text-align: center; font-size: 12px;"><?php echo intval($customer['total_orders']); ?></td>
+                                                <td style="padding: 12px; text-align: right; font-size: 12px;">₱<?php echo number_format((float)($customer['total_spent'] ?? 0), 2); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="3" style="text-align: center; padding: 20px; color: #999;">No customer data available.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <!-- Most Popular Categories -->
-                    <div class="report-card">
+                    <div class="report-card" style="flex: 1;">
                         <h3 style="text-align: center;">Most Popular Categories</h3>
                         <div class="chart-container">
                             <canvas id="categoriesChart"></canvas>
                         </div>
                     </div>
                 </div>
+
+                <!-- Daily Sales and All Products Sales Row -->
+                <div style="display: flex; gap: 20px; margin-top: 30px;">
+                    <!-- Daily Sales -->
+                    <div class="report-card" style="flex: 1;">
+                        <h3 style="text-align: center;">Daily Sales 📊</h3>
+                        <div class="chart-container">
+                            <canvas id="dailySalesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- All Products Sales Section -->
+                    <div class="report-card" style="flex: 1;">
+                        <h3>All Products Sales</h3>
+                        <div class="table-wrapper" style="margin-top: 15px;">
+                            <table class="menu-table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: #f5f1ed; border-bottom: 2px solid #ddd;">
+                                        <th style="padding: 12px; text-align: left; color: #333; font-weight: 600;">Product Name</th>
+                                        <th style="padding: 12px; text-align: center; color: #333; font-weight: 600;">Qty Sold</th>
+                                        <th style="padding: 12px; text-align: right; color: #333; font-weight: 600;">Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($salesByProduct)): ?>
+                                        <?php $count = 0; foreach ($salesByProduct as $product): ?>
+                                            <?php if ($count >= 5) break; ?>
+                                            <tr style="border-bottom: 1px solid #eee;">
+                                                <td style="padding: 12px; font-size: 12px;"><?php echo htmlspecialchars($product['product_name']); ?></td>
+                                                <td style="padding: 12px; text-align: center; font-size: 12px;"><?php echo intval($product['quantity_sold']); ?></td>
+                                                <td style="padding: 12px; text-align: right; font-size: 12px;">₱<?php echo number_format((float)($product['total_sales'] ?? 0), 2); ?></td>
+                                            </tr>
+                                            <?php $count++; ?>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="3" style="text-align: center; padding: 20px; color: #999;">No product sales data available.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
-    </div>
-</body>
-</html>

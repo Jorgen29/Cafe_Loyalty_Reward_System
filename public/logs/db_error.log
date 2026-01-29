@@ -3,3 +3,4 @@ Database Connection Error: No connection could be made because the target machin
 Database Connection Error: No connection could be made because the target machine actively refused it
 Database Connection Error: MySQL server has gone away
 Database Connection Error: MySQL server has gone away
+Database Connection Error: Unknown database 'cf1-rw-db'

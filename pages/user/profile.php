@@ -8,13 +8,17 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Fetch customer record by session user_id (including tier_level and points)
+require_once '../../public/actions/bday_auto/bday_auto_refresh.php';
+
+// Fetch customer record by session user_id (including tier_level and points and birthday)
 $customer = null;
 $customerId = null;
 $customerName = 'Guest';
 $customerTierLevel = 'Normal';
 $customerPoints = 0;
-$stmt = $conn->prepare("SELECT customer_id, first_name, last_name, COALESCE(tier_level, 'Normal') AS tier_level, COALESCE(points, 0) AS points, last_order FROM customer WHERE user_id = ? LIMIT 1");
+$customerBirthday = null;
+$isBirthdayToday = false;
+$stmt = $conn->prepare("SELECT customer_id, first_name, last_name, COALESCE(tier_level, 'Normal') AS tier_level, COALESCE(points, 0) AS points, last_order, birthday FROM customer WHERE user_id = ? LIMIT 1");
 if ($stmt) {
     $stmt->bind_param('i', $_SESSION['user_id']);
     $stmt->execute();
@@ -26,6 +30,22 @@ if ($stmt) {
         $customerTierLevel = $row['tier_level'];
         $customerPoints = (int)$row['points'];
         $customerLastOrder = $row['last_order'] ?? null;
+        $customerBirthday = $row['birthday'] ?? null;
+        
+        // Check if today is customer's birthday
+        if ($customerBirthday) {
+            $birthday_parts = explode('-', $customerBirthday);
+            if (count($birthday_parts) === 3) {
+                $birthday_month = $birthday_parts[1];
+                $birthday_day = $birthday_parts[2];
+                $today_month = date('m');
+                $today_day = date('d');
+                
+                if ($birthday_month === $today_month && $birthday_day === $today_day) {
+                    $isBirthdayToday = true;
+                }
+            }
+        }
     }
     $stmt->close();
 }
@@ -74,6 +94,7 @@ if ($customerId) {
         error_log('Inactivity reset check failed: ' . $e->getMessage());
     }
 }
+
 
 // Fetch available rewards for this customer (active)
 $availableRewards = [];
@@ -747,7 +768,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             // (Keep only for My Rewards section, not for claimable rewards)
             document.querySelectorAll('.rewards-section:first-of-type .activate-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    alert('Reward activated successfully!');
+                    alert('Reward claimed successfully!');
                 });
             });
 
@@ -1128,7 +1149,7 @@ alt="User">
                             <span class="reward-valid">Valid until: <?php echo htmlspecialchars(date('F d, Y', strtotime($rw['expiration_date']))); ?></span>
                         </div>
                         <div class="reward-action">
-                            <button class="activate-btn" data-reward-id="<?php echo (int)$rw['reward_id']; ?>">Activated</button>
+                            <button class="activate-btn" data-reward-id="<?php echo (int)$rw['reward_id']; ?>">Claimed</button>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -1162,14 +1183,27 @@ alt="User">
                     <?php 
                     $rewardId = (int)$cr['reward_id'];
                     $pointsRequired = (int)($cr['points'] ?? 0);
+                    $rewardType = $cr['reward_type'] ?? '';
                     $isUsed = in_array($rewardId, $usedRewardIds);
-                    $canClaim = !$isUsed && $totalPoints >= $pointsRequired;
+                    
+                    // Birthday vouchers can be claimed on customer's birthday, regardless of points
+                    $isBirthdayVoucher = stripos($rewardType, 'Birthday') !== false || stripos($cr['reward_name'], 'Birthday') !== false;
+                    $canClaim = !$isUsed && (($isBirthdayVoucher && $isBirthdayToday) || (!$isBirthdayVoucher && $totalPoints >= $pointsRequired));
+                    
                     $buttonText = $isUsed ? 'Already Used' : ($canClaim ? 'Claim' : 'Not Eligible');
                     ?>
                     <div class="reward-item" style="<?php echo $canClaim ? '' : 'opacity:0.6;'; ?>">
                         <div>
                             <div class="reward-text"><?php echo htmlspecialchars($cr['reward_name']); ?></div>
-                            <span class="reward-valid">Points required: <strong><?php echo $pointsRequired; ?></strong> (You have: <strong><?php echo $totalPoints; ?></strong>)</span>
+                            <?php if ($isBirthdayVoucher): ?>
+                                <?php if ($isBirthdayToday): ?>
+                                    <span class="reward-valid" style="color:#28a745;">🎉 Happy Birthday! This reward is available today!</span>
+                                <?php else: ?>
+                                    <span class="reward-valid">🎂 Available on your birthday</span>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="reward-valid">Points required: <strong><?php echo $pointsRequired; ?></strong> (You have: <strong><?php echo $totalPoints; ?></strong>)</span>
+                            <?php endif; ?>
                             <?php if ($isUsed): ?>
                                 <span class="reward-valid" style="color:#d9534f;">✓ Already used on an order</span>
                             <?php endif; ?>

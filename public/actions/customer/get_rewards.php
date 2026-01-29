@@ -24,8 +24,35 @@ if (empty($customer_id) || !is_numeric($customer_id)) {
     exit;
 }
 
+// Fetch customer birthday
+$birthday_query = $conn->prepare("SELECT birthday FROM customer WHERE customer_id = ? LIMIT 1");
+$customer_birthday = null;
+if ($birthday_query) {
+    $birthday_query->bind_param('i', $customer_id);
+    $birthday_query->execute();
+    $birthday_result = $birthday_query->get_result();
+    if ($birthday_row = $birthday_result->fetch_assoc()) {
+        $customer_birthday = $birthday_row['birthday'];
+    }
+    $birthday_query->close();
+}
+
+$points_query = $conn->prepare("SELECT points FROM customer WHERE customer_id = ? LIMIT 1");
+$customer_points = 0;
+
+if ($points_query) {
+    $points_query->bind_param('i', $customer_id);
+    $points_query->execute();
+    $points_result = $points_query->get_result();
+    if ($points_row = $points_result->fetch_assoc()) {
+        $customer_points = $points_row['points'];
+    }
+    $points_query->close();
+}
+
+
 $query = $conn->prepare(
-        "SELECT r.reward_id, r.reward_name, r.reward_type, r.start_date, r.expiration_date, r.points, COALESCE(r.discount_percent,0) AS discount_percent
+        "SELECT r.reward_id, r.reward_name, r.reward_type, r.start_date, r.expiration_date, r.points, COALESCE(r.discount_percent,0) AS discount_percent, COALESCE(r.discount_amount,0) AS discount_amount
          FROM customerrewards cr
          JOIN reward r ON cr.reward_id = r.reward_id
          WHERE cr.customer_id = ?
@@ -51,6 +78,23 @@ while ($row = $res->fetch_assoc()) {
 }
 $query->close();
 
+// Check if today is customer's birthday
+$is_birthday = false;
+if ($customer_birthday) {
+    // Extract month and day from birthday (YYYY-MM-DD format)
+    $birthday_parts = explode('-', $customer_birthday);
+    if (count($birthday_parts) === 3) {
+        $birthday_month = $birthday_parts[1];
+        $birthday_day = $birthday_parts[2];
+        $today_month = date('m');
+        $today_day = date('d');
+        
+        if ($birthday_month === $today_month && $birthday_day === $today_day) {
+            $is_birthday = true;
+        }
+    }
+}
+
 http_response_code(200);
-echo json_encode(['success' => true, 'rewards' => $rewards]);
+echo json_encode(['success' => true, 'rewards' => $rewards, 'is_birthday' => $is_birthday, 'birthday' => $customer_birthday]);
 ?>

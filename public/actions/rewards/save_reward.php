@@ -32,8 +32,8 @@ $reward_type = isset($_POST['reward_type']) ? trim($_POST['reward_type']) : '';
 $start_date = isset($_POST['start_date']) ? trim($_POST['start_date']) : null;
 $expiration_date = isset($_POST['expiration_date']) ? trim($_POST['expiration_date']) : null;
 $points = isset($_POST['points']) ? trim($_POST['points']) : '';
-// Optional discount percent for Discount Voucher type (e.g., 5,10,15)
-$discount_percent = isset($_POST['discount_percent']) ? trim($_POST['discount_percent']) : '';
+$discount_type = isset($_POST['discount_type']) ? trim($_POST['discount_type']) : 'Percentage';
+$discount_value = isset($_POST['discount_percent']) ? trim($_POST['discount_percent']) : '';
 
 // Basic validation
 if (empty($reward_name)) {
@@ -48,14 +48,24 @@ if ($points !== '' && !is_numeric($points)) {
     exit;
 }
 
-if ($discount_percent !== '' && !is_numeric($discount_percent)) {
+if ($discount_value !== '' && !is_numeric($discount_value)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Discount percent must be a number']);
+    echo json_encode(['success' => false, 'message' => 'Discount value must be a number']);
     exit;
 }
 
 $pointsVal = ($points === '') ? null : (int)$points;
-$discountVal = ($discount_percent === '') ? 0 : (int)$discount_percent;
+
+// Set discount values based on discount type
+$discount_percentage_val = null;
+$discount_amount_val = null;
+if ($discount_value !== '') {
+    if ($discount_type === 'Percentage') {
+        $discount_percentage_val = (float)$discount_value;
+    } else if ($discount_type === 'Amount') {
+        $discount_amount_val = (float)$discount_value;
+    }
+}
 
 // Normalize dates to allow null
 $start_date_val = ($start_date === '') ? null : $start_date;
@@ -63,13 +73,17 @@ $expiration_date_val = ($expiration_date === '') ? null : $expiration_date;
 
 if (!empty($reward_id)) {
     // Update existing reward
-    // Ensure column exists (runtime migration) - best to run explicit migrations in production
+    // Ensure columns exist (runtime migration)
     $checkCol = $conn->query("SHOW COLUMNS FROM reward LIKE 'discount_percent'");
     if ($checkCol && $checkCol->num_rows === 0) {
-        $conn->query("ALTER TABLE reward ADD COLUMN discount_percent INT DEFAULT 0");
+        $conn->query("ALTER TABLE reward ADD COLUMN discount_percent FLOAT DEFAULT NULL");
+    }
+    $checkCol = $conn->query("SHOW COLUMNS FROM reward LIKE 'discount_amount'");
+    if ($checkCol && $checkCol->num_rows === 0) {
+        $conn->query("ALTER TABLE reward ADD COLUMN discount_amount FLOAT DEFAULT NULL");
     }
 
-    $query = $conn->prepare("UPDATE reward SET reward_name = ?, reward_type = ?, start_date = ?, expiration_date = ?, points = ?, discount_percent = ? WHERE reward_id = ?");
+    $query = $conn->prepare("UPDATE reward SET reward_name = ?, reward_type = ?, start_date = ?, expiration_date = ?, points = ?, discount_percent = ?, discount_amount = ? WHERE reward_id = ?");
     if (!$query) {
         error_log("Prepare failed: " . $conn->error);
         http_response_code(500);
@@ -77,7 +91,7 @@ if (!empty($reward_id)) {
         exit;
     }
 
-    $query->bind_param("ssssiii", $reward_name, $reward_type, $start_date_val, $expiration_date_val, $pointsVal, $discountVal, $reward_id);
+    $query->bind_param("ssssiddi", $reward_name, $reward_type, $start_date_val, $expiration_date_val, $pointsVal, $discount_percentage_val, $discount_amount_val, $reward_id);
     $result = $query->execute();
 
     if (!$result) {
@@ -92,13 +106,17 @@ if (!empty($reward_id)) {
     echo json_encode(['success' => true, 'message' => 'Reward updated successfully']);
 } else {
     // Create new reward
-    // Ensure column exists (runtime migration) - best to run explicit migrations in production
+    // Ensure columns exist (runtime migration)
     $checkCol = $conn->query("SHOW COLUMNS FROM reward LIKE 'discount_percent'");
     if ($checkCol && $checkCol->num_rows === 0) {
-        $conn->query("ALTER TABLE reward ADD COLUMN discount_percent INT DEFAULT 0");
+        $conn->query("ALTER TABLE reward ADD COLUMN discount_percent FLOAT DEFAULT NULL");
+    }
+    $checkCol = $conn->query("SHOW COLUMNS FROM reward LIKE 'discount_amount'");
+    if ($checkCol && $checkCol->num_rows === 0) {
+        $conn->query("ALTER TABLE reward ADD COLUMN discount_amount FLOAT DEFAULT NULL");
     }
 
-    $query = $conn->prepare("INSERT INTO reward (reward_name, reward_type, start_date, expiration_date, points, discount_percent) VALUES (?, ?, ?, ?, ?, ?)");
+    $query = $conn->prepare("INSERT INTO reward (reward_name, reward_type, start_date, expiration_date, points, discount_percent, discount_amount) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$query) {
         error_log("Prepare failed: " . $conn->error);
         http_response_code(500);
@@ -106,7 +124,7 @@ if (!empty($reward_id)) {
         exit;
     }
 
-    $query->bind_param("ssssii", $reward_name, $reward_type, $start_date_val, $expiration_date_val, $pointsVal, $discountVal);
+    $query->bind_param("ssssidd", $reward_name, $reward_type, $start_date_val, $expiration_date_val, $pointsVal, $discount_percentage_val, $discount_amount_val);
     $result = $query->execute();
 
     if (!$result) {
