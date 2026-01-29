@@ -20,6 +20,7 @@ if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], ['admin', 'staff']
 // Get cashier display name from DB (preferred) with session fallbacks
 require_once '../../public/actions/auth/db_config.php';
 $cashierName = '';
+$store_id = 0; // Initialize store_id
 if (isset($_SESSION['user_id'])) {
     $uid = intval($_SESSION['user_id']);
     $stmt = $conn->prepare("SELECT first_name, last_name, store_id FROM cashier WHERE user_id = ? LIMIT 1");

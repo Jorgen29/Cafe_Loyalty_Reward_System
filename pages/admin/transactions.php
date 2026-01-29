@@ -27,7 +27,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 // Fetch all orders with customer details
 $orders = [];
 $query = $conn->prepare("
-    SELECT o.order_id, o.order_date, o.order_time, o.payment_method, 
+    SELECT o.order_id, o.order_date, o.order_time, o.payment_method, o.payment_reference, o.payment_datetime,
            c.first_name, c.last_name, c.customer_id
     FROM `order` o
     LEFT JOIN customer c ON o.customer_id = c.customer_id
@@ -197,45 +197,73 @@ function getOrderDetails($conn, $orderId) {
                 return;
             }
 
-            const orderId = row.getAttribute('data-order-id');
-            const receiptId = '#' + orderId;
-            const customer = row.querySelector('td:nth-child(2)').textContent;
-            const amount = row.querySelector('td:nth-child(3)').textContent;
-            const time = row.querySelector('td:nth-child(4)').textContent;
-            const orderDate = row.getAttribute('data-order-date');
-            const paymentMethod = row.getAttribute('data-payment-method');
-            const customerId = row.getAttribute('data-customer-id');
-            const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
+            try {
+                const orderId = row.getAttribute('data-order-id');
+                const receiptId = '#' + orderId;
+                const customer = row.querySelector('td:nth-child(2)').textContent;
+                const amount = row.querySelector('td:nth-child(3)').textContent;
+                const time = row.querySelector('td:nth-child(4)').textContent;
+                const orderDate = row.getAttribute('data-order-date');
+                const paymentMethod = row.getAttribute('data-payment-method');
+                const paymentReference = row.getAttribute('data-payment-reference');
+                const paymentDatetime = row.getAttribute('data-payment-datetime');
+                const customerId = row.getAttribute('data-customer-id');
+                const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
 
-            // Populate modal with transaction details
-            document.getElementById('detailReceiptId').textContent = receiptId;
-            document.getElementById('detailDate').textContent = orderDate;
-            document.getElementById('detailCustomer').textContent = customer || 'Guest';
-            document.getElementById('detailAmount').textContent = amount;
-            document.getElementById('detailTime').textContent = time;
-            // order_type removed from display per request
-            document.getElementById('detailPaymentMethod').textContent = paymentMethod || 'N/A';
+                // Populate modal with transaction details - use null safe method
+                const setElementText = (id, value) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = value;
+                };
 
-            // Populate order items
-            const orderItemsContainer = document.getElementById('orderItemsContainer');
-            orderItemsContainer.innerHTML = '';
-            
-            orderDetails.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'order-item';
-                itemDiv.innerHTML = `
-                    <div>
-                        <p class="item-name">${item.product_name}</p>
-                        <p class="item-qty">${item.qty} x ₱${parseFloat(item.price).toFixed(2)}</p>
-                    </div>
-                    <p class="item-price">₱${(item.qty * item.price).toFixed(2)}</p>
-                `;
-                orderItemsContainer.appendChild(itemDiv);
-            });
+                setElementText('detailReceiptId', receiptId);
+                setElementText('detailDate', orderDate);
+                setElementText('detailCustomer', customer || 'Guest');
+                setElementText('detailAmount', amount);
+                setElementText('detailTime', time);
+                setElementText('detailPaymentMethod', paymentMethod || 'N/A');
+                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
+                
+                const paymentDtEl = document.getElementById('detailPaymentDatetime');
+                if (paymentDtEl) {
+                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
+                        try {
+                            const dt = new Date(paymentDatetime);
+                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
+                        } catch (e) {
+                            paymentDtEl.textContent = 'N/A';
+                        }
+                    } else {
+                        paymentDtEl.textContent = 'N/A';
+                    }
+                }
 
-            const modal = document.getElementById('transactionDetailModal');
-            if (modal) {
-                modal.style.display = 'block';
+                // Populate order items
+                const orderItemsContainer = document.getElementById('orderItemsContainer');
+                if (orderItemsContainer) {
+                    orderItemsContainer.innerHTML = '';
+                    
+                    orderDetails.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'order-item';
+                        itemDiv.innerHTML = `
+                            <div>
+                                <p class="item-name">${item.product_name}</p>
+                                <p class="item-qty">${item.qty} x ₱${parseFloat(item.price).toFixed(2)}</p>
+                            </div>
+                            <p class="item-price">₱${(item.qty * item.price).toFixed(2)}</p>
+                        `;
+                        orderItemsContainer.appendChild(itemDiv);
+                    });
+                }
+
+                const modal = document.getElementById('transactionDetailModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                }
+            } catch (e) {
+                console.error('Error opening transaction detail:', e);
+                alert('Error opening transaction details. Please try again.');
             }
         }
 
@@ -380,14 +408,17 @@ function getOrderDetails($conn, $orderId) {
                                         ? htmlspecialchars($order['first_name'] . ' ' . $order['last_name']) 
                                         : 'Guest';
                                     $orderTime = $order['order_time'] ? (new DateTime($order['order_time']))->format('g:i A') : 'N/A';
-                                    $orderType = htmlspecialchars($order['order_type'] ?? 'N/A');
                                     $paymentMethod = htmlspecialchars($order['payment_method'] ?? 'N/A');
+                                    $paymentReference = htmlspecialchars($order['payment_reference'] ?? 'N/A');
+                                    $paymentDatetime = $order['payment_datetime'] ?? 'N/A';
                                     $customerId = $order['customer_id'] ?? 'N/A';
                                     
                                     echo '<tr data-order-id="' . htmlspecialchars($order['order_id']) . '" 
                                         data-order-date="' . htmlspecialchars($displayDate) . '"
-                                        data-order-type="' . $orderType . '"
+                                        data-order-type=""
                                         data-payment-method="' . $paymentMethod . '"
+                                        data-payment-reference="' . $paymentReference . '"
+                                        data-payment-datetime="' . htmlspecialchars($paymentDatetime) . '"
                                         data-customer-id="' . $customerId . '"
                                         data-order-details="' . htmlspecialchars(json_encode($orderDetails)) . '">
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
@@ -425,8 +456,9 @@ function getOrderDetails($conn, $orderId) {
                     <div>
                         <p style="margin: 0; font-size: 14px; color: #666;">Customer: <span id="detailCustomer">Customer</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Time: <span id="detailTime">3:14 PM</span></p>
-                        <!-- order type removed from modal -->
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment: <span id="detailPaymentMethod">N/A</span></p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Reference #: <span id="detailPaymentReference">N/A</span></p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment Date/Time: <span id="detailPaymentDatetime">N/A</span></p>
                     </div>
                     <div style="text-align: right;">
                         <p style="margin: 0; font-size: 12px; color: #666;">Amount</p>

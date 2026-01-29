@@ -156,7 +156,7 @@ if ($customerId) {
 $orderHistory = [];
 $ordersCount = 0;
 if ($customerId) {
-    $ostmt = $conn->prepare("SELECT o.order_id, o.order_date, o.order_time, o.payment_method, SUM(od.price) as total_price, SUM(od.qty * COALESCE(p.product_points,0)) as points_earned FROM `order` o JOIN orderdetails od ON o.order_id = od.order_id JOIN product p ON od.product_id = p.product_id WHERE o.customer_id = ? GROUP BY o.order_id, o.order_date, o.order_time, o.payment_method ORDER BY o.order_date DESC, o.order_time DESC");
+    $ostmt = $conn->prepare("SELECT o.order_id, o.payment_datetime, o.payment_method, o.payment_reference, SUM(od.price) as total_price, SUM(od.qty * COALESCE(p.product_points,0)) as points_earned FROM `order` o JOIN orderdetails od ON o.order_id = od.order_id JOIN product p ON od.product_id = p.product_id WHERE o.customer_id = ? GROUP BY o.order_id, o.payment_datetime, o.payment_method, o.payment_reference ORDER BY o.payment_datetime DESC");
     if ($ostmt) {
         $ostmt->bind_param('i', $customerId);
         $ostmt->execute();
@@ -1227,20 +1227,22 @@ alt="User">
             <table class="history-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
+                        <th>Date & Time</th>
                         <th>Amount</th>
-                        <th>Time</th>
+                        <th>Payment Method</th>
+                        <th>Reference Number</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (count($orderHistory) === 0): ?>
-                        <tr><td colspan="3" style="text-align:center; color:#666;">No orders yet.</td></tr>
+                        <tr><td colspan="4" style="text-align:center; color:#666;">No orders yet.</td></tr>
                     <?php else: ?>
                         <?php foreach ($orderHistory as $oh): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars(date('F j, Y', strtotime($oh['order_date']))); ?></td>
+                                <td><?php echo htmlspecialchars(date('M j, Y g:i A', strtotime($oh['payment_datetime']))); ?></td>
                                 <td>₱<?php echo number_format((float)$oh['total_price'],2); ?></td>
-                                <td><?php echo htmlspecialchars(substr($oh['order_time'],0,5)); ?></td>
+                                <td><?php echo htmlspecialchars($oh['payment_method'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($oh['payment_reference'] ?? 'N/A'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

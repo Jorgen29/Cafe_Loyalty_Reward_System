@@ -114,72 +114,123 @@ if ($query) {
                 });
             }
 
-            // Edit buttons
-            const editBtns = document.querySelectorAll('.edit-btn');
-            editBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    openEditModal(this);
-                });
-            });
-
-            // Delete buttons
-            const deleteBtns = document.querySelectorAll('.delete-btn');
-            deleteBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    deleteMenuItem(this);
-                });
-            });
+            // Render menu grid
+            renderMenuGrid();
+            setupMenuItemActions();
         });
 
-        function filterTable(searchTerm) {
-            const table = document.querySelector('.menu-table');
-            const rows = table.querySelectorAll('tbody tr');
+        function renderMenuGrid() {
+            const menuGrid = document.getElementById('menu-grid');
+            if (!menuGrid) return;
+            
+            menuGrid.innerHTML = '';
+            const products = <?php echo json_encode($products); ?>;
+            
+            products.forEach(product => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'menu-item';
+                itemDiv.dataset.category = product.product_category || 'Uncategorized';
+                itemDiv.dataset.productId = product.product_id;
+                itemDiv.dataset.productName = product.product_name;
+                itemDiv.dataset.productPrice = product.product_price;
+                itemDiv.dataset.productSize = product.product_size || 'None';
+                itemDiv.dataset.productTemperature = product.product_temperature || 'None';
+                itemDiv.dataset.productPoints = product.product_points;
+                itemDiv.dataset.productCategory = product.product_category || 'Uncategorized';
+                itemDiv.dataset.imagePath = product.image_path || '';
+                
+                const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/Default.jpg';
+                
+                itemDiv.innerHTML = `
+                    <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name)}" class="menu-item-image">
+                    <div class="menu-item-name">${escapeHtml(product.product_name)}</div>
+                    <div class="menu-item-price">₱${parseFloat(product.product_price).toFixed(2)}</div>
+                    <div class="menu-item-info">
+                        <span class="info-badge">${escapeHtml(product.product_category || 'Uncategorized')}</span>
+                    </div>
+                    <div class="menu-item-actions">
+                        <button class="edit-btn" title="Edit">✎ Edit</button>
+                        <button class="delete-btn" title="Delete">🗑️ Delete</button>
+                    </div>
+                `;
+                menuGrid.appendChild(itemDiv);
+            });
+        }
 
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+        function setupMenuItemActions() {
+            const menuGrid = document.getElementById('menu-grid');
+            if (!menuGrid) return;
+            
+            // Use event delegation for edit/delete buttons
+            menuGrid.addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-btn')) {
+                    e.preventDefault();
+                    const item = e.target.closest('.menu-item');
+                    openEditModal(item);
+                } else if (e.target.classList.contains('delete-btn')) {
+                    e.preventDefault();
+                    const item = e.target.closest('.menu-item');
+                    deleteMenuItem(item);
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[m];
+            });
+        }
+
+        function filterTable(searchTerm) {
+            const menuGrid = document.getElementById('menu-grid');
+            const items = menuGrid.querySelectorAll('.menu-item');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
             });
         }
 
         function sortTable(sortBy) {
-            const table = document.querySelector('.menu-table');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const menuGrid = document.getElementById('menu-grid');
+            const items = Array.from(menuGrid.querySelectorAll('.menu-item'));
 
-            rows.sort((a, b) => {
-                let aVal, bVal;
+            items.sort((a, b) => {
+                const aId = parseInt(a.dataset.productId || 0);
+                const bId = parseInt(b.dataset.productId || 0);
+                const aName = a.dataset.productName.toLowerCase();
+                const bName = b.dataset.productName.toLowerCase();
                 
                 if (sortBy === 'latest') {
-                    aVal = a.querySelector('td:nth-child(1)').textContent;
-                    bVal = b.querySelector('td:nth-child(1)').textContent;
-                    return parseInt(bVal) - parseInt(aVal);
+                    return bId - aId;
                 } else if (sortBy === 'oldest') {
-                    aVal = a.querySelector('td:nth-child(1)').textContent;
-                    bVal = b.querySelector('td:nth-child(1)').textContent;
-                    return parseInt(aVal) - parseInt(bVal);
+                    return aId - bId;
                 } else if (sortBy === 'name-asc') {
-                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    return aVal.localeCompare(bVal);
+                    return aName.localeCompare(bName);
                 } else if (sortBy === 'name-desc') {
-                    aVal = a.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    bVal = b.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    return bVal.localeCompare(aVal);
+                    return bName.localeCompare(aName);
                 }
             });
 
-            rows.forEach(row => tbody.appendChild(row));
+            items.forEach(item => menuGrid.appendChild(item));
         }
 
         function setupCategoryDropdown() {
             const buttonsContainer = document.getElementById('category-buttons-container');
             if (!buttonsContainer) return;
             
-            // Get all unique categories from the table
-            const rows = document.querySelectorAll('.product-row');
+            // Get all unique categories from menu items
+            const items = document.querySelectorAll('.menu-item');
             const categories = new Set();
-            rows.forEach(row => {
-                const cat = row.dataset.category;
+            items.forEach(item => {
+                const cat = item.dataset.category;
                 if (cat) categories.add(cat);
             });
             
@@ -223,12 +274,12 @@ if ($query) {
         }
 
         function filterByCategory(category) {
-            const rows = document.querySelectorAll('.product-row');
-            rows.forEach(row => {
-                if (category === 'all' || row.dataset.category === category) {
-                    row.style.display = '';
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = '';
                 } else {
-                    row.style.display = 'none';
+                    item.style.display = 'none';
                 }
             });
         }
@@ -272,19 +323,15 @@ if ($query) {
             modal.style.display = 'block';
         }
 
-        function openEditModal(button) {
+        function openEditModal(item) {
             const modal = document.getElementById('addMenuModal');
-            const row = button.closest('tr');
-            const id = row.querySelector('td:nth-child(1)').textContent;
-            const name = row.querySelector('td:nth-child(2)').textContent;
-            const price = row.querySelector('td:nth-child(5)').textContent.replace('₱', '').trim();
-            let temperature = row.querySelector('td:nth-child(6)').textContent;
-            let size = row.querySelector('td:nth-child(7)').textContent;
-            const points = row.querySelector('td:nth-child(8)').textContent;
-
-            // Convert "N/A" back to "None" for dropdowns
-            if (temperature === 'N/A' || !temperature.trim()) temperature = 'None';
-            if (size === 'N/A' || !size.trim()) size = 'None';
+            const id = item.dataset.productId;
+            const name = item.dataset.productName;
+            const price = item.dataset.productPrice;
+            const temperature = item.dataset.productTemperature;
+            const size = item.dataset.productSize;
+            const points = item.dataset.productPoints;
+            const category = item.dataset.productCategory;
 
             document.getElementById('modalTitle').textContent = 'Update Menu';
             document.getElementById('menuIdDisplay').style.display = 'block';
@@ -292,18 +339,15 @@ if ($query) {
             document.getElementById('menuIdInput').value = id;
             document.getElementById('menuNameInput').value = name;
             document.getElementById('priceInput').value = price;
-            // Prefill category from the table row
-            const catCell = row.querySelector('.product-category');
-            const currentCategory = catCell ? catCell.textContent.trim() : '';
-            document.getElementById('categorySelect').value = currentCategory;
+            document.getElementById('categorySelect').value = category;
             // Apply visibility rules after prefilling category
-            updateFieldsVisibility(currentCategory);
-            // Only set temperature value if the temperature group is visible; otherwise keep default set by updateFieldsVisibility
+            updateFieldsVisibility(category);
+            // Set temperature value if visible
             const tempGroup = document.getElementById('temperatureGroup');
             if (tempGroup && tempGroup.style.display !== 'none') {
-                document.getElementById('temperatureInput').value = temperature === 'N/A' || !temperature.trim() ? 'None' : temperature;
+                document.getElementById('temperatureInput').value = temperature === 'None' ? 'None' : temperature;
             }
-            document.getElementById('sizeInput').value = (size === 'N/A' || !size.trim()) ? 'None' : size;
+            document.getElementById('sizeInput').value = size === 'None' ? 'None' : size;
             document.getElementById('pointsInput').value = points;
             document.getElementById('imagePathInput').value = '';
             
@@ -548,54 +592,16 @@ if ($query) {
                                 <option value="name-desc">Name (Z-A)</option>
                             </select>
                         </div>
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Search products...">
+                        </div>
                     </div>
-                    <button class="add-btn" title="Add new menu item">➕</button>
+                    <button class="add-btn" title="Add new menu item">➕ Add Menu Item</button>
                 </div>
 
-                <!-- Menu Table -->
-                <div class="table-wrapper">
-                    <table class="menu-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Image</th>
-                                <th>Price</th>
-                                <th>Temperature</th>
-                                <th>Size</th>
-                                <th>Points</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="menu-table-body">
-                            <?php if (count($products) > 0): ?>
-                                <?php foreach ($products as $product): ?>
-                                <tr class="product-row" data-category="<?php echo htmlspecialchars($product['product_category'] ?? 'Uncategorized'); ?>">
-                                    <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                    <td class="product-category"><?php echo htmlspecialchars($product['product_category'] ?? 'Uncategorized'); ?></td>
-                                    <td>
-                                        <?php if (!empty($product['image_path'])): ?>
-                                            <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
-                                        <?php else: ?>
-                                            <img src="../../public/assets/images/Default.jpg" alt="Default" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>₱<?php echo number_format($product['product_price'], 2); ?></td>
-                                    <td><?php echo htmlspecialchars($product['product_temperature'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars($product['product_size'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars($product['product_points'] ?? '0'); ?></td>
-                                    <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="9" style="text-align: center; padding: 20px;">No products found. <a href="#" onclick="openAddMenuModal(); return false;">Add one now</a></td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                <!-- Menu Grid -->
+                <div id="menu-grid" class="menu-grid">
+                    <!-- Menu items will be rendered here via JavaScript -->
                 </div>
             </div>
         </main>

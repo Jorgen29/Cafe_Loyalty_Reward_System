@@ -29,11 +29,12 @@ require_once '../auth/db_config.php';
 $reward_id = isset($_POST['reward_id']) ? trim($_POST['reward_id']) : '';
 $reward_name = isset($_POST['reward_name']) ? trim($_POST['reward_name']) : '';
 $reward_type = isset($_POST['reward_type']) ? trim($_POST['reward_type']) : '';
-$start_date = isset($_POST['start_date']) ? trim($_POST['start_date']) : null;
-$expiration_date = isset($_POST['expiration_date']) ? trim($_POST['expiration_date']) : null;
+$start_date = isset($_POST['start_date']) ? trim($_POST['start_date']) : '';
+$expiration_date = isset($_POST['expiration_date']) ? trim($_POST['expiration_date']) : '';
 $points = isset($_POST['points']) ? trim($_POST['points']) : '';
 $discount_type = isset($_POST['discount_type']) ? trim($_POST['discount_type']) : 'Percentage';
-$discount_value = isset($_POST['discount_percent']) ? trim($_POST['discount_percent']) : '';
+$discount_percent = isset($_POST['discount_percent']) ? trim($_POST['discount_percent']) : '0';
+$discount_amount = isset($_POST['discount_amount']) ? trim($_POST['discount_amount']) : '0';
 
 // Basic validation
 if (empty($reward_name)) {
@@ -48,26 +49,23 @@ if ($points !== '' && !is_numeric($points)) {
     exit;
 }
 
-if ($discount_value !== '' && !is_numeric($discount_value)) {
+if (!is_numeric($discount_percent)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Discount value must be a number']);
+    echo json_encode(['success' => false, 'message' => 'Discount percent must be a number']);
     exit;
 }
 
-$pointsVal = ($points === '') ? null : (int)$points;
-
-// Set discount values based on discount type
-$discount_percentage_val = null;
-$discount_amount_val = null;
-if ($discount_value !== '') {
-    if ($discount_type === 'Percentage') {
-        $discount_percentage_val = (float)$discount_value;
-    } else if ($discount_type === 'Amount') {
-        $discount_amount_val = (float)$discount_value;
-    }
+if (!is_numeric($discount_amount)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Discount amount must be a number']);
+    exit;
 }
 
-// Normalize dates to allow null
+$pointsVal = ($points === '') ? 0 : (int)$points;
+$discount_percentage_val = (float)$discount_percent;
+$discount_amount_val = (float)$discount_amount;
+
+// Normalize dates
 $start_date_val = ($start_date === '') ? null : $start_date;
 $expiration_date_val = ($expiration_date === '') ? null : $expiration_date;
 

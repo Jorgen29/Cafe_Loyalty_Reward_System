@@ -30,6 +30,28 @@ try {
 
     require_once '../auth/db_config.php';
     
+    // Get store_id from cashier table based on current user
+    $store_id = null;
+    if (isset($_SESSION['user_id'])) {
+        try {
+            $uid = intval($_SESSION['user_id']);
+            $storeStmt = $conn->prepare("SELECT store_id FROM cashier WHERE user_id = ? LIMIT 1");
+            if ($storeStmt) {
+                $storeStmt->bind_param('i', $uid);
+                if ($storeStmt->execute()) {
+                    $storeRes = $storeStmt->get_result();
+                    if ($storeRes && $storeRow = $storeRes->fetch_assoc()) {
+                        $store_id = intval($storeRow['store_id'] ?? 0);
+                    }
+                }
+                $storeStmt->close();
+            }
+        } catch (Exception $e) {
+            error_log('Failed to fetch store_id from cashier table: ' . $e->getMessage());
+            $store_id = null;
+        }
+    }
+    
     // Clear any buffered output
     ob_end_clean();
     ob_start();
@@ -131,10 +153,10 @@ try {
     }
 
     // Build INSERT query with or without payment columns
-    $insertCols = "order_date, order_time, payment_method, customer_id, reward_id";
-    $insertVals = "?, ?, ?, ?, ?";
-    $bindTypes = 'sssii';
-    $bindVars = [$order_date, $order_time, $payment_method, $customer_id, $reward_id];
+    $insertCols = "order_date, order_time, payment_method, customer_id, reward_id, store_id";
+    $insertVals = "?, ?, ?, ?, ?, ?";
+    $bindTypes = 'sssiii';
+    $bindVars = [$order_date, $order_time, $payment_method, $customer_id, $reward_id, $store_id];
 
     // Add payment details if this is a digital payment
     if (($reference_number || $payment_datetime) && ($payment_method === 'paymaya' || $payment_method === 'gcash')) {
@@ -463,7 +485,7 @@ try {
             // Only send email if customer has an email address
             if (!empty($customerEmail)) {
                 error_log('[EMAIL-DEBUG] Attempting to send receipt email to: ' . $customerEmail);
-                $emailResult = sendReceiptEmail($order_id, $customerEmail, $customerName, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill);
+                $emailResult = sendReceiptEmail($order_id, $customerEmail, $customerName, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill, $reference_number, $payment_method);
                 $emailStatus = $emailResult['status'];
                 $emailMessage = $emailResult['message'];
                 error_log('[EMAIL-DEBUG] Email status: ' . $emailStatus . ' | Message: ' . $emailMessage);
@@ -507,7 +529,7 @@ try {
  * Send receipt email to customer
  * Returns array with 'status' and 'message'
  */
-function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill) {
+function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $discount_amount, $discount_type, $isFreeRefill, $reference_number = null, $payment_method = 'cash') {
     global $conn;
     
     try {
@@ -623,7 +645,9 @@ function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $
             . '<style>body{font-family:Arial,Helvetica,sans-serif;background:#f6f6f6;margin:0;padding:0} .container{max-width:600px;margin:24px auto;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e9e9e9} .header{background:#fff;padding:18px;text-align:center} .logo{max-width:180px;height:auto} .content{padding:24px;color:#333} .receipt-header{border-bottom:2px solid #6b4423;padding-bottom:12px;margin-bottom:16px} .receipt-no{color:#6b4423;font-weight:700;font-size:16px} .items-table{width:100%;border-collapse:collapse;margin:16px 0} .items-table th{background:#faf7f3;padding:10px;text-align:left;font-weight:700;color:#333;border-bottom:2px solid #eee} .items-table td{padding:10px} .totals{margin-top:16px;padding-top:16px;border-top:2px solid #eee} .total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px} .total-final{display:flex;justify-content:space-between;padding:12px 0;font-size:18px;font-weight:700;color:#6b4423;border-top:2px solid #6b4423} .footer{padding:16px;text-align:center;color:#999;font-size:13px;background:#faf7f3;border-top:1px solid #f0f0f0}</style>'
             . '</head><body><div class="container"><div class="header">' . $imgTag . '</div>'
             . '<div class="content">'
-            . '<div class="receipt-header"><div class="receipt-no">Receipt #' . htmlspecialchars($order_id) . '</div><div style="color:#666;font-size:14px;margin-top:4px;">' . date('M d, Y - g:i A') . '</div></div>'
+            . '<div class="receipt-header"><div class="receipt-no">Receipt #' . htmlspecialchars($order_id) . '</div><div style="color:#666;font-size:14px;margin-top:4px;">' . date('M d, Y - g:i A') . '</div>'
+            . ($reference_number ? '<div style="color:#999;font-size:12px;margin-top:6px;">Reference #: ' . htmlspecialchars($reference_number) . '</div>' : '')
+            . '</div>'
             . '<p>Hello ' . htmlspecialchars($name) . ',</p>'
             . '<p>Thank you for your purchase! Here is your receipt:</p>'
             . '<table class="items-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>' . $itemsHtml . '</tbody></table>'
@@ -634,12 +658,24 @@ function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $
             $mail->Body .= '<div class="total-row"><span>Discount (' . $discountDisplay . '):</span><span>-' . number_format($finalDiscount, 2, '.', '') . '</span></div>';
         }
         
+        $paymentMethodDisplay = ucfirst($payment_method);
+        if ($payment_method === 'paymaya') $paymentMethodDisplay = 'PayMaya';
+        if ($payment_method === 'gcash') $paymentMethodDisplay = 'GCash';
+        $mail->Body .= '<div class="total-row"><span>Payment Method:</span><span>' . htmlspecialchars($paymentMethodDisplay) . '</span></div>';
+        
+        if ($reference_number && ($payment_method === 'paymaya' || $payment_method === 'gcash')) {
+            $mail->Body .= '<div class="total-row"><span>Payment Reference:</span><span>' . htmlspecialchars($reference_number) . '</span></div>';
+        }
+        
         $mail->Body .= '<div class="total-final"><span>Total:</span><span>' . number_format($total, 2, '.', '') . '</span></div>'
             . '</div>'
             . '<p style="color:#666;font-size:13px;margin-top:16px;">We appreciate your business and hope to see you again soon!</p>'
             . '</div><div class="footer">Cups & Stories Cafe &middot; <a href="https://cupsandstoriescafe.shop" style="color:#999;text-decoration:none;">cupsandstoriescafe.shop</a></div></div></body></html>';
         
         $mail->AltBody = "Receipt #" . $order_id . "\n\nHello " . $name . ",\n\nThank you for your purchase!\n\n";
+        if ($reference_number) {
+            $mail->AltBody .= "Reference #: " . $reference_number . "\n\n";
+        }
         foreach ($items as $item) {
             $qty = (int)($item['quantity'] ?? $item['qty'] ?? 1);
             $price = floatval($item['price'] ?? 0);
@@ -648,6 +684,13 @@ function sendReceiptEmail($order_id, $email, $name, $items, $discount_percent, $
         $mail->AltBody .= "\nSubtotal: " . number_format($subtotal, 2, '.', '') . "\n";
         if (!empty($discountDisplay)) {
             $mail->AltBody .= "Discount: -" . number_format($finalDiscount, 2, '.', '') . "\n";
+        }
+        $paymentMethodDisplay = ucfirst($payment_method);
+        if ($payment_method === 'paymaya') $paymentMethodDisplay = 'PayMaya';
+        if ($payment_method === 'gcash') $paymentMethodDisplay = 'GCash';
+        $mail->AltBody .= "Payment Method: " . $paymentMethodDisplay . "\n";
+        if ($reference_number && ($payment_method === 'paymaya' || $payment_method === 'gcash')) {
+            $mail->AltBody .= "Payment Reference: " . $reference_number . "\n";
         }
         $mail->AltBody .= "Total: " . number_format($total, 2, '.', '') . "\n\nThank you!";
         

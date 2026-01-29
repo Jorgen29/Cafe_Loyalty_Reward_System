@@ -271,11 +271,14 @@ if ($query) {
             }
 
             // Get the discount value based on the selected type
-            let discountValue = '0';
+            let discountPercentValue = '0';
+            let discountAmountValue = '0';
             if (discountType === 'Percentage') {
-                discountValue = document.getElementById('discountPercentInput').value || '0';
+                discountPercentValue = document.getElementById('discountPercentInput').value || '0';
+                discountAmountValue = '0';
             } else if (discountType === 'Amount') {
-                discountValue = document.getElementById('discountAmountInput').value || '0';
+                discountAmountValue = document.getElementById('discountAmountInput').value || '0';
+                discountPercentValue = '0';
             }
 
             const formData = new FormData();
@@ -285,7 +288,8 @@ if ($query) {
             formData.append('start_date', startDate);
             formData.append('expiration_date', expirationDate);
             formData.append('points', points);
-            formData.append('discount_percent', discountValue);
+            formData.append('discount_percent', discountPercentValue);
+            formData.append('discount_amount', discountAmountValue);
             formData.append('discount_type', discountType);
 
             fetch('../../public/actions/rewards/save_reward.php', {

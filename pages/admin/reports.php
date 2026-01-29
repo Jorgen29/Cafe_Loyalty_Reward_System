@@ -25,7 +25,10 @@ $selectedRange = isset($_GET['range']) ? trim($_GET['range']) : 'this_month';
 $rangeStart = null;
 $rangeEnd = date('Y-m-d'); // today
 
-if ($selectedRange === 'yesterday') {
+if ($selectedRange === 'today') {
+    $rangeStart = date('Y-m-d');
+    $rangeEnd = date('Y-m-d');
+} elseif ($selectedRange === 'yesterday') {
     $rangeStart = date('Y-m-d', strtotime('-1 day'));
     $rangeEnd = date('Y-m-d', strtotime('-1 day'));
 } elseif ($selectedRange === 'last_week') {
@@ -754,6 +757,7 @@ $catDataJson = json_encode($catData);
                         <h3>Sales Summary Report</h3>
                         
                         <select id="report-filter" class="form-select report-filter">
+                            <option value="today" <?php echo $selectedRange === 'today' ? 'selected' : ''; ?>>Today</option>
                             <option value="yesterday" <?php echo $selectedRange === 'yesterday' ? 'selected' : ''; ?>>Yesterday</option>
                             <option value="last_week" <?php echo $selectedRange === 'last_week' ? 'selected' : ''; ?>>Last Week</option>
                             <option value="last_month" <?php echo $selectedRange === 'last_month' ? 'selected' : ''; ?>>Last Month</option>
