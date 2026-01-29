@@ -24,7 +24,7 @@ if (isset($_GET['store']) && is_numeric($_GET['store'])) {
 // Prepare sales by month (last 9 months)
 $monthlyLabels = [];
 $monthlyData = [];
- 
+
 
 // Prepare sales by month (last 9 months) with optional store filter
 try {
@@ -73,7 +73,8 @@ try {
             $monthlyData[] = (float)$r['total'];
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Daily summary (today) - split by member vs non-member
 $dailyMemberSales = 0.0;
@@ -125,7 +126,8 @@ try {
             $dstmt->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Categories sales (top categories)
 $catLabels = [];
@@ -168,7 +170,8 @@ try {
             $cstmt->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Export JSON for JS
 $monthlyLabelsJson = json_encode($monthlyLabels);
@@ -180,6 +183,7 @@ $catDataJson = json_encode($catData);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -207,7 +211,7 @@ $catDataJson = json_encode($catData);
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -230,7 +234,7 @@ $catDataJson = json_encode($catData);
             // Print and Download button handlers
             const printBtn = document.getElementById('print-all-btn');
             const downloadBtn = document.getElementById('download-all-btn');
-            
+
             if (printBtn) {
                 printBtn.addEventListener('click', function() {
                     convertChartsToImages().then(() => {
@@ -278,7 +282,7 @@ $catDataJson = json_encode($catData);
                             img.style.maxWidth = '100%';
                             img.style.height = 'auto';
                             img.style.display = 'block';
-                            
+
                             // Replace canvas with image
                             const container = canvas.parentElement;
                             container.innerHTML = '';
@@ -286,7 +290,7 @@ $catDataJson = json_encode($catData);
                         } catch (e) {
                             console.error('Error converting chart:', e);
                         }
-                        
+
                         converted++;
                         if (converted === canvases.length) {
                             resolve();
@@ -345,7 +349,9 @@ $catDataJson = json_encode($catData);
 
                 html += '</body></html>';
 
-                const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+                const blob = new Blob([html], {
+                    type: 'application/vnd.ms-excel'
+                });
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -360,16 +366,16 @@ $catDataJson = json_encode($catData);
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                        labels: <?php echo $monthlyLabelsJson; ?>,
-                        datasets: [{
-                            label: 'Sales',
-                            data: <?php echo $monthlyDataJson; ?>,
-                            backgroundColor: '#6b4423',
-                            borderColor: '#6b4423',
-                            borderWidth: 0,
-                            borderRadius: 4
-                        }]
-                    },
+                    labels: <?php echo $monthlyLabelsJson; ?>,
+                    datasets: [{
+                        label: 'Sales',
+                        data: <?php echo $monthlyDataJson; ?>,
+                        backgroundColor: '#6b4423',
+                        borderColor: '#6b4423',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -413,15 +419,15 @@ $catDataJson = json_encode($catData);
             const ctx = document.getElementById('dailySalesChart').getContext('2d');
             new Chart(ctx, {
                 type: 'doughnut',
-                        data: {
-                            labels: ['Member', 'Non-member'],
-                            datasets: [{
-                                data: <?php echo $dailyJson; ?>,
-                                backgroundColor: ['#6b4423', '#c9b5a0'],
-                                borderColor: '#fff',
-                                borderWidth: 2
-                            }]
-                        },
+                data: {
+                    labels: ['Member', 'Non-member'],
+                    datasets: [{
+                        data: <?php echo $dailyJson; ?>,
+                        backgroundColor: ['#6b4423', '#c9b5a0'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -497,6 +503,7 @@ $catDataJson = json_encode($catData);
         }
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -517,25 +524,25 @@ $catDataJson = json_encode($catData);
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
-                
+
                 <a href="inventory.php" class="nav-link ">
                     <span class="nav-icon">🥫</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
-        
-        
-        
+
+
+
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Top Header -->
-           <header class="top-header">
+            <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
                     <h1 class="page-title">Sales Report</h1>
@@ -555,23 +562,23 @@ $catDataJson = json_encode($catData);
                     <div class="report-header">
                         <div class="store-filter">
                             <div class="store-filter-divider">
-                               
-                                    <button class="action-btn print-action" id="print-all-btn">🖨️ Print</button>
-                                    <button class="action-btn download-action" id="download-all-btn">⬇️ Download</button>
-                                      <select id="store-filter" class="form-select">
-                            <option value="">All Stores</option>
-                            <?php foreach ($stores as $st): ?>
-                                <option value="<?php echo $st['store_id']; ?>" <?php echo ($selectedStore === intval($st['store_id'])) ? 'selected' : ''; ?>><?php echo htmlspecialchars($st['location']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+
+                                <button class="action-btn print-action" id="print-all-btn">🖨️ Print</button>
+                                <button class="action-btn download-action" id="download-all-btn">⬇️ Download</button>
+                                <select id="store-filter" class="form-select">
+                                    <option value="">All Stores</option>
+                                    <?php foreach ($stores as $st): ?>
+                                        <option value="<?php echo $st['store_id']; ?>" <?php echo ($selectedStore === intval($st['store_id'])) ? 'selected' : ''; ?>><?php echo htmlspecialchars($st['location']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
 
 
                             </div>
-                            
-                      
-                    </div>
+
+
+                        </div>
                         <h3>Sales Summary Report</h3>
-                        
+
                         <select class="report-filter">
                             <option value="monthly">Monthly</option>
                             <option value="quarterly">Quarterly</option>
@@ -605,4 +612,5 @@ $catDataJson = json_encode($catData);
         </main>
     </div>
 </body>
+
 </html>

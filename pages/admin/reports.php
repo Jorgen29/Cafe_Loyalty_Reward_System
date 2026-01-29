@@ -46,8 +46,11 @@ if ($selectedRange === 'today') {
 // Prepare sales by month (last 9 months)
 $monthlyLabels = [];
 $monthlyData = [];
- 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 // Prepare sales by day with optional store filter and date range
 try {
     if ($selectedStore) {
@@ -95,7 +98,8 @@ try {
             $monthlyData[] = (float)$r['total'];
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Daily summary - split by member vs non-member with date range filter
 $dailyMemberSales = 0.0;
@@ -146,7 +150,8 @@ try {
             $dstmt->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Categories sales (top categories) with date range filter
 $catLabels = [];
@@ -191,8 +196,134 @@ try {
             $cstmt->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
+// Fetch most sold items
+$mostSoldItems = [];
+try {
+    if ($selectedStore) {
+        $msi = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.store_id = ?
+            GROUP BY od.product_id
+            ORDER BY quantity_sold DESC
+            LIMIT 5");
+        if ($msi) {
+            $msi->bind_param('i', $selectedStore);
+            $msi->execute();
+            $msires = $msi->get_result();
+            while ($msirow = $msires->fetch_assoc()) {
+                $mostSoldItems[] = $msirow;
+            }
+            $msi->close();
+        }
+    } else {
+        $msi = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            GROUP BY od.product_id
+            ORDER BY quantity_sold DESC
+            LIMIT 5");
+        if ($msi) {
+            $msi->execute();
+            $msires = $msi->get_result();
+            while ($msirow = $msires->fetch_assoc()) {
+                $mostSoldItems[] = $msirow;
+            }
+            $msi->close();
+        }
+    }
+} catch (Exception $e) {
+}
+
+// Fetch most loyal customers (top 5) with date range filter
+$mostLoyalCustomers = [];
+try {
+    if ($selectedStore) {
+        $mlc = $conn->prepare("SELECT c.customer_id, c.first_name, c.last_name, COUNT(o.order_id) AS total_orders, SUM(od.qty * od.price) AS total_spent
+            FROM customer c
+            JOIN `order` o ON c.customer_id = o.customer_id
+            JOIN orderdetails od ON o.order_id = od.order_id
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
+            GROUP BY c.customer_id
+            ORDER BY total_spent DESC
+            LIMIT 5");
+        if ($mlc) {
+            $mlc->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
+            $mlc->execute();
+            $mlcres = $mlc->get_result();
+            while ($mlcrow = $mlcres->fetch_assoc()) {
+                $mostLoyalCustomers[] = $mlcrow;
+            }
+            $mlc->close();
+        }
+    } else {
+        $mlc = $conn->prepare("SELECT c.customer_id, c.first_name, c.last_name, COUNT(o.order_id) AS total_orders, SUM(od.qty * od.price) AS total_spent
+            FROM customer c
+            JOIN `order` o ON c.customer_id = o.customer_id
+            JOIN orderdetails od ON o.order_id = od.order_id
+            WHERE o.order_date >= ? AND o.order_date <= ?
+            GROUP BY c.customer_id
+            ORDER BY total_spent DESC
+            LIMIT 5");
+        if ($mlc) {
+            $mlc->bind_param('ss', $rangeStart, $rangeEnd);
+            $mlc->execute();
+            $mlcres = $mlc->get_result();
+            while ($mlcrow = $mlcres->fetch_assoc()) {
+                $mostLoyalCustomers[] = $mlcrow;
+            }
+            $mlc->close();
+        }
+    }
+} catch (Exception $e) {
+}
+
+// Fetch sales by product (all products) with date range filter
+$salesByProduct = [];
+try {
+    if ($selectedStore) {
+        $sbp = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.store_id = ? AND o.order_date >= ? AND o.order_date <= ?
+            GROUP BY od.product_id
+            ORDER BY total_sales DESC");
+        if ($sbp) {
+            $sbp->bind_param('iss', $selectedStore, $rangeStart, $rangeEnd);
+            $sbp->execute();
+            $sbpres = $sbp->get_result();
+            while ($sbprow = $sbpres->fetch_assoc()) {
+                $salesByProduct[] = $sbprow;
+            }
+            $sbp->close();
+        }
+    } else {
+        $sbp = $conn->prepare("SELECT p.product_id, p.product_name, SUM(od.qty) AS quantity_sold, SUM(od.qty * od.price) AS total_sales
+            FROM orderdetails od
+            JOIN product p ON od.product_id = p.product_id
+            JOIN `order` o ON od.order_id = o.order_id
+            WHERE o.order_date >= ? AND o.order_date <= ?
+            GROUP BY od.product_id
+            ORDER BY total_sales DESC");
+        if ($sbp) {
+            $sbp->bind_param('ss', $rangeStart, $rangeEnd);
+            $sbp->execute();
+            $sbpres = $sbp->get_result();
+            while ($sbprow = $sbpres->fetch_assoc()) {
+                $salesByProduct[] = $sbprow;
+            }
+            $sbp->close();
+        }
+    }
+} catch (Exception $e) {
+}
+
+<<<<<<< Updated upstream
 // Fetch most sold items
 $mostSoldItems = [];
 try {
@@ -314,6 +445,8 @@ try {
     }
 } catch (Exception $e) {}
 
+=======
+>>>>>>> Stashed changes
 $monthlyLabelsJson = json_encode($monthlyLabels);
 $monthlyDataJson = json_encode($monthlyData);
 $dailyJson = json_encode([$dailyMemberSales, $dailyNonMemberSales]);
@@ -323,6 +456,7 @@ $catDataJson = json_encode($catData);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -335,7 +469,7 @@ $catDataJson = json_encode($catData);
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -351,7 +485,7 @@ $catDataJson = json_encode($catData);
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -374,7 +508,7 @@ $catDataJson = json_encode($catData);
             // Print and Download button handlers
             const printBtn = document.getElementById('print-all-btn');
             const downloadBtn = document.getElementById('download-all-btn');
-            
+
             if (printBtn) {
                 printBtn.addEventListener('click', function() {
                     convertChartsToImages().then(() => {
@@ -437,7 +571,7 @@ $catDataJson = json_encode($catData);
                             img.style.maxWidth = '100%';
                             img.style.height = 'auto';
                             img.style.display = 'block';
-                            
+
                             // Replace canvas with image
                             const container = canvas.parentElement;
                             container.innerHTML = '';
@@ -445,7 +579,7 @@ $catDataJson = json_encode($catData);
                         } catch (e) {
                             console.error('Error converting chart:', e);
                         }
-                        
+
                         converted++;
                         if (converted === canvases.length) {
                             resolve();
@@ -497,7 +631,9 @@ $catDataJson = json_encode($catData);
                 });
 
                 const csv = rows.join('\r\n');
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob([csv], {
+                    type: 'text/csv;charset=utf-8;'
+                });
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
@@ -514,16 +650,16 @@ $catDataJson = json_encode($catData);
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                        labels: <?php echo $monthlyLabelsJson; ?>,
-                        datasets: [{
-                            label: 'Sales',
-                            data: <?php echo $monthlyDataJson; ?>,
-                            backgroundColor: '#6b4423',
-                            borderColor: '#6b4423',
-                            borderWidth: 0,
-                            borderRadius: 4
-                        }]
-                    },
+                    labels: <?php echo $monthlyLabelsJson; ?>,
+                    datasets: [{
+                        label: 'Sales',
+                        data: <?php echo $monthlyDataJson; ?>,
+                        backgroundColor: '#6b4423',
+                        borderColor: '#6b4423',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -567,15 +703,15 @@ $catDataJson = json_encode($catData);
             const ctx = document.getElementById('dailySalesChart').getContext('2d');
             new Chart(ctx, {
                 type: 'doughnut',
-                        data: {
-                            labels: ['Member', 'Non-member'],
-                            datasets: [{
-                                data: <?php echo $dailyJson; ?>,
-                                backgroundColor: ['#6b4423', '#c9b5a0'],
-                                borderColor: '#fff',
-                                borderWidth: 2
-                            }]
-                        },
+                data: {
+                    labels: ['Member', 'Non-member'],
+                    datasets: [{
+                        data: <?php echo $dailyJson; ?>,
+                        backgroundColor: ['#6b4423', '#c9b5a0'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -651,6 +787,7 @@ $catDataJson = json_encode($catData);
         }
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -662,10 +799,14 @@ $catDataJson = json_encode($catData);
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-           <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -675,20 +816,25 @@ $catDataJson = json_encode($catData);
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -696,17 +842,9 @@ $catDataJson = json_encode($catData);
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -720,9 +858,9 @@ $catDataJson = json_encode($catData);
                     <h1 class="page-title">Sales Report</h1>
                 </div>
                 <div class="header-right">
-                    
-                    
-                   
+
+
+
                     <div class="admin-profile">
                         <span class="admin-label">Admin</span>
                         <!--                         <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
@@ -739,23 +877,23 @@ $catDataJson = json_encode($catData);
                     <div class="report-header">
                         <div class="store-filter">
                             <div class="store-filter-divider">
-                               
-                                    <button class="action-btn print-action" id="print-all-btn">🖨️ Print</button>
-                                    <button class="action-btn download-action" id="download-all-btn">⬇️ Download</button>
-                                      <select id="store-filter" class="form-select">
-                            <option value="">All Stores</option>
-                            <?php foreach ($stores as $st): ?>
-                                <option value="<?php echo $st['store_id']; ?>" <?php echo ($selectedStore === intval($st['store_id'])) ? 'selected' : ''; ?>><?php echo htmlspecialchars($st['location']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+
+                                <button class="action-btn print-action" id="print-all-btn">🖨️ Print</button>
+                                <button class="action-btn download-action" id="download-all-btn">⬇️ Download</button>
+                                <select id="store-filter" class="form-select">
+                                    <option value="">All Stores</option>
+                                    <?php foreach ($stores as $st): ?>
+                                        <option value="<?php echo $st['store_id']; ?>" <?php echo ($selectedStore === intval($st['store_id'])) ? 'selected' : ''; ?>><?php echo htmlspecialchars($st['location']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
 
 
                             </div>
-                            
-                      
-                    </div>
+
+
+                        </div>
                         <h3>Sales Summary Report</h3>
-                        
+
                         <select id="report-filter" class="form-select report-filter">
                             <option value="today" <?php echo $selectedRange === 'today' ? 'selected' : ''; ?>>Today</option>
                             <option value="yesterday" <?php echo $selectedRange === 'yesterday' ? 'selected' : ''; ?>>Yesterday</option>
@@ -838,7 +976,12 @@ $catDataJson = json_encode($catData);
                                 </thead>
                                 <tbody>
                                     <?php if (!empty($salesByProduct)): ?>
+<<<<<<< Updated upstream
                                         <?php $count = 0; foreach ($salesByProduct as $product): ?>
+=======
+                                        <?php $count = 0;
+                                        foreach ($salesByProduct as $product): ?>
+>>>>>>> Stashed changes
                                             <?php if ($count >= 5) break; ?>
                                             <tr style="border-bottom: 1px solid #eee;">
                                                 <td style="padding: 12px; font-size: 12px;"><?php echo htmlspecialchars($product['product_name']); ?></td>
@@ -858,4 +1001,8 @@ $catDataJson = json_encode($catData);
                     </div>
                 </div>
             </div>
+<<<<<<< Updated upstream
         </main>
+=======
+        </main>
+>>>>>>> Stashed changes

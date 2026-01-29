@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Inventory Management Page
  * Protected page - only admins can access
@@ -38,6 +39,7 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +50,7 @@ if ($query) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -64,7 +66,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -137,7 +139,7 @@ if ($query) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -188,7 +190,7 @@ if ($query) {
             document.getElementById('ingredientNameInput').value = name;
             document.getElementById('ingredientQtyInput').value = qty;
             document.getElementById('ingredientUnitInput').value = unit;
-            
+
             modal.style.display = 'block';
         }
 
@@ -217,22 +219,22 @@ if ($query) {
 
             // Send to backend
             fetch('../../public/actions/products/save_ingredient.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Ingredient saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving ingredient');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Ingredient saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving ingredient');
+                });
         }
 
         window.addEventListener('click', function(event) {
@@ -252,26 +254,27 @@ if ($query) {
                 formData.append('ingredient_id', ingredientId);
 
                 fetch('../../public/actions/products/delete_ingredient.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Ingredient deleted successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting ingredient');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Ingredient deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting ingredient');
+                    });
             }
         }
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -288,6 +291,10 @@ if ($query) {
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
+                </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
                     <span class="nav-text">Menu</span>
@@ -296,20 +303,25 @@ if ($query) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link active">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -317,17 +329,9 @@ if ($query) {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -343,7 +347,7 @@ if ($query) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -386,13 +390,13 @@ if ($query) {
                         <tbody>
                             <?php if (count($ingredients) > 0): ?>
                                 <?php foreach ($ingredients as $ingredient): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_qty'] ?? '0'); ?></td>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_unit'] ?? 'N/A'); ?></td>
-                                    <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
-                                </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_qty'] ?? '0'); ?></td>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_unit'] ?? 'N/A'); ?></td>
+                                        <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -445,14 +449,23 @@ if ($query) {
         </div>
     </div>
 </body>
+
 </html>
 <script>
     const qtyInput = document.getElementById('ingredientQtyInput');
 
+<<<<<<< Updated upstream
 qtyInput.addEventListener('keydown', (e) => {
     if (e.key === '-' || e.key === 'e') {
         e.preventDefault(); // block minus and "e" for exponential
     }
 });
 
+=======
+    qtyInput.addEventListener('keydown', (e) => {
+        if (e.key === '-' || e.key === 'e') {
+            e.preventDefault(); // block minus and "e" for exponential
+        }
+    });
+>>>>>>> Stashed changes
 </script>

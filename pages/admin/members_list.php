@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Members List Page
  * Protected page - only admins can access
@@ -37,7 +38,8 @@ if ($query) {
 }
 
 // Determine tier level based on points (you can adjust this logic)
-function calculateTierLevel($customerId) {
+function calculateTierLevel($customerId)
+{
     // This is a placeholder - you can enhance this with actual points calculation
     $tiers = ['Bronze Level', 'Silver Level', 'Gold Level', 'Platinum Level'];
     return $tiers[$customerId % 4];
@@ -45,6 +47,7 @@ function calculateTierLevel($customerId) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +58,7 @@ function calculateTierLevel($customerId) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -71,7 +74,7 @@ function calculateTierLevel($customerId) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -130,7 +133,7 @@ function calculateTierLevel($customerId) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -178,7 +181,7 @@ function calculateTierLevel($customerId) {
             document.getElementById('memberSex').textContent = 'Sex: ' + sex;
             document.getElementById('memberOccupation').textContent = 'Occupation: ' + occupation;
             document.getElementById('memberDateJoined').textContent = 'Joined Date: ' + dateJoined;
-            
+
             // Set member image
             const memberImg = document.getElementById('memberImage');
             const memberPlaceholder = document.getElementById('memberImagePlaceholder');
@@ -210,6 +213,7 @@ function calculateTierLevel($customerId) {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -221,10 +225,14 @@ function calculateTierLevel($customerId) {
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-          <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -234,13 +242,18 @@ function calculateTierLevel($customerId) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
                 <a href="members_list.php" class="nav-link active">
@@ -255,17 +268,9 @@ function calculateTierLevel($customerId) {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -281,7 +286,7 @@ function calculateTierLevel($customerId) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -300,7 +305,7 @@ function calculateTierLevel($customerId) {
                             <option value="name-desc">Name (Z-A)</option>
                         </select>
                     </div>
-                    
+
                 </div>
 
                 <!-- Members Table -->
@@ -318,13 +323,13 @@ function calculateTierLevel($customerId) {
                         <tbody>
                             <?php if (count($customers) > 0): ?>
                                 <?php foreach ($customers as $customer): ?>
-                                <tr data-phone="<?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>" data-birthday="<?php echo htmlspecialchars($customer['birthday'] ?? 'N/A'); ?>" data-address="<?php echo htmlspecialchars($customer['address'] ?? 'N/A'); ?>" data-sex="<?php echo htmlspecialchars($customer['sex'] ?? 'N/A'); ?>" data-occupation="<?php echo htmlspecialchars($customer['occupation'] ?? 'N/A'); ?>" data-date-joined="<?php echo htmlspecialchars($customer['date_joined'] ?? 'N/A'); ?>" data-image="<?php echo htmlspecialchars($customer['image_path'] ?? ''); ?>">>
-                                    <td><?php echo str_pad($customer['customer_id'], 6, '0', STR_PAD_LEFT); ?></td>
-                                    <td><?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($customer['tier_level'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars($customer['email']); ?></td>
-                                    <td><button class="action-btn " title="View"><img id="eyeIcon" class="view-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
-                                </tr>
+                                    <tr data-phone="<?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>" data-birthday="<?php echo htmlspecialchars($customer['birthday'] ?? 'N/A'); ?>" data-address="<?php echo htmlspecialchars($customer['address'] ?? 'N/A'); ?>" data-sex="<?php echo htmlspecialchars($customer['sex'] ?? 'N/A'); ?>" data-occupation="<?php echo htmlspecialchars($customer['occupation'] ?? 'N/A'); ?>" data-date-joined="<?php echo htmlspecialchars($customer['date_joined'] ?? 'N/A'); ?>" data-image="<?php echo htmlspecialchars($customer['image_path'] ?? ''); ?>">>
+                                        <td><?php echo str_pad($customer['customer_id'], 6, '0', STR_PAD_LEFT); ?></td>
+                                        <td><?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($customer['tier_level'] ?? 'N/A'); ?></td>
+                                        <td><?php echo htmlspecialchars($customer['email']); ?></td>
+                                        <td><button class="action-btn " title="View"><img id="eyeIcon" class="view-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -378,4 +383,5 @@ function calculateTierLevel($customerId) {
         </div>
     </div>
 </body>
+
 </html>
