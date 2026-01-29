@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Inventory Management Page
  * Protected page - only admins can access
@@ -38,6 +39,7 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +65,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -95,7 +97,7 @@ if ($query) {
             }
 
             // Get ingredient buttons (cashier will take quantity)
-                const getBtns = document.querySelectorAll('.get-btn');
+            const getBtns = document.querySelectorAll('.get-btn');
             getBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     openGetModal(this);
@@ -120,7 +122,7 @@ if ($query) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -187,22 +189,22 @@ if ($query) {
             formData.append('take_qty', takeQty);
 
             fetch('../../public/actions/products/get_ingredient.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(json => {
-                if (json.success) {
-                    alert('Ingredient quantity updated');
-                    window.location.reload();
-                } else {
-                    alert('Error: ' + (json.message || 'Failed to update'));
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                alert('Error updating ingredient');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(json => {
+                    if (json.success) {
+                        alert('Ingredient quantity updated');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + (json.message || 'Failed to update'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('Error updating ingredient');
+                });
         }
 
         window.addEventListener('click', function(event) {
@@ -222,26 +224,27 @@ if ($query) {
                 formData.append('ingredient_id', ingredientId);
 
                 fetch('../../public/actions/products/delete_ingredient.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Ingredient deleted successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting ingredient');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Ingredient deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting ingredient');
+                    });
             }
         }
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -262,14 +265,14 @@ if ($query) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
-               
+
                 <a href="inventory.php" class="nav-link active">
                     <span class="nav-icon">🥫</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -285,7 +288,7 @@ if ($query) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -321,20 +324,20 @@ if ($query) {
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>QTY</th>
-                                
+
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (count($ingredients) > 0): ?>
                                 <?php foreach ($ingredients as $ingredient): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($ingredient['ingredient_qty'] ?? '0'); ?></td>
-                                    
-                                    <td><button class="action-btn get-btn" title="Get">Get</button></td>
-                                </tr>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($ingredient['ingredient_qty'] ?? '0'); ?></td>
+
+                                        <td><button class="action-btn get-btn" title="Get">Get</button></td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -361,24 +364,25 @@ if ($query) {
                     <input type="hidden" id="ingredientIdInput" value="">
                 </div>
 
-                        <div class="form-group">
-                            <label for="ingredientNameInput">Ingredient Name:</label>
-                            <input type="text" id="ingredientNameInput" class="form-input" placeholder="e.g., Chicken Wings Fresh" readonly>
-                        </div>
+                <div class="form-group">
+                    <label for="ingredientNameInput">Ingredient Name:</label>
+                    <input type="text" id="ingredientNameInput" class="form-input" placeholder="e.g., Chicken Wings Fresh" readonly>
+                </div>
 
-                        <div class="form-group">
-                            <label for="ingredientCurrentQty">Current Quantity:</label>
-                            <input type="number" id="ingredientCurrentQty" class="form-input" readonly>
-                        </div>
+                <div class="form-group">
+                    <label for="ingredientCurrentQty">Current Quantity:</label>
+                    <input type="number" id="ingredientCurrentQty" class="form-input" readonly>
+                </div>
 
-                        <div class="form-group">
-                            <label for="takeQtyInput">Quantity to Take:</label>
-                            <input type="number" id="takeQtyInput" class="form-input" placeholder="e.g., 5" min="0" step="any">
-                        </div>
+                <div class="form-group">
+                    <label for="takeQtyInput">Quantity to Take:</label>
+                    <input type="number" id="takeQtyInput" class="form-input" placeholder="e.g., 5" min="0" step="any">
+                </div>
 
-                        <button type="button" class="save-btn" onclick="takeIngredient()">Take</button>
+                <button type="button" class="save-btn" onclick="takeIngredient()">Take</button>
             </form>
         </div>
     </div>
 </body>
+
 </html>

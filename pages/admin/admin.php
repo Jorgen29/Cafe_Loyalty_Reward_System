@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Dashboard - Protected (renamed from admin.html)
  */
@@ -131,6 +132,7 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -141,7 +143,7 @@ try {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -157,7 +159,7 @@ try {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -174,6 +176,7 @@ try {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -182,13 +185,20 @@ try {
                 <div class="cafe-logo">
                     <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
+                <!-- <div class="cafe-logo-name">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo Name" class="logo-icon-name">
+                </div> -->
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-          <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link active">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -198,21 +208,25 @@ try {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
 
-                 <a href="inventory_reports.php" class="nav-link">
+                <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -220,19 +234,10 @@ try {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
-                </a>
-                
             </nav>
         </aside>
 
@@ -245,10 +250,10 @@ try {
                     <h1 class="page-title">Dashboard</h1>
                 </div>
                 <div class="header-right">
-                   
+
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName ?: 'Admin'; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -260,33 +265,33 @@ try {
                 <div class="stats-grid">
                     <div class="stat-card">
                         <a href="menu.php" style="text-decoration: none;">
-                        <div class="stat-icon menu-icon">🍳</div>
-                        <div class="stat-value"><?php echo $totalProducts; ?></div>
-                        <div class="stat-label">Menu</div>
+                            <div class="stat-icon menu-icon">🍳</div>
+                            <div class="stat-value"><?php echo $totalProducts; ?></div>
+                            <div class="stat-label">Menu</div>
                         </a>
                     </div>
 
                     <div class="stat-card">
                         <a href="inventory.php" style="text-decoration: none;">
-                        <div class="stat-icon inventory-icon">📦</div>
-                        <div class="stat-value"><?php echo $totalIngredients; ?></div>
-                        <div class="stat-label">Inventory</div>
+                            <div class="stat-icon inventory-icon">📦</div>
+                            <div class="stat-value"><?php echo $totalIngredients; ?></div>
+                            <div class="stat-label">Inventory</div>
                         </a>
                     </div>
 
                     <div class="stat-card">
                         <a href="rewards.php" style="text-decoration: none;">
-                        <div class="stat-icon staff-icon">👤</div>
-                        <div class="stat-value"><?php echo $totalRewards; ?></div>
-                        <div class="stat-label">Rewards</div>
-                       </a>
+                            <div class="stat-icon staff-icon">🎟️</div>
+                            <div class="stat-value"><?php echo $totalRewards; ?></div>
+                            <div class="stat-label">Rewards</div>
+                        </a>
                     </div>
 
                     <div class="stat-card">
                         <a href="members_list.php" style="text-decoration: none;">
-                        <div class="stat-icon membership-icon">👥</div>
-                        <div class="stat-value"><?php echo $totalCustomers; ?></div>
-                        <div class="stat-label">Membership</div>
+                            <div class="stat-icon membership-icon">👥</div>
+                            <div class="stat-value"><?php echo $totalCustomers; ?></div>
+                            <div class="stat-label">Membership</div>
                         </a>
                     </div>
                 </div>
@@ -294,67 +299,67 @@ try {
                 <!-- Sales Section -->
                 <div class="sales-section">
                     <!-- Recent Transactions -->
-                     <a href="transactions.php" style="text-decoration: none;">
-                    <div class="transaction-card">
-                        
-                        <div class="card-header">
-                            <div class="receipt-icon">📋</div>
-                            <div class="receipt-date"><?php echo date('F , Y'); ?> Transactions</div>
-                        </div>
-                        <table class="transaction-table">
-                            <thead>
-                                <tr>
-                                    <th>Receipt #</th>
-                                    <th>Total</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                           
-                            <tbody>
-                                
-                                <?php if (!empty($recentTransactions)): ?>
-                                    <?php foreach ($recentTransactions as $t): ?>
+                    <a href="transactions.php" style="text-decoration: none;">
+                        <div class="transaction-card">
 
-                                        <tr>
-                                             
-                                            <td>#<?php echo htmlspecialchars($t['order_id']); ?></td>
-                                            <td>₱<?php echo number_format((float)($t['total_amount'] ?? 0), 2); ?></td>
-                                            <td><?php echo htmlspecialchars(date('g:i A', strtotime($t['order_time'] ?? '00:00:00'))); ?></td>
-                                           
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
+                            <div class="card-header">
+                                <div class="receipt-icon">📋</div>
+                                <div class="receipt-date"><?php echo date('F , Y'); ?> Transactions</div>
+                            </div>
+                            <table class="transaction-table">
+                                <thead>
                                     <tr>
-                                        <td colspan="3" style="text-align:center;padding:20px;">No recent transactions.</td>
+                                        <th>Receipt #</th>
+                                        <th>Total</th>
+                                        <th>Time</th>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                           
-                        </table>
-                    </div>
+                                </thead>
+
+                                <tbody>
+
+                                    <?php if (!empty($recentTransactions)): ?>
+                                        <?php foreach ($recentTransactions as $t): ?>
+
+                                            <tr>
+
+                                                <td>#<?php echo htmlspecialchars($t['order_id']); ?></td>
+                                                <td>₱<?php echo number_format((float)($t['total_amount'] ?? 0), 2); ?></td>
+                                                <td><?php echo htmlspecialchars(date('g:i A', strtotime($t['order_time'] ?? '00:00:00'))); ?></td>
+
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="3" style="text-align:center;padding:20px;">No recent transactions.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+
+                            </table>
+                        </div>
                     </a>
-                    
+
                     <!-- Today's Sales Summary -->
                     <div class="sales-summary">
                         <a href="reports.php" style="text-decoration: none;">
-                        <div class="summary-header">
-                            <span class="summary-title">Today's Sales</span>
-                            <div class="sales-chart-icon">📈</div>
-                        </div>
-                        <div class="summary-content">
-                            <div class="summary-row">
-                                <span class="summary-label">Total Earnings:</span>
-                                <span class="summary-value">₱<?php echo number_format($todayEarnings, 2); ?></span>
+                            <div class="summary-header">
+                                <span class="summary-title">Today's Sales</span>
+                                <div class="sales-chart-icon">📈</div>
                             </div>
-                            <div class="summary-row">
-                                <span class="summary-label">Amt. of Items Sold:</span>
-                                <span class="summary-value"><?php echo $todayItems; ?></span>
+                            <div class="summary-content">
+                                <div class="summary-row">
+                                    <span class="summary-label">Total Earnings:</span>
+                                    <span class="summary-value">₱<?php echo number_format($todayEarnings, 2); ?></span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">Amt. of Items Sold:</span>
+                                    <span class="summary-value"><?php echo $todayItems; ?></span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">Amt. of Customers:</span>
+                                    <span class="summary-value"><?php echo $todayCustomers; ?></span>
+                                </div>
                             </div>
-                            <div class="summary-row">
-                                <span class="summary-label">Amt. of Customers:</span>
-                                <span class="summary-value"><?php echo $todayCustomers; ?></span>
-                            </div>
-                        </div>
                         </a>
                     </div>
                 </div>
@@ -362,4 +367,5 @@ try {
         </main>
     </div>
 </body>
+
 </html>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Dashboard - Protected (renamed from admin.html)
  */
@@ -15,6 +16,7 @@ if (!isset($_SESSION['user_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -328,7 +330,7 @@ if (!isset($_SESSION['user_id'])) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -346,7 +348,7 @@ if (!isset($_SESSION['user_id'])) {
             // Page selector toggle
             pageSelector.addEventListener('change', function(e) {
                 const selectedPage = e.target.value;
-                
+
                 forms.forEach(form => {
                     form.classList.remove('active');
                 });
@@ -508,26 +510,26 @@ if (!isset($_SESSION['user_id'])) {
             if (homeForm) {
                 homeForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(this);
-                    
+
                     fetch('../../public/actions/save_home_page.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Home page saved successfully!');
-                            location.reload(); // Refresh the entire page
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error saving home page');
-                    });
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Home page saved successfully!');
+                                location.reload(); // Refresh the entire page
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error saving home page');
+                        });
                 });
             }
 
@@ -536,26 +538,26 @@ if (!isset($_SESSION['user_id'])) {
             if (menuForm) {
                 menuForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(this);
-                    
+
                     fetch('../../public/actions/save_menu_page.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Menu page saved successfully!');
-                            location.reload(); // Refresh the entire page
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error saving menu page');
-                    });
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Menu page saved successfully!');
+                                location.reload(); // Refresh the entire page
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error saving menu page');
+                        });
                 });
             }
 
@@ -564,26 +566,26 @@ if (!isset($_SESSION['user_id'])) {
             if (rewardForm) {
                 rewardForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     const formData = new FormData(this);
-                    
+
                     fetch('../../public/actions/save_reward_page.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Reward page saved successfully!');
-                            location.reload(); // Refresh the entire page
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error saving reward page');
-                    });
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Reward page saved successfully!');
+                                location.reload(); // Refresh the entire page
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error saving reward page');
+                        });
                 });
             }
 
@@ -600,7 +602,7 @@ if (!isset($_SESSION['user_id'])) {
             // Handle cancel buttons
             document.querySelectorAll('.cancel-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if(confirm('Discard changes?')) {
+                    if (confirm('Discard changes?')) {
                         this.closest('form').reset();
                     }
                 });
@@ -612,6 +614,7 @@ if (!isset($_SESSION['user_id'])) {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -623,10 +626,14 @@ if (!isset($_SESSION['user_id'])) {
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-           <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link active">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -636,20 +643,25 @@ if (!isset($_SESSION['user_id'])) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -659,15 +671,7 @@ if (!isset($_SESSION['user_id'])) {
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link active">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -683,7 +687,7 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label">Admin</span>
-                                            <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
 
                     </div>
@@ -701,101 +705,102 @@ if (!isset($_SESSION['user_id'])) {
                     </select>
                 </div>
 
-            <!-- Home Page Form -->
-            <div class="form-card" id="home-form">
-                <h2 class="form-title">Edit Home Page</h2>
-                <form id="home-form-submit">
-                    <div class="form-group">
-                        <label>Cover Photo</label>
-                        <div class="image-upload-group">
-                            <span class="upload-btn">Upload Image</span>
-                            <input type="file" name="cover_image_file" accept="image/*">
-                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                <!-- Home Page Form -->
+                <div class="form-card" id="home-form">
+                    <h2 class="form-title">Edit Home Page</h2>
+                    <form id="home-form-submit">
+                        <div class="form-group">
+                            <label>Cover Photo</label>
+                            <div class="image-upload-group">
+                                <span class="upload-btn">Upload Image</span>
+                                <input type="file" name="cover_image_file" accept="image/*">
+                                <label class="image-upload-label">Click to upload or drag and drop</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="home-cover-text">Cover Text</label>
-                        <input type="text" id="home-cover-text" name="cover_text" placeholder="Enter cover text">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="home-menu-title">Menu Teaser Title</label>
-                        <input type="text" id="home-menu-title" name="menu_teaser_title" placeholder="e.g., Featured Menu">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Menu Teaser Image</label>
-                        <div class="image-upload-group">
-                            <span class="upload-btn">Upload Image</span>
-                            <input type="file" name="menu_teaser_image_file" accept="image/*">
-                            <label class="image-upload-label">Click to upload or drag and drop</label>
+                        <div class="form-group">
+                            <label for="home-cover-text">Cover Text</label>
+                            <input type="text" id="home-cover-text" name="cover_text" placeholder="Enter cover text">
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="home-menu-desc">Menu Description</label>
-                        <textarea id="home-menu-desc" name="menu_teaser_description" placeholder="Enter menu description..."></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label for="home-menu-title">Menu Teaser Title</label>
+                            <input type="text" id="home-menu-title" name="menu_teaser_title" placeholder="e.g., Featured Menu">
+                        </div>
 
-                    <div class="form-buttons">
-                        <button type="submit" class="save-btn">Save</button>
-                        <button type="button" class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label>Menu Teaser Image</label>
+                            <div class="image-upload-group">
+                                <span class="upload-btn">Upload Image</span>
+                                <input type="file" name="menu_teaser_image_file" accept="image/*">
+                                <label class="image-upload-label">Click to upload or drag and drop</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="home-menu-desc">Menu Description</label>
+                            <textarea id="home-menu-desc" name="menu_teaser_description" placeholder="Enter menu description..."></textarea>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Menu Page Form -->
+                <div class="form-card" id="menu-form">
+                    <h2 class="form-title">Edit Menu Page</h2>
+                    <form id="menu-form-submit">
+                        <div class="form-group">
+                            <label>Cover Photo</label>
+                            <div class="image-upload-group">
+                                <span class="upload-btn">Upload Image</span>
+                                <input type="file" name="cover_image_file" accept="image/*">
+                                <label class="image-upload-label">Click to upload or drag and drop</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="menu-cover-text">Cover Text</label>
+                            <input type="text" id="menu-cover-text" name="cover_text" placeholder="Enter cover text">
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Reward Page Form -->
+                <div class="form-card" id="reward-form">
+                    <h2 class="form-title">Edit Reward Page</h2>
+                    <form id="reward-form-submit">
+                        <div class="form-group">
+                            <label>Cover Photo</label>
+                            <div class="image-upload-group">
+                                <span class="upload-btn">Upload Image</span>
+                                <input type="file" name="cover_image_file" accept="image/*">
+                                <label class="image-upload-label">Click to upload or drag and drop</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reward-cover-text">Cover Text</label>
+                            <input type="text" id="reward-cover-text" name="cover_text" placeholder="Enter cover text">
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="save-btn">Save</button>
+                            <button type="button" class="cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <!-- Menu Page Form -->
-            <div class="form-card" id="menu-form">
-                <h2 class="form-title">Edit Menu Page</h2>
-                <form id="menu-form-submit">
-                    <div class="form-group">
-                        <label>Cover Photo</label>
-                        <div class="image-upload-group">
-                            <span class="upload-btn">Upload Image</span>
-                            <input type="file" name="cover_image_file" accept="image/*">
-                            <label class="image-upload-label">Click to upload or drag and drop</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="menu-cover-text">Cover Text</label>
-                        <input type="text" id="menu-cover-text" name="cover_text" placeholder="Enter cover text">
-                    </div>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="save-btn">Save</button>
-                        <button type="button" class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Reward Page Form -->
-            <div class="form-card" id="reward-form">
-                <h2 class="form-title">Edit Reward Page</h2>
-                <form id="reward-form-submit">
-                    <div class="form-group">
-                        <label>Cover Photo</label>
-                        <div class="image-upload-group">
-                            <span class="upload-btn">Upload Image</span>
-                            <input type="file" name="cover_image_file" accept="image/*">
-                            <label class="image-upload-label">Click to upload or drag and drop</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="reward-cover-text">Cover Text</label>
-                        <input type="text" id="reward-cover-text" name="cover_text" placeholder="Enter cover text">
-                    </div>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="save-btn">Save</button>
-                        <button type="button" class="cancel-btn">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
         </main>
     </div>
 </body>
+
 </html>

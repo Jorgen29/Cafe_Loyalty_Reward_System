@@ -54,7 +54,30 @@ body {
 
 .logo-icon {
   width: 52px;
+<<<<<<< Updated upstream
   height: 52pxx;
+=======
+  height: 52px;
+}
+.cafe-logo-name {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.hidden {
+  display: none;
+}
+
+.logo-icon-name {
+  width: 0px;
+  height: 0px;
+  max-width: 100px;
+  max-height: 100px;
+>>>>>>> Stashed changes
 }
 
 .close-btn {
