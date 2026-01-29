@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Dashboard - Protected (renamed from admin.html)
  */
@@ -26,6 +27,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +38,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -52,7 +54,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -68,7 +70,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function(){
+        document.addEventListener('DOMContentLoaded', function() {
             const passwordInput = document.getElementById('password');
             const passwordToggle = document.getElementById('passwordToggle');
             const eyeIcon = document.getElementById('eyeIcon');
@@ -100,6 +102,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             margin: 0 auto;
             padding: 40px 30px;
         }
+
         .profile-card {
             background: white;
             border-radius: 8px;
@@ -361,6 +364,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
         }
     </style>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -372,10 +376,14 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-          <nav class="sidebar-nav">
-                <a href="admin.php" class="nav-link ">
+            <nav class="sidebar-nav">
+                <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -385,20 +393,25 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -406,19 +419,10 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link active">
+                <a href="settings.php" class="nav-link active">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
-                </a>
-               
             </nav>
         </aside>
 
@@ -431,10 +435,10 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     <h1 class="page-title">Dashboard</h1>
                 </div>
                 <div class="header-right">
-                   
+
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName ?: 'Admin'; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -444,82 +448,95 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             <div class="dashboard-content">
                 <!-- Stats Cards -->
                 <div class="profile-container">
-        <!-- Profile Card -->
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-avatar">
-                     <a href="profile.php">
-                <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
-                </a>
-                    <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*" style="display:none">
-                    <button type="button" class="profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
-                    <div id="uploadStatus" style="margin-top:8px; font-size:13px; display:none"></div>
-                </div>
-                <div class="profile-user-info">
-                    <h2><?php echo $userName; ?></h2>
-                    
-                </div>
-            </div>
-        </div>
+                    <!-- Profile Card -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <a href="profile.php">
+                                    <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
+                                </a>
+                                <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*" style="display:none">
+                                <button type="button" class="profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
+                                <div id="uploadStatus" style="margin-top:8px; font-size:13px; display:none"></div>
+                            </div>
+                            <div class="profile-user-info">
+                                <h2><?php echo $userName; ?></h2>
 
-        <!-- Edit Form Section -->
-        <div class="form-section">
-            <h3 class="form-title">Edit Account</h3>
-            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
-            <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
-            <form id="profileForm">
-                <div class="form-row">
-                    <label class="form-label">Email:</label>
-                    <input class="form-input" type="email" value="<?php echo $userEmail; ?>" readonly>
-                </div>
-
-              
-                
-                <div class="form-row">
-                    <label class="form-label">Change Password (optional):</label>
-                    <div class="form-password-container">
-                        <input id="password" class="form-input form-input-password" type="password" name="newPassword" placeholder="New password">
-                        
-                                                <button type="button"  id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
-
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Edit Form Section -->
+                    <div class="form-section">
+                        <h3 class="form-title">Edit Account</h3>
+                        <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                        <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <label class="form-label">Email:</label>
+                                <input class="form-input" type="email" value="<?php echo $userEmail; ?>" readonly>
+                            </div>
+
+
+
+                            <div class="form-row">
+                                <label class="form-label">Change Password (optional):</label>
+                                <div class="form-password-container">
+                                    <input id="password" class="form-input form-input-password" type="password" name="newPassword" placeholder="New password">
+
+                                    <button type="button" id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
+
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <label class="form-label">Confirm Password:</label>
+                                <input id="confirmPassword" class="form-input" type="password" name="confirmPassword" placeholder="Confirm password">
+                                <button type="button" id="passwordToggle2" class="show-password-btn"><img id="eyeIcon2" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
+
+                            </div>
+
+                            <button class="save-btn" type="submit">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Logout Section -->
+                    <a href="../../public/actions/auth/logout.php" style="text-decoration: none;">
+                        <div class="logout-section">
+
+                            <img src="../../public/icons/logout.jpg" alt="Logout">
+                            <span class="logout-text">Log out</span>
+
+                        </div>
+                    </a>
                 </div>
-
-                <div class="form-row">
-                    <label class="form-label">Confirm Password:</label>
-                    <input id="confirmPassword" class="form-input" type="password" name="confirmPassword" placeholder="Confirm password">
-                                        <button type="button"  id="passwordToggle2" class="show-password-btn"><img id="eyeIcon2" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
-
-                </div>
-
-                <button class="save-btn" type="submit">Save Changes</button>
-            </form>
-        </div>
-
-        <!-- Logout Section -->
-         <a href="../../public/actions/auth/logout.php" style="text-decoration: none;">
-        <div class="logout-section">
-            
-            <img src="../../public/icons/logout.jpg" alt="Logout">
-            <span class="logout-text">Log out</span>
-            
-        </div>
-        </a>
-    </div>
             </div>
         </main>
     </div>
     <script>
-        (function(){
+        (function() {
             const form = document.getElementById('profileForm');
             const successEl = document.getElementById('successMessage');
             const errorEl = document.getElementById('errorMessage');
 
-            function showSuccess(msg){ if(successEl){ successEl.style.display='block'; successEl.textContent = msg; setTimeout(()=> successEl.style.display='none', 3000);} }
-            function showError(msg){ if(errorEl){ errorEl.style.display='block'; errorEl.textContent = msg; setTimeout(()=> errorEl.style.display='none', 5000);} }
+            function showSuccess(msg) {
+                if (successEl) {
+                    successEl.style.display = 'block';
+                    successEl.textContent = msg;
+                    setTimeout(() => successEl.style.display = 'none', 3000);
+                }
+            }
+
+            function showError(msg) {
+                if (errorEl) {
+                    errorEl.style.display = 'block';
+                    errorEl.textContent = msg;
+                    setTimeout(() => errorEl.style.display = 'none', 5000);
+                }
+            }
 
             if (form) {
-                form.addEventListener('submit', function(e){
+                form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const fd = new FormData(form);
 
@@ -536,10 +553,12 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                             showSuccess(json.message || 'Profile updated');
                             // update visible name in header
                             if (json.user && json.user.firstName) {
-                                try { document.querySelector('.admin-label').textContent = json.user.firstName + (json.user.lastName ? ' ' + json.user.lastName : ''); } catch(e){}
+                                try {
+                                    document.querySelector('.admin-label').textContent = json.user.firstName + (json.user.lastName ? ' ' + json.user.lastName : '');
+                                } catch (e) {}
                             }
                             // Always refresh the page shortly after successful save so session and UI reflect changes
-                            setTimeout(()=> window.location.reload(), 700);
+                            setTimeout(() => window.location.reload(), 700);
                             return;
                         } else if (json.errors) {
                             // display first error
@@ -563,23 +582,23 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
             if (profileImg && fileInput) {
                 profileImg.style.cursor = 'pointer';
-                profileImg.addEventListener('click', function(e){
+                profileImg.addEventListener('click', function(e) {
                     e.preventDefault();
                     fileInput.click();
                 });
             }
 
             if (uploadBtn && fileInput) {
-                uploadBtn.addEventListener('click', function(e){
+                uploadBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     fileInput.click();
                 });
 
-                fileInput.addEventListener('change', function(){
+                fileInput.addEventListener('change', function() {
                     const file = fileInput.files[0];
                     if (!file) return;
 
-                    const allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+                    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                     if (!allowed.includes(file.type)) {
                         if (uploadStatus) {
                             uploadStatus.style.display = 'block';
@@ -598,7 +617,9 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     }
 
                     const reader = new FileReader();
-                    reader.onload = function(ev){ if (profileImg) profileImg.src = ev.target.result; };
+                    reader.onload = function(ev) {
+                        if (profileImg) profileImg.src = ev.target.result;
+                    };
                     reader.readAsDataURL(file);
 
                     const fd = new FormData();
@@ -610,24 +631,41 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                         uploadStatus.textContent = 'Uploading...';
                     }
 
-                    fetch('../../public/actions/auth/upload_admin_profile_photo.php', { method: 'POST', body: fd })
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res.success) {
-                            if (uploadStatus) { uploadStatus.style.color = 'green'; uploadStatus.textContent = 'Uploaded successfully'; }
-                            if (res.file_path && profileImg) profileImg.src = res.file_path;
-                        } else {
-                            if (uploadStatus) { uploadStatus.style.color = 'red'; uploadStatus.textContent = res.message || 'Upload failed'; }
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Upload error', err);
-                        if (uploadStatus) { uploadStatus.style.color = 'red'; uploadStatus.textContent = 'Error uploading file'; }
-                    })
-                    .finally(() => { setTimeout(() => { if (uploadStatus) uploadStatus.style.display = 'none'; }, 4000); });
+                    fetch('../../public/actions/auth/upload_admin_profile_photo.php', {
+                            method: 'POST',
+                            body: fd
+                        })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) {
+                                if (uploadStatus) {
+                                    uploadStatus.style.color = 'green';
+                                    uploadStatus.textContent = 'Uploaded successfully';
+                                }
+                                if (res.file_path && profileImg) profileImg.src = res.file_path;
+                            } else {
+                                if (uploadStatus) {
+                                    uploadStatus.style.color = 'red';
+                                    uploadStatus.textContent = res.message || 'Upload failed';
+                                }
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Upload error', err);
+                            if (uploadStatus) {
+                                uploadStatus.style.color = 'red';
+                                uploadStatus.textContent = 'Error uploading file';
+                            }
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                if (uploadStatus) uploadStatus.style.display = 'none';
+                            }, 4000);
+                        });
                 });
             }
         })();
     </script>
 </body>
+
 </html>

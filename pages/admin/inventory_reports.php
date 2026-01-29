@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Transactions Page
  * Protected page - only admins can access
@@ -44,7 +45,8 @@ if ($query) {
 }
 
 // Function to calculate total amount for an order
-function getOrderTotal($conn, $orderId) {
+function getOrderTotal($conn, $orderId)
+{
     $query = $conn->prepare("SELECT SUM(qty * price) as total FROM orderdetails WHERE order_id = ?");
     if ($query) {
         $query->bind_param("i", $orderId);
@@ -58,7 +60,8 @@ function getOrderTotal($conn, $orderId) {
 }
 
 // Function to get order details (items)
-function getOrderDetails($conn, $orderId) {
+function getOrderDetails($conn, $orderId)
+{
     $details = [];
     $query = $conn->prepare("
         SELECT od.product_id, od.qty, od.price, p.product_name
@@ -101,6 +104,7 @@ if ($itQuery) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,7 +115,7 @@ if ($itQuery) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -127,7 +131,7 @@ if ($itQuery) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -187,7 +191,7 @@ if ($itQuery) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent.replace('#', '');
                     bVal = b.querySelector('td:nth-child(1)').textContent.replace('#', '');
@@ -242,7 +246,7 @@ if ($itQuery) {
             // Populate order items
             const orderItemsContainer = document.getElementById('orderItemsContainer');
             orderItemsContainer.innerHTML = '';
-            
+
             orderDetails.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'order-item';
@@ -275,6 +279,7 @@ if ($itQuery) {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -291,29 +296,37 @@ if ($itQuery) {
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
+                </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
                     <span class="nav-text">Menu</span>
                 </a>
-                <a href="transactions.php" class="nav-link ">
+                <a href="transactions.php" class="nav-link">
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
+                </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
                 </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
-                 <a href="inventory_reports.php" class="nav-link active">
+
+                <a href="inventory_reports.php" class="nav-link active">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -321,17 +334,9 @@ if ($itQuery) {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -347,7 +352,7 @@ if ($itQuery) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -387,7 +392,7 @@ if ($itQuery) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
+                            <?php
                             if (count($ingredientTransactions) > 0) {
                                 foreach ($ingredientTransactions as $tx) {
                                     $cashierName = trim(($tx['cashier_first'] . ' ' . $tx['cashier_last']));
@@ -409,9 +414,9 @@ if ($itQuery) {
                     </table>
                 </div>
             </div>
-            
+
             <!-- Inventory Transactions Content -->
-          
+
         </main>
     </div>
 
@@ -456,4 +461,5 @@ if ($itQuery) {
         </div>
     </div>
 </body>
+
 </html>

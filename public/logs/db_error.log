@@ -5,3 +5,7 @@ Database Connection Error: MySQL server has gone away
 Database Connection Error: MySQL server has gone away
 Database Connection Error: Unknown database 'cf1-rw-db'
 Database Connection Error: No connection could be made because the target machine actively refused it
+<<<<<<< Updated upstream
+=======
+Database Connection Error: No connection could be made because the target machine actively refused it
+>>>>>>> Stashed changes

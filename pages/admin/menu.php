@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Menu Management Page
  * Protected page - only admins can access
@@ -38,6 +39,7 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +50,7 @@ if ($query) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -64,7 +66,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -122,6 +124,7 @@ if ($query) {
         function renderMenuGrid() {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
+<<<<<<< Updated upstream
             
             menuGrid.innerHTML = '';
             const products = <?php echo json_encode($products); ?>;
@@ -161,6 +164,47 @@ if ($query) {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
             
+=======
+
+            menuGrid.innerHTML = '';
+            const products = <?php echo json_encode($products); ?>;
+
+            products.forEach(product => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'menu-item';
+                itemDiv.dataset.category = product.product_category || 'Uncategorized';
+                itemDiv.dataset.productId = product.product_id;
+                itemDiv.dataset.productName = product.product_name;
+                itemDiv.dataset.productPrice = product.product_price;
+                itemDiv.dataset.productSize = product.product_size || 'None';
+                itemDiv.dataset.productTemperature = product.product_temperature || 'None';
+                itemDiv.dataset.productPoints = product.product_points;
+                itemDiv.dataset.productCategory = product.product_category || 'Uncategorized';
+                itemDiv.dataset.imagePath = product.image_path || '';
+
+                const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/Default.jpg';
+
+                itemDiv.innerHTML = `
+                    <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name)}" class="menu-item-image">
+                    <div class="menu-item-name">${escapeHtml(product.product_name)}</div>
+                    <div class="menu-item-price">₱${parseFloat(product.product_price).toFixed(2)}</div>
+                    <div class="menu-item-info">
+                        <span class="info-badge">${escapeHtml(product.product_category || 'Uncategorized')}</span>
+                    </div>
+                    <div class="menu-item-actions">
+                        <button class="edit-btn" title="Edit">✎ Edit</button>
+                        <button class="delete-btn" title="Delete">🗑️ Delete</button>
+                    </div>
+                `;
+                menuGrid.appendChild(itemDiv);
+            });
+        }
+
+        function setupMenuItemActions() {
+            const menuGrid = document.getElementById('menu-grid');
+            if (!menuGrid) return;
+
+>>>>>>> Stashed changes
             // Use event delegation for edit/delete buttons
             menuGrid.addEventListener('click', function(e) {
                 if (e.target.classList.contains('edit-btn')) {
@@ -184,7 +228,11 @@ if ($query) {
                     '>': '&gt;',
                     '"': '&quot;',
                     "'": '&#39;'
+<<<<<<< Updated upstream
                 }[m];
+=======
+                } [m];
+>>>>>>> Stashed changes
             });
         }
 
@@ -201,6 +249,7 @@ if ($query) {
         function sortTable(sortBy) {
             const menuGrid = document.getElementById('menu-grid');
             const items = Array.from(menuGrid.querySelectorAll('.menu-item'));
+<<<<<<< Updated upstream
 
             items.sort((a, b) => {
                 const aId = parseInt(a.dataset.productId || 0);
@@ -208,6 +257,15 @@ if ($query) {
                 const aName = a.dataset.productName.toLowerCase();
                 const bName = b.dataset.productName.toLowerCase();
                 
+=======
+
+            items.sort((a, b) => {
+                const aId = parseInt(a.dataset.productId || 0);
+                const bId = parseInt(b.dataset.productId || 0);
+                const aName = a.dataset.productName.toLowerCase();
+                const bName = b.dataset.productName.toLowerCase();
+
+>>>>>>> Stashed changes
                 if (sortBy === 'latest') {
                     return bId - aId;
                 } else if (sortBy === 'oldest') {
@@ -225,7 +283,11 @@ if ($query) {
         function setupCategoryDropdown() {
             const buttonsContainer = document.getElementById('category-buttons-container');
             if (!buttonsContainer) return;
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             // Get all unique categories from menu items
             const items = document.querySelectorAll('.menu-item');
             const categories = new Set();
@@ -233,9 +295,15 @@ if ($query) {
                 const cat = item.dataset.category;
                 if (cat) categories.add(cat);
             });
+<<<<<<< Updated upstream
             
             buttonsContainer.innerHTML = '';
             
+=======
+
+            buttonsContainer.innerHTML = '';
+
+>>>>>>> Stashed changes
             // Add "All" button
             const allBtn = document.createElement('button');
             allBtn.className = 'category-btn active';
@@ -247,7 +315,11 @@ if ($query) {
                 updateCategoryButtons('all');
             });
             buttonsContainer.appendChild(allBtn);
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             // Add category buttons
             Array.from(categories).sort().forEach(cat => {
                 const btn = document.createElement('button');
@@ -298,6 +370,7 @@ if ($query) {
         }
 
         function openAddMenuModal() {
+<<<<<<< Updated upstream
                const qtyInput = document.getElementById('priceInput');
 
                 qtyInput.addEventListener('keydown', (e) => {
@@ -305,6 +378,15 @@ if ($query) {
                         e.preventDefault(); // block minus and "e" for exponential
                     }
                 });
+=======
+            const qtyInput = document.getElementById('priceInput');
+
+            qtyInput.addEventListener('keydown', (e) => {
+                if (e.key === '-' || e.key === 'e') {
+                    e.preventDefault(); // block minus and "e" for exponential
+                }
+            });
+>>>>>>> Stashed changes
             const modal = document.getElementById('addMenuModal');
             const form = document.getElementById('menuForm');
             form.reset();
@@ -350,7 +432,7 @@ if ($query) {
             document.getElementById('sizeInput').value = size === 'None' ? 'None' : size;
             document.getElementById('pointsInput').value = points;
             document.getElementById('imagePathInput').value = '';
-            
+
             modal.style.display = 'block';
         }
 
@@ -383,7 +465,7 @@ if ($query) {
             formData.append('product_temperature', productTemperature);
             formData.append('product_size', productSize);
             formData.append('product_points', productPoints);
-            
+
             // Append image file if selected
             if (imageFile) {
                 formData.append('image', imageFile);
@@ -391,22 +473,22 @@ if ($query) {
 
             // Send to backend
             fetch('../../public/actions/products/save_product.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Product saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving product');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Product saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving product');
+                });
         }
 
         window.addEventListener('click', function(event) {
@@ -426,22 +508,22 @@ if ($query) {
                 formData.append('product_id', productId);
 
                 fetch('../../public/actions/products/delete_product.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Menu item deleted successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting product');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Menu item deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting product');
+                    });
             }
         }
 
@@ -496,6 +578,7 @@ if ($query) {
 
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -507,11 +590,15 @@ if ($query) {
                 <button class="close-btn" id="hamburger-btn">✕</button>
             </div>
 
-           
-                <nav class="sidebar-nav">
+
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link active">
                     <span class="nav-icon">🍽️</span>
@@ -525,20 +612,24 @@ if ($query) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -546,17 +637,9 @@ if ($query) {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -572,7 +655,7 @@ if ($query) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -695,4 +778,5 @@ if ($query) {
         </div>
     </div>
 </body>
+
 </html>

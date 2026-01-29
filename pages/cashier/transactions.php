@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Transactions Page
  * Protected page - only admins can access
@@ -43,7 +44,8 @@ if ($query) {
 }
 
 // Function to calculate total amount for an order
-function getOrderTotal($conn, $orderId) {
+function getOrderTotal($conn, $orderId)
+{
     $query = $conn->prepare("SELECT SUM(qty * price) as total FROM orderdetails WHERE order_id = ?");
     if ($query) {
         $query->bind_param("i", $orderId);
@@ -57,7 +59,8 @@ function getOrderTotal($conn, $orderId) {
 }
 
 // Function to get order details (items)
-function getOrderDetails($conn, $orderId) {
+function getOrderDetails($conn, $orderId)
+{
     $details = [];
     $query = $conn->prepare("
         SELECT od.product_id, od.qty, od.price, p.product_name
@@ -79,6 +82,7 @@ function getOrderDetails($conn, $orderId) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,7 +108,7 @@ function getOrderDetails($conn, $orderId) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -164,7 +168,7 @@ function getOrderDetails($conn, $orderId) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent.replace('#', '');
                     bVal = b.querySelector('td:nth-child(1)').textContent.replace('#', '');
@@ -224,6 +228,7 @@ function getOrderDetails($conn, $orderId) {
                 setElementText('detailOrderType', orderType || 'N/A');
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
+<<<<<<< Updated upstream
                 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -239,11 +244,32 @@ function getOrderDetails($conn, $orderId) {
                     }
                 }
 
+=======
+
+                const paymentDtEl = document.getElementById('detailPaymentDatetime');
+                if (paymentDtEl) {
+                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
+                        try {
+                            const dt = new Date(paymentDatetime);
+                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
+                        } catch (e) {
+                            paymentDtEl.textContent = 'N/A';
+                        }
+                    } else {
+                        paymentDtEl.textContent = 'N/A';
+                    }
+                }
+
+>>>>>>> Stashed changes
                 // Populate order items
                 const orderItemsContainer = document.getElementById('orderItemsContainer');
                 if (orderItemsContainer) {
                     orderItemsContainer.innerHTML = '';
+<<<<<<< Updated upstream
                     
+=======
+
+>>>>>>> Stashed changes
                     orderDetails.forEach(item => {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'order-item';
@@ -281,6 +307,7 @@ function getOrderDetails($conn, $orderId) {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -292,7 +319,7 @@ function getOrderDetails($conn, $orderId) {
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-           <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="cashier.php" class="nav-link ">
                     <span class="nav-icon">☕</span>
                     <span class="nav-text">Menu</span>
@@ -301,14 +328,14 @@ function getOrderDetails($conn, $orderId) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
-                
+
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">🥫</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -324,7 +351,7 @@ function getOrderDetails($conn, $orderId) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -362,30 +389,30 @@ function getOrderDetails($conn, $orderId) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
+                            <?php
                             if (count($orders) > 0) {
                                 $currentDate = null;
                                 foreach ($orders as $order) {
                                     $orderDate = new DateTime($order['order_date']);
                                     $displayDate = $orderDate->format('F d, Y');
-                                    
+
                                     // Add date header if date changed
                                     if ($currentDate !== $displayDate) {
                                         $currentDate = $displayDate;
                                         echo '<tr class="date-header-row"><td colspan="5">' . htmlspecialchars($displayDate) . '</td></tr>';
                                     }
-                                    
+
                                     $orderTotal = getOrderTotal($conn, $order['order_id']);
                                     $orderDetails = getOrderDetails($conn, $order['order_id']);
-                                    $customerName = $order['first_name'] && $order['last_name'] 
-                                        ? htmlspecialchars($order['first_name'] . ' ' . $order['last_name']) 
+                                    $customerName = $order['first_name'] && $order['last_name']
+                                        ? htmlspecialchars($order['first_name'] . ' ' . $order['last_name'])
                                         : 'Guest';
                                     $orderTime = $order['order_time'] ? (new DateTime($order['order_time']))->format('g:i A') : 'N/A';
                                     $paymentMethod = htmlspecialchars($order['payment_method'] ?? 'N/A');
                                     $paymentReference = htmlspecialchars($order['payment_reference'] ?? 'N/A');
                                     $paymentDatetime = $order['payment_datetime'] ?? 'N/A';
                                     $customerId = $order['customer_id'] ?? 'N/A';
-                                    
+
                                     echo '<tr data-order-id="' . htmlspecialchars($order['order_id']) . '" 
                                         data-order-date="' . htmlspecialchars($displayDate) . '"
                                         data-order-type=""
@@ -459,4 +486,5 @@ function getOrderDetails($conn, $orderId) {
         </div>
     </div>
 </body>
+
 </html>

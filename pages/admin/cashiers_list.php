@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Cashiers List Page
  * Protected page - only admins can access
@@ -49,6 +50,7 @@ if ($squery) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +61,7 @@ if ($squery) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -75,7 +77,7 @@ if ($squery) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -154,7 +156,7 @@ if ($squery) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -207,7 +209,7 @@ if ($squery) {
             // reset store select
             const storeSelect = document.getElementById('storeSelect');
             if (storeSelect) storeSelect.value = '';
-            
+
             const modal = document.getElementById('cashierFormModal');
             if (modal) {
                 modal.style.display = 'block';
@@ -219,7 +221,7 @@ if ($squery) {
             const cashierId = row.querySelector('td:nth-child(1)').textContent;
             const cashierName = row.querySelector('td:nth-child(2)').textContent;
             const email = row.querySelector('td:nth-child(3)').textContent;
-            
+
             const nameParts = cashierName.split(' ');
             const firstName = nameParts[0];
             const lastName = nameParts.slice(1).join(' ');
@@ -251,7 +253,7 @@ if ($squery) {
         function deleteCashier(button) {
             const row = button.closest('tr');
             const cashierId = row.querySelector('td:nth-child(1)').textContent;
-            
+
             if (!confirm('Are you sure you want to delete this cashier?')) {
                 return;
             }
@@ -260,22 +262,22 @@ if ($squery) {
             formData.append('cashier_id', cashierId);
 
             fetch('../../public/actions/cashier/delete_cashier.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Cashier deleted successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error deleting cashier');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Cashier deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting cashier');
+                });
         }
 
         function saveCashier() {
@@ -307,22 +309,22 @@ if ($squery) {
             }
 
             fetch('../../public/actions/cashier/save_cashier.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Cashier saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving cashier');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Cashier saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving cashier');
+                });
         }
 
         function closeCashierModal() {
@@ -343,6 +345,7 @@ if ($squery) {
         });
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -354,10 +357,14 @@ if ($squery) {
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-          <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon">📊</span>
                     <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon">🍽️</span>
@@ -367,20 +374,25 @@ if ($squery) {
                     <span class="nav-icon">💳</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link">
+                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon">📦</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon">📦</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link active">
+                <a href="cashiers_list.php" class="nav-link active">
                     <span class="nav-icon">👥</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -388,17 +400,9 @@ if ($squery) {
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Settings</span>
-                </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Edit Pages</span>
-                </a>
-                <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Rewards</span>
+                    <span class="nav-text">My Account</span>
                 </a>
             </nav>
         </aside>
@@ -414,7 +418,7 @@ if ($squery) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -434,7 +438,7 @@ if ($squery) {
                                 <option value="name-desc">Name (Z-A)</option>
                             </select>
                         </div>
-                       
+
                     </div>
                     <button class="add-btn" title="Add new cashier">➕</button>
                 </div>
@@ -453,16 +457,16 @@ if ($squery) {
                         <tbody>
                             <?php if (count($cashiers) > 0): ?>
                                 <?php foreach ($cashiers as $cashier): ?>
-                                <tr>
-                                    <td><?php echo str_pad($cashier['cashier_id'], 6, '0', STR_PAD_LEFT); ?></td>
-                                    <td><?php echo htmlspecialchars($cashier['first_name'] . ' ' . $cashier['last_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($cashier['email']); ?></td>
-                                    <td data-store-id="<?php echo isset($cashier['store_id']) ? (int)$cashier['store_id'] : ''; ?>">
-                                        
-                                        <button class="action-btn edit-btn" title="Edit">✎</button>
-                                        <button class="action-btn delete-btn" title="Delete">🗑️</button>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td><?php echo str_pad($cashier['cashier_id'], 6, '0', STR_PAD_LEFT); ?></td>
+                                        <td><?php echo htmlspecialchars($cashier['first_name'] . ' ' . $cashier['last_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($cashier['email']); ?></td>
+                                        <td data-store-id="<?php echo isset($cashier['store_id']) ? (int)$cashier['store_id'] : ''; ?>">
+
+                                            <button class="action-btn edit-btn" title="Edit">✎</button>
+                                            <button class="action-btn delete-btn" title="Delete">🗑️</button>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -550,4 +554,5 @@ if ($squery) {
         </div>
     </div>
 </body>
+
 </html>
