@@ -1233,7 +1233,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
