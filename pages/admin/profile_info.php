@@ -30,8 +30,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Cafe Loyalty Reward</title>
-    <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
-    <style>
+    <link rel="stylesheet" href="../../public/assets/css/user-styles.css">    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">    <style>
         .profile-container {
             max-width: 800px;
             margin: 0 auto;
