@@ -211,14 +211,7 @@ if ($query) {
             document.getElementById('modalTitle').textContent = 'Add Reward';
             document.getElementById('rewardIdDisplay').style.display = 'none';
             document.getElementById('rewardIdInput').value = '';
-<<<<<<< Updated upstream
-                    // ensure discount inputs default to 0
-                    const dp = document.getElementById('discountPercentInput'); if (dp) dp.value = '0';
-                    const da = document.getElementById('discountAmountInput'); if (da) da.value = '0';
-                    // set discount type default to Percentage
-                    const dt = document.getElementById('discountTypeInput'); if (dt) dt.value = 'Percentage';
-                    handleDiscountTypeChange();
-=======
+
             // ensure discount inputs default to 0
             const dp = document.getElementById('discountPercentInput');
             if (dp) dp.value = '0';
@@ -228,7 +221,18 @@ if ($query) {
             const dt = document.getElementById('discountTypeInput');
             if (dt) dt.value = 'Percentage';
             handleDiscountTypeChange();
->>>>>>> Stashed changes
+
+            // ensure discount inputs default to 0
+            const dp = document.getElementById('discountPercentInput');
+            if (dp) dp.value = '0';
+            const da = document.getElementById('discountAmountInput');
+            if (da) da.value = '0';
+            // set discount type default to Percentage
+            const dt = document.getElementById('discountTypeInput');
+            if (dt) dt.value = 'Percentage';
+            handleDiscountTypeChange();
+
+            Stashed changes
             modal.style.display = 'block';
             // Reset reward type to show all fields
             handleRewardTypeChange();
@@ -479,17 +483,6 @@ if ($query) {
                         <tbody>
                             <?php if (count($rewards) > 0): ?>
                                 <?php foreach ($rewards as $reward): ?>
-<<<<<<< Updated upstream
-                                <tr>
-                                    <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
-                                    <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
-                                    <td data-col="type"><?php echo htmlspecialchars($reward['reward_type'] ?? ''); ?></td>
-                                    <td data-col="start"><?php echo htmlspecialchars($reward['start_date'] ?? '--'); ?></td>
-                                    <td data-col="end"><?php echo htmlspecialchars($reward['expiration_date'] ?? '--'); ?></td>
-                                    <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
-                                    <td data-col="discount">
-                                        <?php 
-=======
                                     <tr>
                                         <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
                                         <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
@@ -499,23 +492,15 @@ if ($query) {
                                         <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
                                         <td data-col="discount">
                                             <?php
->>>>>>> Stashed changes
                                             if (!empty($reward['discount_amount'])) {
                                                 echo '₱' . htmlspecialchars($reward['discount_amount']);
                                             } else {
                                                 echo htmlspecialchars($reward['discount_percent'] ?? '0') . '%';
                                             }
-<<<<<<< Updated upstream
-                                        ?>
-                                    </td>
-                                    <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
-                                </tr>
-=======
                                             ?>
                                         </td>
                                         <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
                                     </tr>
->>>>>>> Stashed changes
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>

@@ -47,10 +47,6 @@ if ($selectedRange === 'today') {
 $monthlyLabels = [];
 $monthlyData = [];
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 // Prepare sales by day with optional store filter and date range
 try {
     if ($selectedStore) {
@@ -323,7 +319,6 @@ try {
 } catch (Exception $e) {
 }
 
-<<<<<<< Updated upstream
 // Fetch most sold items
 $mostSoldItems = [];
 try {
@@ -361,7 +356,8 @@ try {
             $msi->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Fetch most loyal customers (top 5) with date range filter
 $mostLoyalCustomers = [];
@@ -403,7 +399,8 @@ try {
             $mlc->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
 // Fetch sales by product (all products) with date range filter
 $salesByProduct = [];
@@ -443,10 +440,9 @@ try {
             $sbp->close();
         }
     }
-} catch (Exception $e) {}
+} catch (Exception $e) {
+}
 
-=======
->>>>>>> Stashed changes
 $monthlyLabelsJson = json_encode($monthlyLabels);
 $monthlyDataJson = json_encode($monthlyData);
 $dailyJson = json_encode([$dailyMemberSales, $dailyNonMemberSales]);
@@ -976,12 +972,8 @@ $catDataJson = json_encode($catData);
                                 </thead>
                                 <tbody>
                                     <?php if (!empty($salesByProduct)): ?>
-<<<<<<< Updated upstream
-                                        <?php $count = 0; foreach ($salesByProduct as $product): ?>
-=======
                                         <?php $count = 0;
                                         foreach ($salesByProduct as $product): ?>
->>>>>>> Stashed changes
                                             <?php if ($count >= 5) break; ?>
                                             <tr style="border-bottom: 1px solid #eee;">
                                                 <td style="padding: 12px; font-size: 12px;"><?php echo htmlspecialchars($product['product_name']); ?></td>
@@ -1001,8 +993,4 @@ $catDataJson = json_encode($catData);
                     </div>
                 </div>
             </div>
-<<<<<<< Updated upstream
         </main>
-=======
-        </main>
->>>>>>> Stashed changes
