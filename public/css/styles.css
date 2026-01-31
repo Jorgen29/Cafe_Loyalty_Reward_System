@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -92,7 +92,7 @@ body::before {
   border: 2px solid #e0d5c8;
   border-radius: 8px;
   font-size: 15px;
-  font-family: "Georgia", serif;
+  font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
   transition: all 0.3s ease;
   background-color: #faf8f5;
 }
@@ -187,7 +187,7 @@ body::before {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: "Georgia", serif;
+  font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
   letter-spacing: 1px;
   margin-bottom: 20px;
 }
