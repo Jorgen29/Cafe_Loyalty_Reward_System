@@ -86,6 +86,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
     <title>Cashier POS</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <link rel="stylesheet" href="../../public/assets/css/cashier-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Load jsQR library from CDN (fallback to local file can be added if needed) -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script>
@@ -1240,7 +1241,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
             <nav class="sidebar-nav">
                 <a href="cashier.php" class="nav-link active ">
-                    <span class="nav-icon">☕</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <!-- Category Filter Buttons -->
@@ -1248,17 +1249,17 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     <!-- Category buttons will be inserted here -->
                 </div>
                 <a href="transactions.php" class="nav-link ">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link ">
-                    <span class="nav-icon">🥫</span>
+                    <span class="nav-icon material-icons">kitchen</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
 
                 <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
             </nav>

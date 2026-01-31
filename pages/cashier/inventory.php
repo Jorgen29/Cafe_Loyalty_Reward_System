@@ -258,20 +258,20 @@ if ($query) {
 
             <nav class="sidebar-nav">
                 <a href="cashier.php" class="nav-link ">
-                    <span class="nav-icon">☕</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <a href="transactions.php" class="nav-link ">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link active">
-                    <span class="nav-icon">🥫</span>
+                    <span class="nav-icon material-icons">kitchen</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
             </nav>
