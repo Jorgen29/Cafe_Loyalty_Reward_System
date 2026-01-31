@@ -1,5 +1,5 @@
 /* Admin Dashboard Styles */
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 * {
   margin: 0;
@@ -23,7 +23,6 @@ body {
   width: 250px;
   background-color: #6b4423;
   color: white;
-  padding: 30px 0;
   position: fixed;
   height: 100vh;
   overflow-y: auto;
@@ -34,15 +33,12 @@ body {
 
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 0 20px;
-  margin-bottom: 40px;
 }
 
 .cafe-logo {
-  width: 50px;
-  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -54,11 +50,7 @@ body {
 }
 
 .logo-icon {
-  width: 52px;
-<<<<<<< Updated upstream
-  height: 52pxx;
-=======
-  height: 52px;
+  width: 90px;
 }
 .cafe-logo-name {
   width: 30px;
@@ -78,7 +70,6 @@ body {
   height: 0px;
   max-width: 100px;
   max-height: 100px;
->>>>>>> Stashed changes
 }
 
 .close-btn {
@@ -108,7 +99,7 @@ body {
 }
 
 .nav-icon {
-  font-family: 'Material Icons';
+  font-family: "Material Icons";
   font-size: 24px;
   font-weight: normal;
   font-style: normal;
@@ -122,7 +113,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga';
+  font-feature-settings: "liga";
   align-items: center;
   justify-content: center;
   min-width: 24px;
@@ -267,9 +258,11 @@ body {
 .admin-profile {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   cursor: pointer;
   transition: opacity 0.3s ease;
+  height: 50px;
 }
 
 .admin-profile:hover {

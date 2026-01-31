@@ -228,7 +228,6 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-<<<<<<< Updated upstream
                 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -244,32 +243,11 @@ function getOrderDetails($conn, $orderId)
                     }
                 }
 
-=======
-
-                const paymentDtEl = document.getElementById('detailPaymentDatetime');
-                if (paymentDtEl) {
-                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
-                        try {
-                            const dt = new Date(paymentDatetime);
-                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
-                        } catch (e) {
-                            paymentDtEl.textContent = 'N/A';
-                        }
-                    } else {
-                        paymentDtEl.textContent = 'N/A';
-                    }
-                }
-
->>>>>>> Stashed changes
                 // Populate order items
                 const orderItemsContainer = document.getElementById('orderItemsContainer');
                 if (orderItemsContainer) {
                     orderItemsContainer.innerHTML = '';
-<<<<<<< Updated upstream
                     
-=======
-
->>>>>>> Stashed changes
                     orderDetails.forEach(item => {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'order-item';
@@ -324,10 +302,7 @@ function getOrderDetails($conn, $orderId)
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
+                
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
@@ -361,6 +336,10 @@ function getOrderDetails($conn, $orderId)
                 <a href="reports.php" class="nav-link">
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
+                </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>

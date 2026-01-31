@@ -353,7 +353,7 @@ if ($query) {
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
@@ -371,6 +371,10 @@ if ($query) {
                     <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+                <a href="rewards.php" class="nav-link active">
+                    <span class="nav-icon material-icons">confirmation_number</span>
+                    <span class="nav-text">Rewards</span>
+                </a>
                 <a href="inventory.php" class="nav-link ">
                     <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
@@ -380,6 +384,7 @@ if ($query) {
                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
+                
              <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
@@ -392,18 +397,16 @@ if ($query) {
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-               <a href="settings.php" class="nav-link">
-                    <span class="nav-icon material-icons">settings</span>
-                    <span class="nav-text">Settings</span>
-                </a>
                 <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Edit Pages</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
-                <a href="rewards.php" class="nav-link active">
-                    <span class="nav-icon material-icons">confirmation_number</span>
-                    <span class="nav-text">Rewards</span>
+               <a href="settings.php" class="nav-link">
+                    <span class="nav-icon material-icons">settings</span>
+                    <span class="nav-text">My Account</span>
                 </a>
+                
+                
             </nav>
         </aside>
 

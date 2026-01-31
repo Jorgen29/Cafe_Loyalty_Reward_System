@@ -229,10 +229,7 @@ function calculateTierLevel($customerId)
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
+              
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
@@ -266,6 +263,10 @@ function calculateTierLevel($customerId)
                 <a href="reports.php" class="nav-link">
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
+                </a>
+                  <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Pages Settings</span>
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
