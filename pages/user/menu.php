@@ -379,18 +379,38 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             });
         }
 
+        function handleImageError(img) {
+            if (!img.dataset.retried) {
+                img.dataset.retried = '1';
+                img.src = '../../public/assets/images/Default.jpg';
+            } else {
+                // Use a simple solid color placeholder instead of complex SVG
+                img.style.backgroundColor = '#e8ddd0';
+                img.alt = 'Image not available';
+            }
+        }
+
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card';
             const pointsText = product.points > 0 ? product.points + ' point' + (product.points !== 1 ? 's' : '') : 'No points';
-            card.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-img" onerror="if(!this.dataset.retried) { this.dataset.retried='1'; this.src='../../public/assets/images/default-product.jpg'; } else { this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23e8ddd0%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23999%22%3ENo Image%3C/text%3E%3C/svg%3E'; }">
-                <div class="product-info">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-points">${pointsText}</div>
-                    <div class="product-price">₱${product.price.toFixed(2)}</div>
-                </div>
+            
+            const img = document.createElement('img');
+            img.src = product.image;
+            img.alt = product.name;
+            img.className = 'product-img';
+            img.onerror = function() { handleImageError(this); };
+            
+            const info = document.createElement('div');
+            info.className = 'product-info';
+            info.innerHTML = `
+                <div class="product-name">${product.name}</div>
+                <div class="product-points">${pointsText}</div>
+                <div class="product-price">₱${product.price.toFixed(2)}</div>
             `;
+            
+            card.appendChild(img);
+            card.appendChild(info);
             return card;
         }
 
