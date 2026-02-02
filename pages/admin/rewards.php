@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Admin Inventory Management Page
  * Protected page - only admins can access
@@ -39,18 +38,18 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rewards - Cafe Loyalty Reward</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-
+            
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -66,7 +65,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
+                if(window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -145,7 +144,7 @@ if ($query) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-
+                
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -211,24 +210,12 @@ if ($query) {
             document.getElementById('modalTitle').textContent = 'Add Reward';
             document.getElementById('rewardIdDisplay').style.display = 'none';
             document.getElementById('rewardIdInput').value = '';
-<<<<<<< Updated upstream
                     // ensure discount inputs default to 0
                     const dp = document.getElementById('discountPercentInput'); if (dp) dp.value = '0';
                     const da = document.getElementById('discountAmountInput'); if (da) da.value = '0';
                     // set discount type default to Percentage
                     const dt = document.getElementById('discountTypeInput'); if (dt) dt.value = 'Percentage';
                     handleDiscountTypeChange();
-=======
-            // ensure discount inputs default to 0
-            const dp = document.getElementById('discountPercentInput');
-            if (dp) dp.value = '0';
-            const da = document.getElementById('discountAmountInput');
-            if (da) da.value = '0';
-            // set discount type default to Percentage
-            const dt = document.getElementById('discountTypeInput');
-            if (dt) dt.value = 'Percentage';
-            handleDiscountTypeChange();
->>>>>>> Stashed changes
             modal.style.display = 'block';
             // Reset reward type to show all fields
             handleRewardTypeChange();
@@ -255,7 +242,7 @@ if ($query) {
             document.getElementById('expirationDateInput').value = (end === '--') ? '' : end;
             document.getElementById('pointsInput').value = (points === '--') ? '' : points;
             // set discount (strip trailing % if present)
-            const dp = discountText.toString().replace('%', '').trim();
+            const dp = discountText.toString().replace('%','').trim();
             document.getElementById('discountPercentInput').value = dp;
             document.getElementById('discountAmountInput').value = dp;
             // set discount type to default Percentage (could be enhanced to fetch from DB later)
@@ -307,22 +294,22 @@ if ($query) {
             formData.append('discount_type', discountType);
 
             fetch('../../public/actions/rewards/save_reward.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Reward saved successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error saving reward');
-                });
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Reward saved successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving reward');
+            });
         }
 
         window.addEventListener('click', function(event) {
@@ -341,84 +328,86 @@ if ($query) {
             formData.append('reward_id', rewardId);
 
             fetch('../../public/actions/rewards/delete_reward.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Reward deleted successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting reward');
-                });
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Reward deleted successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting reward');
+            });
         }
     </script>
 </head>
-
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
                 <a href="menu.php" class="nav-link">
-                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <a href="transactions.php" class="nav-link">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
                 <a href="rewards.php" class="nav-link active">
-                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
-                <a href="inventory.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                <a href="inventory.php" class="nav-link ">
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
                 </a>
-
                 <a href="inventory_reports.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
-                    <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
+                   <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-                <a href="members_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                
+             <a href="members_list.php" class="nav-link">
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
-                <a href="cashiers_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                 <a href="cashiers_list.php" class="nav-link">
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
                 <a href="reports.php" class="nav-link">
-                    <span class="nav-icon">📋</span>
+                    <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-                <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                  <a href="settings.php" class="nav-link">
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Pages Settings</span>
+                </a>
+             
+                
+                
             </nav>
         </aside>
 
@@ -428,12 +417,12 @@ if ($query) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Rewards</h1>
+                    <h1 class="serif page-title">Rewards</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -479,7 +468,6 @@ if ($query) {
                         <tbody>
                             <?php if (count($rewards) > 0): ?>
                                 <?php foreach ($rewards as $reward): ?>
-<<<<<<< Updated upstream
                                 <tr>
                                     <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
                                     <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
@@ -489,33 +477,15 @@ if ($query) {
                                     <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
                                     <td data-col="discount">
                                         <?php 
-=======
-                                    <tr>
-                                        <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
-                                        <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
-                                        <td data-col="type"><?php echo htmlspecialchars($reward['reward_type'] ?? ''); ?></td>
-                                        <td data-col="start"><?php echo htmlspecialchars($reward['start_date'] ?? '--'); ?></td>
-                                        <td data-col="end"><?php echo htmlspecialchars($reward['expiration_date'] ?? '--'); ?></td>
-                                        <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
-                                        <td data-col="discount">
-                                            <?php
->>>>>>> Stashed changes
                                             if (!empty($reward['discount_amount'])) {
                                                 echo '₱' . htmlspecialchars($reward['discount_amount']);
                                             } else {
                                                 echo htmlspecialchars($reward['discount_percent'] ?? '0') . '%';
                                             }
-<<<<<<< Updated upstream
                                         ?>
                                     </td>
                                     <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
                                 </tr>
-=======
-                                            ?>
-                                        </td>
-                                        <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
-                                    </tr>
->>>>>>> Stashed changes
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -595,5 +565,4 @@ if ($query) {
         </div>
     </div>
 </body>
-
 </html>

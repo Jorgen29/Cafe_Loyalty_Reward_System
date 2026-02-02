@@ -56,26 +56,64 @@ if ($check_result->num_rows === 0) {
 
 $check_query->close();
 
-// Delete reward
-$query = $conn->prepare("DELETE FROM reward WHERE reward_id = ?");
-if (!$query) {
-    error_log("Prepare failed: " . $conn->error);
+// Start transaction to ensure all deletes succeed or all fail
+$conn->begin_transaction();
+
+try {
+    // Delete from orderdetails first (child records of order)
+    $delete_order_details = $conn->prepare("DELETE FROM orderdetails WHERE order_id IN (SELECT order_id FROM `order` WHERE reward_id = ?)");
+    if (!$delete_order_details) {
+        throw new Exception("Prepare failed for orderdetails: " . $conn->error);
+    }
+    $delete_order_details->bind_param("i", $reward_id);
+    if (!$delete_order_details->execute()) {
+        throw new Exception("Failed to delete from orderdetails: " . $delete_order_details->error);
+    }
+    $delete_order_details->close();
+
+    // Delete from order table (orders using this reward)
+    $delete_orders = $conn->prepare("DELETE FROM `order` WHERE reward_id = ?");
+    if (!$delete_orders) {
+        throw new Exception("Prepare failed for order: " . $conn->error);
+    }
+    $delete_orders->bind_param("i", $reward_id);
+    if (!$delete_orders->execute()) {
+        throw new Exception("Failed to delete from order: " . $delete_orders->error);
+    }
+    $delete_orders->close();
+
+    // Delete from customerrewards table (reward assignments to customers)
+    $delete_customer_rewards = $conn->prepare("DELETE FROM customerrewards WHERE reward_id = ?");
+    if (!$delete_customer_rewards) {
+        throw new Exception("Prepare failed for customerrewards: " . $conn->error);
+    }
+    $delete_customer_rewards->bind_param("i", $reward_id);
+    if (!$delete_customer_rewards->execute()) {
+        throw new Exception("Failed to delete from customerrewards: " . $delete_customer_rewards->error);
+    }
+    $delete_customer_rewards->close();
+
+    // Delete reward from reward table
+    $delete_reward = $conn->prepare("DELETE FROM reward WHERE reward_id = ?");
+    if (!$delete_reward) {
+        throw new Exception("Prepare failed for reward: " . $conn->error);
+    }
+    $delete_reward->bind_param("i", $reward_id);
+    if (!$delete_reward->execute()) {
+        throw new Exception("Failed to delete from reward: " . $delete_reward->error);
+    }
+    $delete_reward->close();
+
+    // Commit transaction
+    $conn->commit();
+    
+    http_response_code(200);
+    echo json_encode(['success' => true, 'message' => 'Reward and related records deleted successfully']);
+} catch (Exception $e) {
+    // Rollback on error
+    $conn->rollback();
+    error_log("Transaction failed: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']);
-    exit;
+    echo json_encode(['success' => false, 'message' => 'Failed to delete reward: ' . $e->getMessage()]);
 }
-
-$query->bind_param("i", $reward_id);
-$result = $query->execute();
-
-if (!$result) {
-    error_log("Execute failed: " . $query->error);
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Failed to delete reward']);
-    exit;
-}
-
-$query->close();
-http_response_code(200);
-echo json_encode(['success' => true, 'message' => 'Reward deleted successfully']);
 ?>

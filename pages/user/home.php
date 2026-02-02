@@ -82,7 +82,7 @@ if (isset($conn)) {
     </script>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            
@@ -118,14 +118,14 @@ alt="User">
 
     <div class="banner-section">
         <img src="../../<?php echo $home_cover_image; ?>" alt="Banner" class="banner">
-        <div class="banner-text"><?php echo $home_cover_text; ?></div>
+        <div class="serif banner-text"><?php echo $home_cover_text; ?></div>
     </div>
 
     <div class="main-section">
         <div class="offer-section">
             <div>
-                <div class="offer-title">We Offer</div>
-                <div class="offer-desc">Blueberry<br>Cheesecake</div>
+                <div class="serif offer-title">We Offer</div>
+                <div class="serif offer-desc">Blueberry<br>Cheesecake</div>
             </div>
             <img src="../../<?php echo $home_menu_image; ?>" alt="Blueberry Cheesecake" class="offer-img">
         </div>
@@ -133,8 +133,8 @@ alt="User">
 
     <div class="rewards-section">
         <div>
-            <div class="rewards-title">Enjoy more rewards</div>
-            <div class="discount-ticket">%<br>Discount</div>
+            <div class="serif rewards-title">Enjoy more rewards</div>
+            <div class="serif discount-ticket">%<br>Discount</div>
         </div>
         <div class="rewards-desc">
             Redeem your points to<br>claim exciting rewards
