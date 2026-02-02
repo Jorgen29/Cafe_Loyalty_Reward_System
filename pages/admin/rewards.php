@@ -521,7 +521,7 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="rewardNameInput">Reward Name:</label>
-                    <input type="text" id="rewardNameInput" class="serif form-input san-serif" placeholder="e.g., Free Coffee" required>
+                    <input type="text" id="rewardNameInput" class="form-input san-serif" placeholder="e.g., Free Coffee" required>
                 </div>
 
                 <div class="form-group">
