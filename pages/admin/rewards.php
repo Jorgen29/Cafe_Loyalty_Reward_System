@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Inventory Management Page
  * Protected page - only admins can access
@@ -38,6 +39,7 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,7 +51,7 @@ if ($query) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -65,7 +67,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -144,7 +146,7 @@ if ($query) {
 
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
+
                 if (sortBy === 'latest') {
                     aVal = a.querySelector('td:nth-child(1)').textContent;
                     bVal = b.querySelector('td:nth-child(1)').textContent;
@@ -210,12 +212,15 @@ if ($query) {
             document.getElementById('modalTitle').textContent = 'Add Reward';
             document.getElementById('rewardIdDisplay').style.display = 'none';
             document.getElementById('rewardIdInput').value = '';
-                    // ensure discount inputs default to 0
-                    const dp = document.getElementById('discountPercentInput'); if (dp) dp.value = '0';
-                    const da = document.getElementById('discountAmountInput'); if (da) da.value = '0';
-                    // set discount type default to Percentage
-                    const dt = document.getElementById('discountTypeInput'); if (dt) dt.value = 'Percentage';
-                    handleDiscountTypeChange();
+            // ensure discount inputs default to 0
+            const dp = document.getElementById('discountPercentInput');
+            if (dp) dp.value = '0';
+            const da = document.getElementById('discountAmountInput');
+            if (da) da.value = '0';
+            // set discount type default to Percentage
+            const dt = document.getElementById('discountTypeInput');
+            if (dt) dt.value = 'Percentage';
+            handleDiscountTypeChange();
             modal.style.display = 'block';
             // Reset reward type to show all fields
             handleRewardTypeChange();
@@ -242,7 +247,7 @@ if ($query) {
             document.getElementById('expirationDateInput').value = (end === '--') ? '' : end;
             document.getElementById('pointsInput').value = (points === '--') ? '' : points;
             // set discount (strip trailing % if present)
-            const dp = discountText.toString().replace('%','').trim();
+            const dp = discountText.toString().replace('%', '').trim();
             document.getElementById('discountPercentInput').value = dp;
             document.getElementById('discountAmountInput').value = dp;
             // set discount type to default Percentage (could be enhanced to fetch from DB later)
@@ -294,22 +299,22 @@ if ($query) {
             formData.append('discount_type', discountType);
 
             fetch('../../public/actions/rewards/save_reward.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Reward saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving reward');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Reward saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving reward');
+                });
         }
 
         window.addEventListener('click', function(event) {
@@ -328,25 +333,26 @@ if ($query) {
             formData.append('reward_id', rewardId);
 
             fetch('../../public/actions/rewards/delete_reward.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Reward deleted successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error deleting reward');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Reward deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting reward');
+                });
         }
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -363,7 +369,7 @@ if ($query) {
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                 <a href="page_view.php" class="nav-link">
+                <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
@@ -385,15 +391,15 @@ if ($query) {
                 </a>
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-                
-             <a href="members_list.php" class="nav-link">
+
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -401,14 +407,14 @@ if ($query) {
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-                  <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-               
-             
-                
-                
+
+
+
+
             </nav>
         </aside>
 
@@ -423,7 +429,7 @@ if ($query) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -469,24 +475,24 @@ if ($query) {
                         <tbody>
                             <?php if (count($rewards) > 0): ?>
                                 <?php foreach ($rewards as $reward): ?>
-                                <tr>
-                                    <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
-                                    <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
-                                    <td data-col="type"><?php echo htmlspecialchars($reward['reward_type'] ?? ''); ?></td>
-                                    <td data-col="start"><?php echo htmlspecialchars($reward['start_date'] ?? '--'); ?></td>
-                                    <td data-col="end"><?php echo htmlspecialchars($reward['expiration_date'] ?? '--'); ?></td>
-                                    <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
-                                    <td data-col="discount">
-                                        <?php 
+                                    <tr>
+                                        <td data-col="id"><?php echo htmlspecialchars($reward['reward_id']); ?></td>
+                                        <td data-col="name"><?php echo htmlspecialchars($reward['reward_name'] ?? ''); ?></td>
+                                        <td data-col="type"><?php echo htmlspecialchars($reward['reward_type'] ?? ''); ?></td>
+                                        <td data-col="start"><?php echo htmlspecialchars($reward['start_date'] ?? '--'); ?></td>
+                                        <td data-col="end"><?php echo htmlspecialchars($reward['expiration_date'] ?? '--'); ?></td>
+                                        <td data-col="points"><?php echo htmlspecialchars($reward['points'] ?? '--'); ?></td>
+                                        <td data-col="discount">
+                                            <?php
                                             if (!empty($reward['discount_amount'])) {
                                                 echo '₱' . htmlspecialchars($reward['discount_amount']);
                                             } else {
                                                 echo htmlspecialchars($reward['discount_percent'] ?? '0') . '%';
                                             }
-                                        ?>
-                                    </td>
-                                    <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
-                                </tr>
+                                            ?>
+                                        </td>
+                                        <td><button class="action-btn edit-btn" title="Edit">✎</button><button class="action-btn delete-btn" title="Delete">🗑️</button></td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -515,12 +521,12 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="rewardNameInput">Reward Name:</label>
-                    <input type="text" id="rewardNameInput" class="form-input" placeholder="e.g., Free Coffee" required>
+                    <input type="text" id="rewardNameInput" class="serif form-input san-serif" placeholder="e.g., Free Coffee" required>
                 </div>
 
                 <div class="form-group">
                     <label for="rewardTypeInput">Reward Type:</label>
-                    <select id="rewardTypeInput" class="form-select">
+                    <select id="rewardTypeInput" class="serif form-select san-serif">
                         <option value="">-- Select Type --</option>
                         <option value="Discount Voucher">Discount Voucher</option>
                         <option value="Birthday Voucher">Birthday Voucher</option>
@@ -530,22 +536,22 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="startDateInput">Start Date:</label>
-                    <input type="date" id="startDateInput" class="form-input">
+                    <input type="date" id="startDateInput" class="serif form-input san-serif">
                 </div>
 
                 <div class="form-group">
                     <label for="expirationDateInput">Expiration Date:</label>
-                    <input type="date" id="expirationDateInput" class="form-input">
+                    <input type="date" id="expirationDateInput" class="serif form-input san-serif">
                 </div>
 
                 <div class="form-group">
                     <label for="pointsInput">Points Required / Awarded:</label>
-                    <input type="number" id="pointsInput" class="form-input" placeholder="e.g., 100" min="0">
+                    <input type="number" id="pointsInput" class="serif form-input san-serif" placeholder="e.g., 100" min="0">
                 </div>
 
                 <div class="form-group">
                     <label for="discountTypeInput">Discount Type:</label>
-                    <select id="discountTypeInput" class="form-select">
+                    <select id="discountTypeInput" class="serif form-select san-serif">
                         <option value="Percentage">Percentage</option>
                         <option value="Amount">Amount</option>
                     </select>
@@ -553,12 +559,12 @@ if ($query) {
 
                 <div class="form-group" id="discountPercentGroup">
                     <label for="discountPercentInput">Discount Value (Percentage):</label>
-                    <input type="number" id="discountPercentInput" class="form-input" placeholder="e.g., 10" min="0">
+                    <input type="number" id="discountPercentInput" class="serif form-input san-serif" placeholder="e.g., 10" min="0">
                 </div>
 
                 <div class="form-group" id="discountAmountGroup" style="display: none;">
                     <label for="discountAmountInput">Discount Value (Amount):</label>
-                    <input type="number" id="discountAmountInput" class="form-input" placeholder="e.g., 50" min="0" step="0.01">
+                    <input type="number" id="discountAmountInput" class="serif form-input san-serif" placeholder="e.g., 50" min="0" step="0.01">
                 </div>
 
                 <button type="button" class="serif save-btn" onclick="saveReward()">Save</button>
@@ -566,4 +572,5 @@ if ($query) {
         </div>
     </div>
 </body>
+
 </html>
