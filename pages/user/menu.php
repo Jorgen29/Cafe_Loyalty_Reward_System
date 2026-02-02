@@ -553,7 +553,7 @@ alt="User">
 
     <div class="banner-section">
         <img src="../../<?php echo htmlspecialchars($menu_cover_image); ?>" alt="Menu Banner" class="banner">
-        <div class="banner-text"><?php echo htmlspecialchars($menu_cover_text); ?></div>
+        <div class="serif banner-text"><?php echo htmlspecialchars($menu_cover_text); ?></div>
     </div>
 
     <div class="menu-container">
@@ -562,7 +562,7 @@ alt="User">
             <button id="category-toggle" class="category-toggle" aria-label="Toggle categories">☰ Categories</button>
             <!-- <input id="mobile-search" class="search mobile-search" type="text" placeholder="Search menu items..."> -->
         </div>
-        <aside class="categories-sidebar">
+        <aside class="serif categories-sidebar">
             <h3>Categories</h3>
             <ul>
                 <?php
@@ -580,7 +580,7 @@ alt="User">
         </aside>
 
         <main class="products-section">
-            <h2 class="category-title" id="category-title"><?php echo $initialCategory; ?></h2>
+            <h2 class="serif category-title" id="category-title"><?php echo $initialCategory; ?></h2>
             <div class="product-grid" id="product-grid">
                 <!-- Products rendered by JS -->
             </div>
