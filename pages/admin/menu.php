@@ -647,6 +647,7 @@ if ($query) {
                         <option value="Sandwich">Sandwich</option>
                         <option value="Milktea">Milktea</option>
                         <option value="Extra">Extra</option>
+                        <option value="Cake">Cake</option>
                     </select>
                 </div>
 
