@@ -458,7 +458,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                                     <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
                                 </a>
                                 <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*" style="display:none">
-                                <button type="button" class="profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
+                                <button type="button" class="serif profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
                                 <div id="uploadStatus" style="margin-top:8px; font-size:13px; display:none"></div>
                             </div>
                             <div class="profile-user-info">
@@ -498,7 +498,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
                             </div>
 
-                            <button class="save-btn" type="submit">Save Changes</button>
+                            <button class="serif save-btn" type="submit">Save Changes</button>
                         </form>
                     </div>
 
