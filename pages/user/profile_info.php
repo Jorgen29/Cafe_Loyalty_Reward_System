@@ -536,7 +536,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
     </script>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            

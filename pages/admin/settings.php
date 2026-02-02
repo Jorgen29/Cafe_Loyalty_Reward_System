@@ -371,58 +371,60 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
+                
                 <a href="menu.php" class="nav-link">
-                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <a href="transactions.php" class="nav-link">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
                 <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
                 <a href="inventory.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
                 </a>
 
                 <a href="inventory_reports.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory Transactions</span>
 
                 </a>
                 <a href="members_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
                 <a href="cashiers_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
                 <a href="reports.php" class="nav-link">
-                    <span class="nav-icon">📋</span>
+                    <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
                 <a href="settings.php" class="nav-link active">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Pages Settings</span>
+                </a>
+                
             </nav>
         </aside>
 
@@ -432,7 +434,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Dashboard</h1>
+                    <h1 class="serif page-title">Dashboard</h1>
                 </div>
                 <div class="header-right">
 
@@ -456,7 +458,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                                     <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
                                 </a>
                                 <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*" style="display:none">
-                                <button type="button" class="profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
+                                <button type="button" class="serif profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
                                 <div id="uploadStatus" style="margin-top:8px; font-size:13px; display:none"></div>
                             </div>
                             <div class="profile-user-info">
@@ -496,7 +498,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
                             </div>
 
-                            <button class="save-btn" type="submit">Save Changes</button>
+                            <button class="serif save-btn" type="submit">Save Changes</button>
                         </form>
                     </div>
 
