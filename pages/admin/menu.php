@@ -150,8 +150,8 @@ if ($query) {
                         <span class="info-badge">${escapeHtml(product.product_category || 'Uncategorized')}</span>
                     </div>
                     <div class="menu-item-actions">
-                        <button class="edit-btn" title="Edit">✎ Edit</button>
-                        <button class="delete-btn" title="Delete">🗑️ Delete</button>
+                        <button class="serif edit-btn" title="Edit">✎ Edit</button>
+                        <button class="serif delete-btn" title="Delete">🗑️ Delete</button>
                     </div>
                 `;
                 menuGrid.appendChild(itemDiv);
@@ -600,7 +600,7 @@ if ($query) {
                             <input type="text" class="search-input" placeholder="Search products...">
                         </div>
                     </div>
-                    <button class="add-btn" title="Add new menu item">➕ Add Menu Item</button>
+                    <button class="serif add-btn" title="Add new menu item"><span class="material-icons">add</span> Add Menu Item</button>
                 </div>
 
                 <!-- Menu Grid -->
@@ -615,7 +615,7 @@ if ($query) {
     <div id="addMenuModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Add Menu</h2>
+                <h2 class="serif" id="modalTitle">Add Menu</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
             <form id="menuForm" class="modal-body">
@@ -695,7 +695,7 @@ if ($query) {
                     <small style="color: #666; display: block; margin-top: 5px;">Supported formats: JPG, PNG, GIF (Max 2MB)</small>
                 </div>
 
-                <button type="button" class="save-btn" onclick="saveMenu()">Save</button>
+                <button type="button" class="serif save-btn" onclick="saveMenu()">Save</button>
             </form>
         </div>
     </div>
