@@ -37,7 +37,7 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
                     <img src="public\assets\css\images\logo images\BrownLogoBackground.png" alt="Cups & Stories Cafe Logo" class="logo-image">
                 </div>
 
-                <h1 class="login-heading">Welcome</h1>
+                <h1 class="serif login-heading">Welcome</h1>
                 <p class="login-subtitle">Login to your Cafe Loyalty account</p>
             </div>
            

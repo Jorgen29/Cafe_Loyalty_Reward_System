@@ -9,6 +9,17 @@ body {
   box-sizing: border-box;
 }
 
+/* FONT STYLES */
+
+.serif {
+  font-family: "Georgia", "Times New Roman", serif !important;
+}
+
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+}
+
 /* Remove default border and outline from images and divs */
 img,
 div {
