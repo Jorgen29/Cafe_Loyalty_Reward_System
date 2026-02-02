@@ -108,7 +108,7 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
                         >
                         <button 
                             type="button" 
-                            class="password-toggle" 
+                            class="serif password-toggle" 
                             id="passwordToggle"
                             aria-label="Toggle password visibility"
                         >
@@ -144,7 +144,7 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
 
                
 
-                <button type="submit" class="login-button" id="signupBtn">Create Account</button>
+                <button type="submit" class="serif login-button" id="signupBtn">Create Account</button>
             </form>
 
             <div class="divider">
