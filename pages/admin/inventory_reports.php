@@ -347,7 +347,7 @@ if ($itQuery) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Inventory Transactions</h1>
+                    <h1 class="serif page-title">Inventory Transactions</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">

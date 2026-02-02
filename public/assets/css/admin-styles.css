@@ -14,9 +14,10 @@ body {
   color: #333;
 }
 
-.admin-container {
-  display: flex;
-  min-height: 100vh;
+/* FONT STYLES */
+
+.serif {
+  font-family: "Georgia", "Times New Roman", serif !important;
 }
 
 /* ========== SIDEBAR ========== */

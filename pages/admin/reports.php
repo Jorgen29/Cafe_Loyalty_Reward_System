@@ -853,7 +853,7 @@ $catDataJson = json_encode($catData);
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Sales Report</h1>
+                    <h1 class="serif page-title">Sales Report</h1>
                 </div>
                 <div class="header-right">
 

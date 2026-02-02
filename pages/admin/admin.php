@@ -250,7 +250,7 @@ try {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Dashboard</h1>
+                    <h1 class="serif page-title">Dashboard</h1>
                 </div>
                 <div class="header-right">
 

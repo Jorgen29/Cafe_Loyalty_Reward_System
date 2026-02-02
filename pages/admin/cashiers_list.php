@@ -415,7 +415,7 @@ if ($squery) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Cashiers List</h1>
+                    <h1 class="serif page-title">Cashiers List</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">

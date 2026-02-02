@@ -991,7 +991,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">POS System</h1>
+                    <h1 class="serif page-title">POS System</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
