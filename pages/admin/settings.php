@@ -423,8 +423,8 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-                
-                
+
+
             </nav>
         </aside>
 
@@ -476,7 +476,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                         <form id="profileForm">
                             <div class="form-row">
                                 <label class="form-label">Email:</label>
-                                <input class="form-input" type="email" value="<?php echo $userEmail; ?>" readonly>
+                                <input class="form-input san-serif" type="email" value="<?php echo $userEmail; ?>" readonly>
                             </div>
 
 
@@ -484,7 +484,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                             <div class="form-row">
                                 <label class="form-label">Change Password (optional):</label>
                                 <div class="form-password-container">
-                                    <input id="password" class="form-input form-input-password" type="password" name="newPassword" placeholder="New password">
+                                    <input id="password" class="form-input form-input-password san-serif" type="password" name="newPassword" placeholder="New password">
 
                                     <button type="button" id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
 
@@ -493,7 +493,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
                             <div class="form-row">
                                 <label class="form-label">Confirm Password:</label>
-                                <input id="confirmPassword" class="form-input" type="password" name="confirmPassword" placeholder="Confirm password">
+                                <input id="confirmPassword" class="form-input san-serif" type="password" name="confirmPassword" placeholder="Confirm password">
                                 <button type="button" id="passwordToggle2" class="show-password-btn"><img id="eyeIcon2" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
 
                             </div>

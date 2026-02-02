@@ -292,12 +292,12 @@ if ($query) {
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                  <a href="page_view.php" class="nav-link">
+                <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
-               
-                
+
+
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
@@ -332,11 +332,11 @@ if ($query) {
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-              
+
             </nav>
         </aside>
 
@@ -429,17 +429,17 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="ingredientNameInput">Ingredient Name:</label>
-                    <input type="text" id="ingredientNameInput" class="form-input" placeholder="e.g., Chicken Wings Fresh" required>
+                    <input type="text" id="ingredientNameInput" class="form-input san-serif" placeholder="e.g., Chicken Wings Fresh" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ingredientQtyInput">Quantity (QTY):</label>
-                    <input type="number" id="ingredientQtyInput" class="form-input" placeholder="e.g., 614" min="0" value="0" required>
+                    <input type="number" id="ingredientQtyInput" class="form-input san-serif" placeholder="e.g., 614" min="0" value="0" required>
                 </div>
 
                 <div class="form-group">
                     <label for="ingredientUnitInput">Unit:</label>
-                    <select id="ingredientUnitInput" class="form-input" required>
+                    <select id="ingredientUnitInput" class="form-input san-serif" required>
                         <option value="piece">Piece</option>
                         <option value="KG (Kilogram)">KG (Kilogram)</option>
                         <option value="ML (Milliliter)">ML (Milliliter)</option>
@@ -458,18 +458,23 @@ if ($query) {
 <script>
     const qtyInput = document.getElementById('ingredientQtyInput');
 
-<<<<<<< Updated upstream
-qtyInput.addEventListener('keydown', (e) => {
-    if (e.key === '-' || e.key === 'e') {
-        e.preventDefault(); // block minus and "e" for exponential
-    }
-});
-
-=======
+    <<
+    <<
+    << < Updated upstream
     qtyInput.addEventListener('keydown', (e) => {
         if (e.key === '-' || e.key === 'e') {
             e.preventDefault(); // block minus and "e" for exponential
         }
     });
->>>>>>> Stashed changes
+
+    ===
+    ===
+    =
+    qtyInput.addEventListener('keydown', (e) => {
+        if (e.key === '-' || e.key === 'e') {
+            e.preventDefault(); // block minus and "e" for exponential
+        }
+    }); >>>
+    >>>
+    > Stashed changes
 </script>

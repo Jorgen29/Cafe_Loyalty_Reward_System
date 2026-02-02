@@ -363,11 +363,11 @@ if ($squery) {
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                 <a href="page_view.php" class="nav-link">
+                <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
-               
+
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
@@ -402,12 +402,12 @@ if ($squery) {
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-                
-               
+
+
             </nav>
         </aside>
 
@@ -525,27 +525,27 @@ if ($squery) {
 
                 <div class="form-group">
                     <label for="firstNameInput">First Name:</label>
-                    <input type="text" id="firstNameInput" class="form-input" placeholder="First Name" required>
+                    <input type="text" id="firstNameInput" class="form-input san-serif" placeholder="First Name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="lastNameInput">Last Name:</label>
-                    <input type="text" id="lastNameInput" class="form-input" placeholder="Last Name" required>
+                    <input type="text" id="lastNameInput" class="form-input san-serif" placeholder="Last Name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="emailInput">Email:</label>
-                    <input type="email" id="emailInput" class="form-input" placeholder="Email" required>
+                    <input type="email" id="emailInput" class="form-input san-serif" placeholder="Email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="passwordInput">Password:</label>
-                    <input type="password" id="passwordInput" class="form-input" placeholder="Password">
+                    <input type="password" id="passwordInput" class="form-input san-serif" placeholder="Password">
                 </div>
 
                 <div class="form-group">
                     <label for="storeSelect">Store / Branch:</label>
-                    <select id="storeSelect" class="form-input">
+                    <select id="storeSelect" class="form-input san-serif">
                         <option value="">-- Select Store --</option>
                         <?php foreach ($stores as $st): ?>
                             <option value="<?php echo (int)$st['store_id']; ?>"><?php echo htmlspecialchars($st['location']); ?></option>

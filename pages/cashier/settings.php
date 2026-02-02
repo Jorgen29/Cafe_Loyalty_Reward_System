@@ -455,23 +455,23 @@ if (isset($_SESSION['user_id'])) {
                         <form id="profileForm">
                             <div class="form-row">
                                 <label class="form-label">First Name:</label>
-                                <input class="form-input" type="text" name="firstName" value="<?php echo htmlspecialchars($cashierData['first_name'] ?? ''); ?>" required>
+                                <input class="form-input san-serif" type="text" name="firstName" value="<?php echo htmlspecialchars($cashierData['first_name'] ?? ''); ?>" required>
                             </div>
 
                             <div class="form-row">
                                 <label class="form-label">Last Name:</label>
-                                <input class="form-input" type="text" name="lastName" value="<?php echo htmlspecialchars($cashierData['last_name'] ?? ''); ?>" required>
+                                <input class="form-input san-serif" type="text" name="lastName" value="<?php echo htmlspecialchars($cashierData['last_name'] ?? ''); ?>" required>
                             </div>
 
                             <div class="form-row">
                                 <label class="form-label">Email:</label>
-                                <input class="form-input" type="email" value="<?php echo $userEmail; ?>" readonly>
+                                <input class="form-input san-serif" type="email" value="<?php echo $userEmail; ?>" readonly>
                             </div>
 
                             <div class="form-row">
                                 <label class="form-label">Change Password (optional):</label>
                                 <div class="form-password-container">
-                                    <input id="password" class="form-input form-input-password" type="password" name="newPassword" placeholder="New password">
+                                    <input id="password" class="form-input form-input-password san-serif" type="password" name="newPassword" placeholder="New password">
 
                                     <button type="button" id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
 

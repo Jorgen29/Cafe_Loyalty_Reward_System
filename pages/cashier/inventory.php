@@ -366,17 +366,17 @@ if ($query) {
 
                 <div class="form-group">
                     <label for="ingredientNameInput">Ingredient Name:</label>
-                    <input type="text" id="ingredientNameInput" class="form-input" placeholder="e.g., Chicken Wings Fresh" readonly>
+                    <input type="text" id="ingredientNameInput" class="form-input san-serif" placeholder="e.g., Chicken Wings Fresh" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="ingredientCurrentQty">Current Quantity:</label>
-                    <input type="number" id="ingredientCurrentQty" class="form-input" readonly>
+                    <input type="number" id="ingredientCurrentQty" class="form-input san-serif" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="takeQtyInput">Quantity to Take:</label>
-                    <input type="number" id="takeQtyInput" class="form-input" placeholder="e.g., 5" min="0" step="any">
+                    <input type="number" id="takeQtyInput" class="form-input san-serif" placeholder="e.g., 5" min="0" step="any">
                 </div>
 
                 <button type="button" class="save-btn" onclick="takeIngredient()">Take</button>
