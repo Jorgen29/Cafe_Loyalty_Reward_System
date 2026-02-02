@@ -448,7 +448,7 @@ if ($query) {
                             <span class="search-icon">🔍</span>
                         </div>
                     </div>
-                    <button class="add-btn" title="Add new reward">➕</button>
+                    <button class="add-btn" title="Add new reward"><span class="material-icons">add</span></button>
                 </div>
 
                 <!-- Rewards Table -->
@@ -504,7 +504,7 @@ if ($query) {
     <div id="addRewardModal" class="modal">
         <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
             <div class="modal-header">
-                <h2 id="modalTitle">Add Reward</h2>
+                <h2 class="serif" id="modalTitle">Add Reward</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
             <form id="rewardForm" class="modal-body">
@@ -561,7 +561,7 @@ if ($query) {
                     <input type="number" id="discountAmountInput" class="form-input" placeholder="e.g., 50" min="0" step="0.01">
                 </div>
 
-                <button type="button" class="save-btn" onclick="saveReward()">Save</button>
+                <button type="button" class="serif save-btn" onclick="saveReward()">Save</button>
             </form>
         </div>
     </div>
