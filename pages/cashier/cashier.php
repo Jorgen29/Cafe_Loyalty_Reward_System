@@ -959,7 +959,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="cashier.php" class="nav-link active ">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>

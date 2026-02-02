@@ -358,7 +358,7 @@ if ($query) {
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>

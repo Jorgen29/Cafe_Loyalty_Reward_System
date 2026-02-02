@@ -319,7 +319,7 @@ function getOrderDetails($conn, $orderId)
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="cashier.php" class="nav-link ">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
