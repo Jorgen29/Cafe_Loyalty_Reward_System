@@ -20,6 +20,11 @@ body {
   font-family: "Georgia", "Times New Roman", serif !important;
 }
 
+.sans-serif {
+  font-family:
+    "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
 /* ========== SIDEBAR ========== */
 .sidebar {
   width: 250px;

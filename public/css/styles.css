@@ -8,6 +8,11 @@
   font-family: Georgia, "Times New Roman", serif !important;
 }
 
+.sans-serif {
+  font-family:
+    "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
 body {
   font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
   background-size: cover;

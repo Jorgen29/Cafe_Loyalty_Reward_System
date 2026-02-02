@@ -15,6 +15,11 @@ body {
   font-family: "Georgia", "Times New Roman", serif !important;
 }
 
+.sans-serif {
+  font-family:
+    "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
 .admin-container {
   display: flex;
   min-height: 100vh;

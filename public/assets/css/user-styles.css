@@ -19,6 +19,11 @@ body {
   font-family: "Georgia", "Times New Roman", serif !important;
 }
 
+.sans-serif {
+  font-family:
+    "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
 /* ========== HEADER ========== */
 .header {
   background-color: #6b4423;
