@@ -649,7 +649,7 @@ if ($query) {
 
                 <div class="form-group san-serif">
                     <label for="menuNameInput">Product Name:</label>
-                    <input type="text" id="menuNameInput" class="form-input san-serif" placeholder="Americano" required>
+                    <input type="text" id="menuNameInput" class="serif form-input san-serif" placeholder="Americano" required>
                 </div>
 
                 <div class="form-group san-serif">
