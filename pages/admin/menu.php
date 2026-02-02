@@ -481,6 +481,19 @@ if ($query) {
                 sizeGroup.style.display = '';
                 tempGroup.style.display = 'none';
                 if (tempSelect) tempSelect.value = 'Cold';
+                // Set size options for milktea (16oz and 22oz)
+                if (sizeSelect) {
+                    // Hide Small, Medium, Large options and show only 16oz and 22oz
+                    const options = sizeSelect.querySelectorAll('option');
+                    options.forEach(opt => {
+                        if (opt.value === 'Small' || opt.value === 'Medium' || opt.value === 'Large') {
+                            opt.style.display = 'none';
+                        } else if (opt.value === '16oz' || opt.value === '22oz') {
+                            opt.style.display = '';
+                        }
+                    });
+                    sizeSelect.value = '16oz';
+                }
                 return;
             }
 
@@ -488,7 +501,18 @@ if ($query) {
             tempGroup.style.display = 'none';
             sizeGroup.style.display = 'none';
             if (tempSelect) tempSelect.value = 'None';
-            if (sizeSelect) sizeSelect.value = 'None';
+            if (sizeSelect) {
+                sizeSelect.value = 'None';
+                // Show default size options (Small, Medium, Large)
+                const options = sizeSelect.querySelectorAll('option');
+                options.forEach(opt => {
+                    if (opt.value === 'Small' || opt.value === 'Medium' || opt.value === 'Large') {
+                        opt.style.display = '';
+                    } else if (opt.value === '16oz' || opt.value === '22oz') {
+                        opt.style.display = 'none';
+                    }
+                });
+            }
         }
         
          
@@ -680,6 +704,8 @@ if ($query) {
                             <option value="Small">Small</option>
                             <option value="Medium">Medium</option>
                             <option value="Large">Large</option>
+                            <option value="16oz">16oz</option>
+                            <option value="22oz">22oz</option>
                         </select>
                     </div>
                 </div>
