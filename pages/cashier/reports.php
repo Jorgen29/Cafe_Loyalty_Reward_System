@@ -510,27 +510,27 @@ $catDataJson = json_encode($catData);
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="cashier.php" class="nav-link ">
-                    <span class="nav-icon">☕</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <a href="transactions.php" class="nav-link ">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link ">
-                    <span class="nav-icon">🥫</span>
+                    <span class="nav-icon material-icons">kitchen</span>
                     <span class="nav-text">Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
             </nav>
@@ -545,7 +545,7 @@ $catDataJson = json_encode($catData);
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Sales Report</h1>
+                    <h1 class="serif page-title">Sales Report</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">

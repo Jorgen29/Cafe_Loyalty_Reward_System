@@ -45,6 +45,7 @@ if ($query) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - Cafe Loyalty Reward</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
@@ -97,9 +98,6 @@ if ($query) {
                 });
             }
 
-            // Setup category dropdown
-            setupCategoryDropdown();
-
             // Add new menu item
             const addBtn = document.querySelector('.add-btn');
             if (addBtn) {
@@ -116,55 +114,17 @@ if ($query) {
                 });
             }
 
-            // Render menu grid
+            // Render menu grid FIRST
             renderMenuGrid();
             setupMenuItemActions();
+
+            // Setup category dropdown AFTER menu items are rendered
+            setupCategoryDropdown();
         });
 
         function renderMenuGrid() {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
-<<<<<<< Updated upstream
-            
-            menuGrid.innerHTML = '';
-            const products = <?php echo json_encode($products); ?>;
-            
-            products.forEach(product => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'menu-item';
-                itemDiv.dataset.category = product.product_category || 'Uncategorized';
-                itemDiv.dataset.productId = product.product_id;
-                itemDiv.dataset.productName = product.product_name;
-                itemDiv.dataset.productPrice = product.product_price;
-                itemDiv.dataset.productSize = product.product_size || 'None';
-                itemDiv.dataset.productTemperature = product.product_temperature || 'None';
-                itemDiv.dataset.productPoints = product.product_points;
-                itemDiv.dataset.productCategory = product.product_category || 'Uncategorized';
-                itemDiv.dataset.imagePath = product.image_path || '';
-                
-                const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/Default.jpg';
-                
-                itemDiv.innerHTML = `
-                    <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name)}" class="menu-item-image">
-                    <div class="menu-item-name">${escapeHtml(product.product_name)}</div>
-                    <div class="menu-item-price">₱${parseFloat(product.product_price).toFixed(2)}</div>
-                    <div class="menu-item-info">
-                        <span class="info-badge">${escapeHtml(product.product_category || 'Uncategorized')}</span>
-                    </div>
-                    <div class="menu-item-actions">
-                        <button class="edit-btn" title="Edit">✎ Edit</button>
-                        <button class="delete-btn" title="Delete">🗑️ Delete</button>
-                    </div>
-                `;
-                menuGrid.appendChild(itemDiv);
-            });
-        }
-
-        function setupMenuItemActions() {
-            const menuGrid = document.getElementById('menu-grid');
-            if (!menuGrid) return;
-            
-=======
 
             menuGrid.innerHTML = '';
             const products = <?php echo json_encode($products); ?>;
@@ -192,8 +152,8 @@ if ($query) {
                         <span class="info-badge">${escapeHtml(product.product_category || 'Uncategorized')}</span>
                     </div>
                     <div class="menu-item-actions">
-                        <button class="edit-btn" title="Edit">✎ Edit</button>
-                        <button class="delete-btn" title="Delete">🗑️ Delete</button>
+                        <button class="serif edit-btn" title="Edit">✎ Edit</button>
+                        <button class="serif delete-btn" title="Delete">🗑️ Delete</button>
                     </div>
                 `;
                 menuGrid.appendChild(itemDiv);
@@ -204,7 +164,6 @@ if ($query) {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
 
->>>>>>> Stashed changes
             // Use event delegation for edit/delete buttons
             menuGrid.addEventListener('click', function(e) {
                 if (e.target.classList.contains('edit-btn')) {
@@ -228,11 +187,7 @@ if ($query) {
                     '>': '&gt;',
                     '"': '&quot;',
                     "'": '&#39;'
-<<<<<<< Updated upstream
-                }[m];
-=======
                 } [m];
->>>>>>> Stashed changes
             });
         }
 
@@ -249,15 +204,6 @@ if ($query) {
         function sortTable(sortBy) {
             const menuGrid = document.getElementById('menu-grid');
             const items = Array.from(menuGrid.querySelectorAll('.menu-item'));
-<<<<<<< Updated upstream
-
-            items.sort((a, b) => {
-                const aId = parseInt(a.dataset.productId || 0);
-                const bId = parseInt(b.dataset.productId || 0);
-                const aName = a.dataset.productName.toLowerCase();
-                const bName = b.dataset.productName.toLowerCase();
-                
-=======
 
             items.sort((a, b) => {
                 const aId = parseInt(a.dataset.productId || 0);
@@ -265,7 +211,6 @@ if ($query) {
                 const aName = a.dataset.productName.toLowerCase();
                 const bName = b.dataset.productName.toLowerCase();
 
->>>>>>> Stashed changes
                 if (sortBy === 'latest') {
                     return bId - aId;
                 } else if (sortBy === 'oldest') {
@@ -283,11 +228,7 @@ if ($query) {
         function setupCategoryDropdown() {
             const buttonsContainer = document.getElementById('category-buttons-container');
             if (!buttonsContainer) return;
-<<<<<<< Updated upstream
-            
-=======
 
->>>>>>> Stashed changes
             // Get all unique categories from menu items
             const items = document.querySelectorAll('.menu-item');
             const categories = new Set();
@@ -295,15 +236,9 @@ if ($query) {
                 const cat = item.dataset.category;
                 if (cat) categories.add(cat);
             });
-<<<<<<< Updated upstream
-            
-            buttonsContainer.innerHTML = '';
-            
-=======
 
             buttonsContainer.innerHTML = '';
 
->>>>>>> Stashed changes
             // Add "All" button
             const allBtn = document.createElement('button');
             allBtn.className = 'category-btn active';
@@ -315,11 +250,7 @@ if ($query) {
                 updateCategoryButtons('all');
             });
             buttonsContainer.appendChild(allBtn);
-<<<<<<< Updated upstream
-            
-=======
 
->>>>>>> Stashed changes
             // Add category buttons
             Array.from(categories).sort().forEach(cat => {
                 const btn = document.createElement('button');
@@ -370,15 +301,6 @@ if ($query) {
         }
 
         function openAddMenuModal() {
-<<<<<<< Updated upstream
-               const qtyInput = document.getElementById('priceInput');
-
-                qtyInput.addEventListener('keydown', (e) => {
-                    if (e.key === '-' || e.key === 'e') {
-                        e.preventDefault(); // block minus and "e" for exponential
-                    }
-                });
-=======
             const qtyInput = document.getElementById('priceInput');
 
             qtyInput.addEventListener('keydown', (e) => {
@@ -386,7 +308,6 @@ if ($query) {
                     e.preventDefault(); // block minus and "e" for exponential
                 }
             });
->>>>>>> Stashed changes
             const modal = document.getElementById('addMenuModal');
             const form = document.getElementById('menuForm');
             form.reset();
@@ -498,10 +419,9 @@ if ($query) {
             }
         });
 
-        function deleteMenuItem(button) {
+        function deleteMenuItem(item) {
             if (confirm('Are you sure you want to delete this menu item?')) {
-                const row = button.closest('tr');
-                const productId = row.querySelector('td:nth-child(1)').textContent;
+                const productId = item.dataset.productId;
 
                 // Send delete request to backend
                 const formData = new FormData();
@@ -563,6 +483,19 @@ if ($query) {
                 sizeGroup.style.display = '';
                 tempGroup.style.display = 'none';
                 if (tempSelect) tempSelect.value = 'Cold';
+                // Set size options for milktea (16oz and 22oz)
+                if (sizeSelect) {
+                    // Hide Small, Medium, Large options and show only 16oz and 22oz
+                    const options = sizeSelect.querySelectorAll('option');
+                    options.forEach(opt => {
+                        if (opt.value === 'Small' || opt.value === 'Medium' || opt.value === 'Large') {
+                            opt.style.display = 'none';
+                        } else if (opt.value === '16oz' || opt.value === '22oz') {
+                            opt.style.display = '';
+                        }
+                    });
+                    sizeSelect.value = '16oz';
+                }
                 return;
             }
 
@@ -570,12 +503,19 @@ if ($query) {
             tempGroup.style.display = 'none';
             sizeGroup.style.display = 'none';
             if (tempSelect) tempSelect.value = 'None';
-            if (sizeSelect) sizeSelect.value = 'None';
+            if (sizeSelect) {
+                sizeSelect.value = 'None';
+                // Show default size options (Small, Medium, Large)
+                const options = sizeSelect.querySelectorAll('option');
+                options.forEach(opt => {
+                    if (opt.value === 'Small' || opt.value === 'Medium' || opt.value === 'Large') {
+                        opt.style.display = '';
+                    } else if (opt.value === '16oz' || opt.value === '22oz') {
+                        opt.style.display = 'none';
+                    }
+                });
+            }
         }
-        
-         
-
-
     </script>
 </head>
 
@@ -585,23 +525,24 @@ if ($query) {
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="hamburger-btn">✕</button>
             </div>
 
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
                 <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
+                    <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
+
                 <a href="menu.php" class="nav-link active">
-                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <!-- Category Filter Buttons -->
@@ -609,38 +550,41 @@ if ($query) {
                     <!-- Category buttons will be inserted here -->
                 </div>
                 <a href="transactions.php" class="nav-link">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
                 <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
                 <a href="inventory.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
                 </a>
                 <a href="inventory_reports.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory Transactions</span>
 
                 </a>
                 <a href="members_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
                 <a href="cashiers_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
                 <a href="reports.php" class="nav-link">
-                    <span class="nav-icon">📋</span>
+                    <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
                 <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
+
+
+
             </nav>
         </aside>
 
@@ -650,7 +594,7 @@ if ($query) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Menu</h1>
+                    <h1 class="serif page-title">Menu</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
@@ -679,7 +623,7 @@ if ($query) {
                             <input type="text" class="search-input" placeholder="Search products...">
                         </div>
                     </div>
-                    <button class="add-btn" title="Add new menu item">➕ Add Menu Item</button>
+                    <button class="serif add-btn" title="Add new menu item"><span class="material-icons">add</span> Add Menu Item</button>
                 </div>
 
                 <!-- Menu Grid -->
@@ -694,7 +638,7 @@ if ($query) {
     <div id="addMenuModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Add Menu</h2>
+                <h2 class="serif" id="modalTitle">Add Menu</h2>
                 <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
             <form id="menuForm" class="modal-body">
@@ -703,17 +647,17 @@ if ($query) {
                     <input type="hidden" id="menuIdInput" value="">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="menuNameInput">Product Name:</label>
-                    <input type="text" id="menuNameInput" class="form-input" placeholder="Americano" required>
+                    <input type="text" id="menuNameInput" class="form-input san-serif" placeholder="Americano" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="priceInput">Price (₱):</label>
-                    <input type="number" id="priceInput" class="form-input" placeholder="100" step="0.01" min="0" required>
+                    <input type="number" id="priceInput" class="form-input san-serif" placeholder="100" step="0.01" min="0" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="categorySelect">Category:</label>
                     <select id="categorySelect" class="form-select">
                         <option value="Coffee">Coffee</option>
@@ -726,6 +670,7 @@ if ($query) {
                         <option value="Sandwich">Sandwich</option>
                         <option value="Milktea">Milktea</option>
                         <option value="Extra">Extra</option>
+                        <option value="Cake">Cake</option>
                     </select>
                 </div>
 
@@ -739,7 +684,7 @@ if ($query) {
                 </div>
                 -->
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <div id="temperatureGroup" style="display: none;">
                         <label for="temperatureInput">Temperature:</label>
                         <select id="temperatureInput" class="form-select">
@@ -750,7 +695,7 @@ if ($query) {
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <div id="sizeGroup" style="display: none;">
                         <label for="sizeInput">Size:</label>
                         <select id="sizeInput" class="form-select">
@@ -758,22 +703,24 @@ if ($query) {
                             <option value="Small">Small</option>
                             <option value="Medium">Medium</option>
                             <option value="Large">Large</option>
+                            <option value="16oz">16oz</option>
+                            <option value="22oz">22oz</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group hidden">
+                <div class="form-group hidden san-serif">
                     <label for="pointsInput">Loyalty Points:</label>
                     <input type="number" id="pointsInput" class="form-input" value="1">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="imagePathInput">Product Image:</label>
                     <input type="file" id="imagePathInput" class="form-input" accept="image/*">
                     <small style="color: #666; display: block; margin-top: 5px;">Supported formats: JPG, PNG, GIF (Max 2MB)</small>
                 </div>
 
-                <button type="button" class="save-btn" onclick="saveMenu()">Save</button>
+                <button type="button" class="serif save-btn" onclick="saveMenu()">Save</button>
             </form>
         </div>
     </div>

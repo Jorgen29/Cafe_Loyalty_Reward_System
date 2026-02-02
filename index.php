@@ -32,15 +32,15 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
 <body class="login-page">
     <div class="auth-wrapper">
         <div class="login-container">
-            <div class="logo">
-                <div class="logo-title">CUPS</div>
-                <div class="logo-subtitle">& STORIES</div>
-                <div class="logo-divider"></div>
-                <div class="logo-cafe">C A F E</div>
-            </div>
+            <div class="login-header">
+                <div class="logo">
+                    <img src="public\assets\css\images\logo images\BrownLogoBackground.png" alt="Cups & Stories Cafe Logo" class="logo-image">
+                </div>
 
-            <h1 class="login-heading">Welcome</h1>
-            <p class="login-subtitle">Login to your Cafe Loyalty account</p>
+                <h1 class="serif login-heading">Welcome</h1>
+                <p class="login-subtitle">Login to your Cafe Loyalty account</p>
+            </div>
+           
 
             <form id="loginForm" autocomplete="off">
                 <?php if ($error): ?>
@@ -81,7 +81,7 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
                         >
                         <button 
                             type="button" 
-                            class="password-toggle" 
+                            class="serif password-toggle" 
                             id="passwordToggle"
                             aria-label="Toggle password visibility"
                         >
@@ -99,7 +99,7 @@ $error = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : '';
                         <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="login-button" id="loginBtn">Sign In</button>
+                <button type="submit" class="serif login-button" id="loginBtn">Sign In</button>
             </form>
 
             <div class="divider">

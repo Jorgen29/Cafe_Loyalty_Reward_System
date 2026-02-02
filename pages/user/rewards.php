@@ -481,7 +481,7 @@ if (isset($conn)) {
     </script>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            
@@ -516,14 +516,14 @@ alt="User">
 
     <div class="banner-section">
         <img src="../../<?php echo htmlspecialchars($rewards_cover_image); ?>" alt="Rewards Banner" class="banner">
-        <div class="banner-text"><?php echo htmlspecialchars($rewards_cover_text); ?></div>
+        <div class="serif banner-text"><?php echo htmlspecialchars($rewards_cover_text); ?></div>
     </div>
 
     <div class="rewards-container">
         <!-- Progress Section -->
         <div class="progress-section">
             <a class="progress-info" href="faqs.php" title="How to earn points?">?</a>
-                <div class="progress-title">
+                <div class="serif progress-title">
                     ☕ Order 10 Coffee to get free refill
                 </div>
                 <div class="progress-bar-container">
@@ -535,13 +535,13 @@ alt="User">
                             echo '<div class="progress-bar-fill" style="width:' . $percent . '%"></div>';
                         ?>
                     </div>
-                    <button class="progress-claim-btn">Claim</button>
+                    <button class="serif progress-claim-btn">Claim</button>
                 </div>
         </div>
 
         <!-- Redeem Rewards Section -->
         <div class="rewards-list-section">
-            <h2 class="section-title">Redeem Rewards</h2>
+            <h2 class="serif section-title">Redeem Rewards</h2>
             
             <?php if (count($activeRewards) === 0): ?>
                 <p style="color:#666;">No rewards available at this time.</p>
@@ -563,7 +563,7 @@ alt="User">
                             <?php if ($rPoints > 0): ?>
                                 <span class="reward-points"><?php echo $rPoints; ?> points</span>
                             <?php else: ?>
-                                <button class="reward-btn">Claim</button>
+                                <button class="serif reward-btn">Claim</button>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -573,7 +573,7 @@ alt="User">
 
         <!-- History Section -->
         <div class="history-section">
-            <h2 class="section-title">Redeem Rewards History</h2>
+            <h2 class="serif section-title">Redeem Rewards History</h2>
             <div class="history-list">
                 <?php if (count($redeemHistory) === 0): ?>
                     <div style="color:#666;">No redeem history yet.</div>

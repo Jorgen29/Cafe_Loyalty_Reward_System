@@ -379,18 +379,38 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             });
         }
 
+        function handleImageError(img) {
+            if (!img.dataset.retried) {
+                img.dataset.retried = '1';
+                img.src = '../../public/assets/images/Default.jpg';
+            } else {
+                // Use a simple solid color placeholder instead of complex SVG
+                img.style.backgroundColor = '#e8ddd0';
+                img.alt = 'Image not available';
+            }
+        }
+
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card';
             const pointsText = product.points > 0 ? product.points + ' point' + (product.points !== 1 ? 's' : '') : 'No points';
-            card.innerHTML = `
-                <img src="${product.image}" alt="${product.name}" class="product-img" onerror="this.src='../../public/assets/images/default-product.jpg'">
-                <div class="product-info">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-points">${pointsText}</div>
-                    <div class="product-price">₱${product.price.toFixed(2)}</div>
-                </div>
+            
+            const img = document.createElement('img');
+            img.src = product.image;
+            img.alt = product.name;
+            img.className = 'product-img';
+            img.onerror = function() { handleImageError(this); };
+            
+            const info = document.createElement('div');
+            info.className = 'product-info';
+            info.innerHTML = `
+                <div class="product-name">${product.name}</div>
+                <div class="product-points">${pointsText}</div>
+                <div class="product-price">₱${product.price.toFixed(2)}</div>
             `;
+            
+            card.appendChild(img);
+            card.appendChild(info);
             return card;
         }
 
@@ -496,7 +516,7 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
     </script>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            
@@ -527,14 +547,13 @@ alt="User">
                 <span></span>
                 <span></span>
                 <span></span>
-            <                <img src="${product.image}" alt="${product.name}" class="product-img" onerror="this.src='../../public/assets/images/default-product.jpg'">
-/button>
+            </button>
         </div>
     </header>
 
     <div class="banner-section">
         <img src="../../<?php echo htmlspecialchars($menu_cover_image); ?>" alt="Menu Banner" class="banner">
-        <div class="banner-text"><?php echo htmlspecialchars($menu_cover_text); ?></div>
+        <div class="serif banner-text"><?php echo htmlspecialchars($menu_cover_text); ?></div>
     </div>
 
     <div class="menu-container">
@@ -543,7 +562,7 @@ alt="User">
             <button id="category-toggle" class="category-toggle" aria-label="Toggle categories">☰ Categories</button>
             <!-- <input id="mobile-search" class="search mobile-search" type="text" placeholder="Search menu items..."> -->
         </div>
-        <aside class="categories-sidebar">
+        <aside class="serif categories-sidebar">
             <h3>Categories</h3>
             <ul>
                 <?php
@@ -561,7 +580,7 @@ alt="User">
         </aside>
 
         <main class="products-section">
-            <h2 class="category-title" id="category-title"><?php echo $initialCategory; ?></h2>
+            <h2 class="serif category-title" id="category-title"><?php echo $initialCategory; ?></h2>
             <div class="product-grid" id="product-grid">
                 <!-- Products rendered by JS -->
             </div>

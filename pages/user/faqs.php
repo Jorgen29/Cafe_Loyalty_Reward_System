@@ -42,7 +42,7 @@ if (!isset($_SESSION['user_id'])) {
     </style>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            
@@ -72,7 +72,7 @@ alt="User">
 
     <div class="banner-section">
         <img src="../../public/assets/Home-page-bg1.jpg" alt="Banner" class="banner">
-        <div class="banner-text">FAQs & Help</div>
+        <div class="serif banner-text">FAQs & Help</div>
     </div>
 
     <main class="page-wrap">

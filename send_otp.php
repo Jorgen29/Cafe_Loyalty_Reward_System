@@ -9,15 +9,16 @@
 <body class="login-page">
     <div class="auth-wrapper">
         <div class="login-container">
-            <div class="logo">
-                <div class="logo-title">CUPS</div>
-                <div class="logo-subtitle">& STORIES</div>
-                <div class="logo-divider"></div>
-                <div class="logo-cafe">C A F E</div>
+           <div class="login-header">
+                <div class="logo">
+                    <img src="public\assets\css\images\logo images\BrownLogoBackground.png" alt="Cups & Stories Cafe Logo" class="logo-image">
+                </div>
+
+                 <h1 class="serif login-heading">Verify Email</h1>
+                <p class="login-subtitle">Enter the verification code sent to your email</p>
             </div>
 
-            <h1 class="login-heading">Verify Email</h1>
-            <p class="login-subtitle">Enter the verification code sent to your email</p>
+           
 
             <form id="verificationForm" method="post">
                 <div class="form-group">
@@ -37,7 +38,7 @@
                 <!-- Optional email field; prefills from ?email=... if present -->
                 <input type="hidden" id="otpEmail" name="email" value="">
 
-                <button type="submit" class="login-button">Confirm</button>
+                <button type="submit" class="serif login-button">Confirm</button>
             </form>
 
             <div class="otp-actions">

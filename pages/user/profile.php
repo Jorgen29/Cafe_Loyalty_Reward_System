@@ -997,7 +997,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
     </script>
 </head>
 <body>
-    <header class="header">
+    <header class="serif header">
          <a href="home.php">
         <div class="header-left">
            
@@ -1062,7 +1062,7 @@ alt="User">
 
     <div class="banner-section">
         <img src="../../public/assets/profile-page.jpg" alt="Profile Banner" class="banner">
-        <div class="banner-text">Profile</div>
+        <div class="serif banner-text">Profile</div>
     </div>
 
     <div class="profile-container">
@@ -1077,7 +1077,7 @@ alt="User">
 alt="User">
                 </a>
                 </div>
-                <div class="profile-user-info">
+                <div class="serif profile-user-info">
                     <h2><?php echo htmlspecialchars($customerName); ?></h2>
                     <div class="profile-level"><?php echo htmlspecialchars($levelName); ?></div>
                     <div class="profile-level-sub"><?php echo $pointsNeeded > 0 ? $pointsNeeded . ' points needed to reach ' . htmlspecialchars($nextLevel) : 'Maximum level reached!'; ?></div>
@@ -1103,7 +1103,7 @@ alt="User">
 
         <!-- Coffee Cups Section -->
         <div class="cups-section">
-            <h3 class="section-title">My Coffee Cups</h3>
+            <h3 class="serif section-title">My Coffee Cups</h3>
             <div class="cups-info">
                 <div class="cups-item">
                     <div class="cups-item-label">Current Balance</div>
@@ -1137,7 +1137,7 @@ alt="User">
 
         <!-- My Rewards Section -->
         <div class="rewards-section">
-            <h3 class="section-title">My Rewards</h3>
+            <h3 class="serif section-title">My Rewards</h3>
             
             <?php if (count($availableRewards) === 0): ?>
                 <p style="color:#666;">No active rewards available.</p>
@@ -1158,7 +1158,7 @@ alt="User">
 
         <!-- Available Rewards to Claim Section -->
         <div class="rewards-section">
-            <h3 class="section-title">Available Rewards to Claim</h3>
+            <h3 class="serif section-title">Available Rewards to Claim</h3>
             
             <?php if (count($claimableRewards) === 0): ?>
                 <p style="color:#666;">No rewards available to claim at this time.</p>
@@ -1212,7 +1212,7 @@ alt="User">
                             <?php endif; ?>
                         </div>
                         <div class="reward-action">
-                            <button class="activate-btn claim-reward-btn" data-reward-id="<?php echo $rewardId; ?>" <?php if (!$canClaim) { echo 'disabled style="opacity:0.5;cursor:not-allowed;"'; } ?>>
+                            <button class="serif activate-btn claim-reward-btn" data-reward-id="<?php echo $rewardId; ?>" <?php if (!$canClaim) { echo 'disabled style="opacity:0.5;cursor:not-allowed;"'; } ?>>
                                 <?php echo $buttonText; ?>
                             </button>
                         </div>
@@ -1223,7 +1223,7 @@ alt="User">
 
         <!-- Points History Section -->
         <div class="history-section">
-            <h3 class="section-title">Coffee Cups History</h3>
+            <h3 class="serif section-title">Coffee Cups History</h3>
             <table class="history-table">
                 <thead>
                     <tr>

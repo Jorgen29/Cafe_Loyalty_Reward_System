@@ -53,6 +53,7 @@ function calculateTierLevel($customerId)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member List - Cafe Loyalty Reward</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
@@ -220,58 +221,61 @@ function calculateTierLevel($customerId)
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
-                    <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo-icon">
+                    <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
                 </div>
                 <button class="close-btn" id="sidebar-close-btn">✕</button>
             </div>
 
-            <nav class="sidebar-nav">
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
                 <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon">📄</span>
+                    <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
+
                 <a href="menu.php" class="nav-link">
-                    <span class="nav-icon">🍽️</span>
+                    <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
                 <a href="transactions.php" class="nav-link">
-                    <span class="nav-icon">💳</span>
+                    <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
                 <a href="rewards.php" class="nav-link">
-                    <span class="nav-icon">🎟️</span>
+                    <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
                 <a href="inventory.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
                 </a>
 
                 <a href="inventory_reports.php" class="nav-link">
-                    <span class="nav-icon">📦</span>
+                    <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory Transactions</span>
 
                 </a>
                 <a href="members_list.php" class="nav-link active">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
                 <a href="cashiers_list.php" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
                 <a href="reports.php" class="nav-link">
-                    <span class="nav-icon">📋</span>
+                    <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
                 <a href="settings.php" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
+
+
             </nav>
         </aside>
 
@@ -281,7 +285,7 @@ function calculateTierLevel($customerId)
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="page-title">Member List</h1>
+                    <h1 class="serif page-title">Member List</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
@@ -323,7 +327,7 @@ function calculateTierLevel($customerId)
                         <tbody>
                             <?php if (count($customers) > 0): ?>
                                 <?php foreach ($customers as $customer): ?>
-                                    <tr data-phone="<?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>" data-birthday="<?php echo htmlspecialchars($customer['birthday'] ?? 'N/A'); ?>" data-address="<?php echo htmlspecialchars($customer['address'] ?? 'N/A'); ?>" data-sex="<?php echo htmlspecialchars($customer['sex'] ?? 'N/A'); ?>" data-occupation="<?php echo htmlspecialchars($customer['occupation'] ?? 'N/A'); ?>" data-date-joined="<?php echo htmlspecialchars($customer['date_joined'] ?? 'N/A'); ?>" data-image="<?php echo htmlspecialchars($customer['image_path'] ?? ''); ?>">>
+                                    <tr data-phone="<?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>" data-birthday="<?php echo htmlspecialchars($customer['birthday'] ?? 'N/A'); ?>" data-address="<?php echo htmlspecialchars($customer['address'] ?? 'N/A'); ?>" data-sex="<?php echo htmlspecialchars($customer['sex'] ?? 'N/A'); ?>" data-occupation="<?php echo htmlspecialchars($customer['occupation'] ?? 'N/A'); ?>" data-date-joined="<?php echo htmlspecialchars($customer['date_joined'] ?? 'N/A'); ?>" data-image="<?php echo htmlspecialchars($customer['image_path'] ?? ''); ?>">
                                         <td><?php echo str_pad($customer['customer_id'], 6, '0', STR_PAD_LEFT); ?></td>
                                         <td><?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?></td>
                                         <td><?php echo htmlspecialchars($customer['tier_level'] ?? 'N/A'); ?></td>
