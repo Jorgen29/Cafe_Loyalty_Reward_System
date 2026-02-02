@@ -337,14 +337,15 @@ function getOrderDetails($conn, $orderId)
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
+                 <a href="settings.php" class="nav-link">
+                    <span class="nav-icon material-icons">settings</span>
+                    <span class="nav-text">My Account</span>
+                </a>
                 <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
-                <a href="settings.php" class="nav-link">
-                    <span class="nav-icon material-icons">settings</span>
-                    <span class="nav-text">My Account</span>
-                </a>
+               
             </nav>
         </aside>
 
