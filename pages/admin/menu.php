@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Menu Management Page
  * Protected page - only admins can access
@@ -38,6 +39,7 @@ if ($query) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,7 +51,7 @@ if ($query) {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
             const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -65,7 +67,7 @@ if ($query) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -115,7 +117,7 @@ if ($query) {
             // Render menu grid FIRST
             renderMenuGrid();
             setupMenuItemActions();
-            
+
             // Setup category dropdown AFTER menu items are rendered
             setupCategoryDropdown();
         });
@@ -123,10 +125,10 @@ if ($query) {
         function renderMenuGrid() {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
-            
+
             menuGrid.innerHTML = '';
             const products = <?php echo json_encode($products); ?>;
-            
+
             products.forEach(product => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'menu-item';
@@ -139,9 +141,9 @@ if ($query) {
                 itemDiv.dataset.productPoints = product.product_points;
                 itemDiv.dataset.productCategory = product.product_category || 'Uncategorized';
                 itemDiv.dataset.imagePath = product.image_path || '';
-                
+
                 const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/Default.jpg';
-                
+
                 itemDiv.innerHTML = `
                     <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name)}" class="menu-item-image">
                     <div class="menu-item-name">${escapeHtml(product.product_name)}</div>
@@ -161,7 +163,7 @@ if ($query) {
         function setupMenuItemActions() {
             const menuGrid = document.getElementById('menu-grid');
             if (!menuGrid) return;
-            
+
             // Use event delegation for edit/delete buttons
             menuGrid.addEventListener('click', function(e) {
                 if (e.target.classList.contains('edit-btn')) {
@@ -185,7 +187,7 @@ if ($query) {
                     '>': '&gt;',
                     '"': '&quot;',
                     "'": '&#39;'
-                }[m];
+                } [m];
             });
         }
 
@@ -208,7 +210,7 @@ if ($query) {
                 const bId = parseInt(b.dataset.productId || 0);
                 const aName = a.dataset.productName.toLowerCase();
                 const bName = b.dataset.productName.toLowerCase();
-                
+
                 if (sortBy === 'latest') {
                     return bId - aId;
                 } else if (sortBy === 'oldest') {
@@ -226,7 +228,7 @@ if ($query) {
         function setupCategoryDropdown() {
             const buttonsContainer = document.getElementById('category-buttons-container');
             if (!buttonsContainer) return;
-            
+
             // Get all unique categories from menu items
             const items = document.querySelectorAll('.menu-item');
             const categories = new Set();
@@ -234,9 +236,9 @@ if ($query) {
                 const cat = item.dataset.category;
                 if (cat) categories.add(cat);
             });
-            
+
             buttonsContainer.innerHTML = '';
-            
+
             // Add "All" button
             const allBtn = document.createElement('button');
             allBtn.className = 'category-btn active';
@@ -248,7 +250,7 @@ if ($query) {
                 updateCategoryButtons('all');
             });
             buttonsContainer.appendChild(allBtn);
-            
+
             // Add category buttons
             Array.from(categories).sort().forEach(cat => {
                 const btn = document.createElement('button');
@@ -299,13 +301,13 @@ if ($query) {
         }
 
         function openAddMenuModal() {
-               const qtyInput = document.getElementById('priceInput');
+            const qtyInput = document.getElementById('priceInput');
 
-                qtyInput.addEventListener('keydown', (e) => {
-                    if (e.key === '-' || e.key === 'e') {
-                        e.preventDefault(); // block minus and "e" for exponential
-                    }
-                });
+            qtyInput.addEventListener('keydown', (e) => {
+                if (e.key === '-' || e.key === 'e') {
+                    e.preventDefault(); // block minus and "e" for exponential
+                }
+            });
             const modal = document.getElementById('addMenuModal');
             const form = document.getElementById('menuForm');
             form.reset();
@@ -351,7 +353,7 @@ if ($query) {
             document.getElementById('sizeInput').value = size === 'None' ? 'None' : size;
             document.getElementById('pointsInput').value = points;
             document.getElementById('imagePathInput').value = '';
-            
+
             modal.style.display = 'block';
         }
 
@@ -384,7 +386,7 @@ if ($query) {
             formData.append('product_temperature', productTemperature);
             formData.append('product_size', productSize);
             formData.append('product_points', productPoints);
-            
+
             // Append image file if selected
             if (imageFile) {
                 formData.append('image', imageFile);
@@ -392,22 +394,22 @@ if ($query) {
 
             // Send to backend
             fetch('../../public/actions/products/save_product.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Product saved successfully!');
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error saving product');
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Product saved successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving product');
+                });
         }
 
         window.addEventListener('click', function(event) {
@@ -426,22 +428,22 @@ if ($query) {
                 formData.append('product_id', productId);
 
                 fetch('../../public/actions/products/delete_product.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Menu item deleted successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting product');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Menu item deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting product');
+                    });
             }
         }
 
@@ -514,12 +516,9 @@ if ($query) {
                 });
             }
         }
-        
-         
-
-
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
@@ -531,17 +530,17 @@ if ($query) {
                 <button class="close-btn" id="hamburger-btn">✕</button>
             </div>
 
-           
-                <nav class="serif sidebar-nav">
+
+            <nav class="serif sidebar-nav">
                 <a href="admin.php" class="nav-link">
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                  <a href="page_view.php" class="nav-link">
+                <a href="page_view.php" class="nav-link">
                     <span class="nav-icon material-icons">description</span>
                     <span class="nav-text">Pages Settings</span>
                 </a>
-              
+
                 <a href="menu.php" class="nav-link active">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
@@ -564,14 +563,14 @@ if ($query) {
                 </a>
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
-                   <span class="nav-text">Inventory Transactions</span>
+                    <span class="nav-text">Inventory Transactions</span>
 
                 </a>
-             <a href="members_list.php" class="nav-link">
+                <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
-                 <a href="cashiers_list.php" class="nav-link">
+                <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
@@ -579,13 +578,13 @@ if ($query) {
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
-                 <a href="settings.php" class="nav-link">
+                <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-               
-               
-                
+
+
+
             </nav>
         </aside>
 
@@ -600,7 +599,7 @@ if ($query) {
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -648,17 +647,17 @@ if ($query) {
                     <input type="hidden" id="menuIdInput" value="">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="menuNameInput">Product Name:</label>
-                    <input type="text" id="menuNameInput" class="form-input" placeholder="Americano" required>
+                    <input type="text" id="menuNameInput" class="form-input san-serif" placeholder="Americano" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="priceInput">Price (₱):</label>
-                    <input type="number" id="priceInput" class="form-input" placeholder="100" step="0.01" min="0" required>
+                    <input type="number" id="priceInput" class="form-input san-serif" placeholder="100" step="0.01" min="0" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="categorySelect">Category:</label>
                     <select id="categorySelect" class="form-select">
                         <option value="Coffee">Coffee</option>
@@ -685,7 +684,7 @@ if ($query) {
                 </div>
                 -->
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <div id="temperatureGroup" style="display: none;">
                         <label for="temperatureInput">Temperature:</label>
                         <select id="temperatureInput" class="form-select">
@@ -696,7 +695,7 @@ if ($query) {
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <div id="sizeGroup" style="display: none;">
                         <label for="sizeInput">Size:</label>
                         <select id="sizeInput" class="form-select">
@@ -710,12 +709,12 @@ if ($query) {
                     </div>
                 </div>
 
-                <div class="form-group hidden">
+                <div class="form-group hidden san-serif">
                     <label for="pointsInput">Loyalty Points:</label>
                     <input type="number" id="pointsInput" class="form-input" value="1">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group san-serif">
                     <label for="imagePathInput">Product Image:</label>
                     <input type="file" id="imagePathInput" class="form-input" accept="image/*">
                     <small style="color: #666; display: block; margin-top: 5px;">Supported formats: JPG, PNG, GIF (Max 2MB)</small>
@@ -726,4 +725,5 @@ if ($query) {
         </div>
     </div>
 </body>
+
 </html>
