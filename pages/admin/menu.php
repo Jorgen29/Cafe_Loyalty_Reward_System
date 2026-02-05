@@ -142,7 +142,7 @@ if ($query) {
                 itemDiv.dataset.productCategory = product.product_category || 'Uncategorized';
                 itemDiv.dataset.imagePath = product.image_path || '';
 
-                const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/Default.jpg';
+                const imageUrl = product.image_path ? product.image_path : '../../public/assets/images/cafe.jpg';
 
                 itemDiv.innerHTML = `
                     <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name)}" class="menu-item-image">

@@ -442,6 +442,7 @@ if ($query) {
                     <select id="ingredientUnitInput" class="form-input san-serif" required>
                         <option value="piece">Piece</option>
                         <option value="KG (Kilogram)">KG (Kilogram)</option>
+                        <option value="KG (Kilogram)">MG (Milligram)</option>
                         <option value="ML (Milliliter)">ML (Milliliter)</option>
                         <option value="L (Liter)">L (Liter)</option>
                         <option value="g (Grams)">grams</option>
@@ -460,7 +461,8 @@ if ($query) {
 
     <<
     <<
-    << < Updated upstream
+    <<
+    < Updated upstream
     qtyInput.addEventListener('keydown', (e) => {
         if (e.key === '-' || e.key === 'e') {
             e.preventDefault(); // block minus and "e" for exponential
@@ -476,5 +478,6 @@ if ($query) {
         }
     }); >>>
     >>>
-    > Stashed changes
+    >
+    Stashed changes
 </script>
