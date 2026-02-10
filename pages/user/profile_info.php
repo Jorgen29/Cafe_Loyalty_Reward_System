@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User Profile Edit Page
  * Protected page - requires authentication
@@ -26,10 +27,11 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile - Cafe Loyalty Reward</title>
+    <title>Edit Profile - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <style>
         .profile-container {
@@ -301,7 +303,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const navLinks = document.getElementById('nav-links');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function() {
                     navLinks.classList.toggle('show');
@@ -309,7 +311,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     navLinks.classList.remove('show');
                 }
             });
@@ -317,7 +319,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             const navLinks_items = document.querySelectorAll('#nav-links a');
             navLinks_items.forEach(link => {
                 link.addEventListener('click', function() {
-                    if(window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768) {
                         navLinks.classList.remove('show');
                     }
                 });
@@ -347,9 +349,9 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
                 const isPassword = passwordInput.type === "password";
                 passwordInput.type = isPassword ? "text" : "password";
 
-                eyeIcon.src = isPassword 
-                    ? "../../public/icons/eye-open.png" 
-                    : "../../public/icons/eye-close.png";
+                eyeIcon.src = isPassword ?
+                    "../../public/icons/eye-open.png" :
+                    "../../public/icons/eye-close.png";
             });
 
             const confirmInput = document.getElementById('confirmPassword');
@@ -360,9 +362,9 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
                 const isPassword = confirmInput.type === "password";
                 confirmInput.type = isPassword ? "text" : "password";
 
-                eyeIcon2.src = isPassword 
-                    ? "../../public/icons/eye-open.png" 
-                    : "../../public/icons/eye-close.png";
+                eyeIcon2.src = isPassword ?
+                    "../../public/icons/eye-open.png" :
+                    "../../public/icons/eye-close.png";
             });
 
 
@@ -371,7 +373,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             if (profileForm) {
                 profileForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    
+
                     // Disable submit button
                     const submitBtn = profileForm.querySelector('.save-btn');
                     const originalText = submitBtn.textContent;
@@ -383,70 +385,72 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
 
                     // Send AJAX request
                     fetch('../../public/actions/auth/update_profile.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const successMsg = document.getElementById('successMessage');
-                        const errorMsg = document.getElementById('errorMessage');
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const successMsg = document.getElementById('successMessage');
+                            const errorMsg = document.getElementById('errorMessage');
 
-                        if (data.success) {
-                            successMsg.innerHTML = data.message;
-                            successMsg.style.display = 'block';
-                            errorMsg.style.display = 'none';
-                            
-                            // Update session name in header if needed
-                            document.querySelector('.profile-user-info h2').textContent = data.user.firstName + ' ' + data.user.lastName;
+                            if (data.success) {
+                                successMsg.innerHTML = data.message;
+                                successMsg.style.display = 'block';
+                                errorMsg.style.display = 'none';
 
-                            // Scroll to top
-                            window.scrollTo(0, 0);
+                                // Update session name in header if needed
+                                document.querySelector('.profile-user-info h2').textContent = data.user.firstName + ' ' + data.user.lastName;
 
-                            // If password was changed, refresh the page so session/UX updates
-                            if (data.password_changed) {
-                                setTimeout(() => { window.location.reload(); }, 1000);
-                            }
+                                // Scroll to top
+                                window.scrollTo(0, 0);
 
-                            // Hide success message after 3 seconds
-                            setTimeout(() => {
-                                successMsg.style.display = 'none';
-                            }, 3000);
-                        } else {
-                            // Handle validation errors
-                            if (data.errors) {
-                                let errorHtml = '<strong>Please fix the following errors:</strong><ul>';
-                                for (const field in data.errors) {
-                                    errorHtml += `<li>${data.errors[field]}</li>`;
-                                    // Add error class to input field
-                                    const inputField = document.querySelector(`[name="${field}"]`);
-                                    if (inputField) {
-                                        inputField.classList.add('error');
-                                        inputField.addEventListener('focus', function() {
-                                            this.classList.remove('error');
-                                        });
-                                    }
+                                // If password was changed, refresh the page so session/UX updates
+                                if (data.password_changed) {
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);
                                 }
-                                errorHtml += '</ul>';
-                                errorMsg.innerHTML = errorHtml;
+
+                                // Hide success message after 3 seconds
+                                setTimeout(() => {
+                                    successMsg.style.display = 'none';
+                                }, 3000);
                             } else {
-                                errorMsg.innerHTML = data.message;
+                                // Handle validation errors
+                                if (data.errors) {
+                                    let errorHtml = '<strong>Please fix the following errors:</strong><ul>';
+                                    for (const field in data.errors) {
+                                        errorHtml += `<li>${data.errors[field]}</li>`;
+                                        // Add error class to input field
+                                        const inputField = document.querySelector(`[name="${field}"]`);
+                                        if (inputField) {
+                                            inputField.classList.add('error');
+                                            inputField.addEventListener('focus', function() {
+                                                this.classList.remove('error');
+                                            });
+                                        }
+                                    }
+                                    errorHtml += '</ul>';
+                                    errorMsg.innerHTML = errorHtml;
+                                } else {
+                                    errorMsg.innerHTML = data.message;
+                                }
+                                errorMsg.style.display = 'block';
+                                successMsg.style.display = 'none';
+                                window.scrollTo(0, 0);
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            errorMsg.innerHTML = 'An error occurred while updating your profile.';
                             errorMsg.style.display = 'block';
                             successMsg.style.display = 'none';
                             window.scrollTo(0, 0);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        errorMsg.innerHTML = 'An error occurred while updating your profile.';
-                        errorMsg.style.display = 'block';
-                        successMsg.style.display = 'none';
-                        window.scrollTo(0, 0);
-                    })
-                    .finally(() => {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = originalText;
-                    });
+                        })
+                        .finally(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalText;
+                        });
                 });
             }
 
@@ -454,7 +458,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             const logoutSection = document.querySelector('.logout-section');
             if (logoutSection) {
                 logoutSection.addEventListener('click', function() {
-                    if(confirm('Are you sure you want to logout?')) {
+                    if (confirm('Are you sure you want to logout?')) {
                         window.location.href = '../../public/actions/auth/logout.php';
                     }
                 });
@@ -477,7 +481,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
                     if (!file) return;
 
                     // Basic size/type check on client
-                    const allowed = ['image/jpeg','image/png','image/gif','image/webp'];
+                    const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                     if (!allowed.includes(file.type)) {
                         uploadStatus.style.display = 'block';
                         uploadStatus.style.color = 'red';
@@ -507,63 +511,70 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
                     uploadStatus.textContent = 'Uploading...';
 
                     fetch('../../public/actions/auth/upload_profile_photo.php', {
-                        method: 'POST',
-                        body: fd
-                    })
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res.success) {
-                            uploadStatus.style.color = 'green';
-                            uploadStatus.textContent = 'Uploaded successfully';
-                            // Ensure the img uses the returned path (relative)
-                            if (res.file_path) profileImg.src = res.file_path;
-                        } else {
+                            method: 'POST',
+                            body: fd
+                        })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) {
+                                uploadStatus.style.color = 'green';
+                                uploadStatus.textContent = 'Uploaded successfully';
+                                // Ensure the img uses the returned path (relative)
+                                if (res.file_path) profileImg.src = res.file_path;
+                            } else {
+                                uploadStatus.style.color = 'red';
+                                uploadStatus.textContent = res.message || 'Upload failed';
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Upload error', err);
                             uploadStatus.style.color = 'red';
-                            uploadStatus.textContent = res.message || 'Upload failed';
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Upload error', err);
-                        uploadStatus.style.color = 'red';
-                        uploadStatus.textContent = 'Error uploading file';
-                    })
-                    .finally(() => {
-                        setTimeout(() => { uploadStatus.style.display = 'none'; }, 4000);
-                    });
+                            uploadStatus.textContent = 'Error uploading file';
+                        })
+                        .finally(() => {
+                            setTimeout(() => {
+                                uploadStatus.style.display = 'none';
+                            }, 4000);
+                        });
                 });
             }
         });
     </script>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
         <!-- <div class="header-center">
             <input type="text" class="search" placeholder="Search...">
         </div> -->
         <div class="header-right">
-             <nav id="nav-links">
+            <nav id="nav-links">
                 <a href="home.php">Home</a>
                 <a href="menu.php">Menu</a>
                 <a href="rewards.php">Rewards</a>
-                
+
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile">
-                 <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+                <a href="profile.php">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a>
-               
+
             </div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php">Logout</a>
+                <a href="">QR Code</a>
+            </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -582,9 +593,9 @@ alt="User">
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-avatar">
-                     <a href="profile.php">
-                <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
-                </a>
+                    <a href="profile.php">
+                        <img id="profileImage" src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User">
+                    </a>
                     <input type="file" id="profilePhotoInput" name="profile_photo" accept="image/*" style="display:none">
                     <button class="profile-edit-btn" id="uploadPhotoBtn">Upload Photo</button>
                     <div id="uploadStatus" style="margin-top:8px; font-size:13px; display:none"></div>
@@ -595,6 +606,7 @@ alt="User">
                 </div>
             </div>
         </div>
+
 
         <!-- Edit Form Section -->
         <div class="form-section">
@@ -646,18 +658,18 @@ alt="User">
                     <label class="form-label">Change Password (optional):</label>
                     <div class="form-password-container">
                         <input class="form-input form-input-password" type="password" id="password" name="newPassword" placeholder="New password">
-                        <button type="button"  id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
+                        <button type="button" id="passwordToggle" class="show-password-btn"><img id="eyeIcon" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <label class="form-label">Confirm Password:</label>
                     <div class="form-password-container">
-                    <input class="form-input form-input-password" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password">
-                    <button type="button"  id="passwordToggle2" class="show-password-btn"><img id="eyeIcon2" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
+                        <input class="form-input form-input-password" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password">
+                        <button type="button" id="passwordToggle2" class="show-password-btn"><img id="eyeIcon2" src="../../public/icons/eye-close.png" width="20" alt="Show/Hide"></button>
 
                     </div>
-                    
+
                 </div>
 
                 <button class="save-btn" type="submit">Save Changes</button>
@@ -684,11 +696,12 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

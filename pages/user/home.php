@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User Home Page
  * Protected page - requires authentication
@@ -49,22 +50,23 @@ if (isset($conn)) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Cafe Loyalty Reward</title>
+    <title>Homepage - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const navLinks = document.getElementById('nav-links');
-            
+
             hamburgerBtn.addEventListener('click', function() {
                 navLinks.classList.toggle('show');
             });
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     navLinks.classList.remove('show');
                 }
             });
@@ -73,7 +75,7 @@ if (isset($conn)) {
             const navLinks_items = document.querySelectorAll('#nav-links a');
             navLinks_items.forEach(link => {
                 link.addEventListener('click', function() {
-                    if(window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768) {
                         navLinks.classList.remove('show');
                     }
                 });
@@ -81,33 +83,37 @@ if (isset($conn)) {
         });
     </script>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
-        
+
         <div class="header-right">
-             <nav id="nav-links">
+            <nav id="nav-links">
                 <a href="home.php">Home</a>
                 <a href="menu.php">Menu</a>
                 <a href="rewards.php">Rewards</a>
-                
+
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile">
-                 <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+                <a href="profile.php">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a>
-                
             </div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php">Logout</a>
+                <a href="">QR Code</a>
+            </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -154,11 +160,12 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

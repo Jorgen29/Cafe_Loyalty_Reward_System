@@ -43,7 +43,7 @@ if ($query) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory - Cafe Loyalty Reward</title>
+    <title>Get Ingredients - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -263,12 +263,12 @@ if ($query) {
                 </a>
                 <a href="transactions.php" class="nav-link ">
                     <span class="nav-icon material-icons">payment</span>
-                    <span class="nav-text">Transactions</span>
+                    <span class="nav-text">POS Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link active">
                     <span class="nav-icon material-icons">kitchen</span>
-                    <span class="nav-text">Ingredients</span>
+                    <span class="nav-text">Get Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
@@ -283,7 +283,7 @@ if ($query) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="serif page-title">Inventory</h1>
+                    <h1 class="serif page-title">Get Ingredients</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
@@ -300,7 +300,7 @@ if ($query) {
                 <div class="menu-controls">
                     <div class="left-controls">
                         <div class="sort-container">
-                            <label for="sort-dropdown" class="sort-label">Latest</label>
+                            <label for="sort-dropdown" class="sort-label">Sort by:</label>
                             <select id="sort-dropdown" class="sort-dropdown">
                                 <option value="latest">Latest</option>
                                 <option value="oldest">Oldest</option>
@@ -308,10 +308,10 @@ if ($query) {
                                 <option value="name-desc">Name (Z-A)</option>
                             </select>
                         </div>
-                        <!-- <div class="search-container">
+                        <div class="search-container">
                             <input type="text" class="search-input" placeholder="Search">
                             <span class="search-icon">🔍</span>
-                        </div> -->
+                        </div>
                     </div>
                     <!-- Add button removed for cashier role; cashiers should only get ingredients -->
                 </div>

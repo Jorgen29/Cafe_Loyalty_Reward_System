@@ -31,7 +31,7 @@ if ($stmt) {
         $customerPoints = (int)$row['points'];
         $customerLastOrder = $row['last_order'] ?? null;
         $customerBirthday = $row['birthday'] ?? null;
-        
+
         // Check if today is customer's birthday
         if ($customerBirthday) {
             $birthday_parts = explode('-', $customerBirthday);
@@ -40,7 +40,7 @@ if ($stmt) {
                 $birthday_day = $birthday_parts[2];
                 $today_month = date('m');
                 $today_day = date('d');
-                
+
                 if ($birthday_month === $today_month && $birthday_day === $today_day) {
                     $isBirthdayToday = true;
                 }
@@ -202,10 +202,11 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Cafe Loyalty Reward</title>
+    <title>Profile - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <style>
         .profile-container {
@@ -510,10 +511,11 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .qr-modal {
             position: fixed;
             inset: 0;
-            display: none; /* toggled via inline style/show */
+            display: none;
+            /* toggled via inline style/show */
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0, 0, 0, 0.45);
             z-index: 9999;
             padding: 20px;
         }
@@ -521,10 +523,11 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .qr-modal .qr-modal-content {
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
             max-width: 480px;
             width: 100%;
         }
+
         /* Responsive QR modal layout */
         .qr-modal .qr-modal-body {
             display: flex;
@@ -557,15 +560,29 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             object-fit: contain;
             border-radius: 6px;
             border: 1px solid #eee;
-            background:#fff;
-            padding:6px;
+            background: #fff;
+            padding: 6px;
         }
 
         @media (max-width: 480px) {
-            .qr-modal .qr-modal-content { padding: 14px; }
-            .qr-modal .qr-modal-body { flex-direction: column; align-items: center; }
-            .qr-modal #profile-qr-code { width: 160px; height: 160px; }
-            .qr-modal #profile-qr-logo img { max-width:120px; max-height:60px; }
+            .qr-modal .qr-modal-content {
+                padding: 14px;
+            }
+
+            .qr-modal .qr-modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-modal #profile-qr-code {
+                width: 160px;
+                height: 160px;
+            }
+
+            .qr-modal #profile-qr-logo img {
+                max-width: 120px;
+                max-height: 60px;
+            }
         }
 
         /* Claim reward modal styling */
@@ -575,7 +592,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 10000;
             padding: 20px;
         }
@@ -587,7 +604,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .claim-modal-content {
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             max-width: 400px;
             width: 100%;
             padding: 30px;
@@ -644,6 +661,26 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .claim-modal-success {
             color: #28a745;
         }
+
+        .logout-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-section:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-section img {
+            width: 24px;
+            height: 24px;
+        }
     </style>
     <!-- QR generation library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -651,7 +688,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const navLinks = document.getElementById('nav-links');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function() {
                     navLinks.classList.toggle('show');
@@ -659,7 +696,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     navLinks.classList.remove('show');
                 }
             });
@@ -667,7 +704,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             const navLinks_items = document.querySelectorAll('#nav-links a');
             navLinks_items.forEach(link => {
                 link.addEventListener('click', function() {
-                    if(window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768) {
                         navLinks.classList.remove('show');
                     }
                 });
@@ -700,48 +737,53 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
 
             function confirmClaim() {
                 if (!currentRewardId || !currentCustomerId) return;
-                
+
                 fetch('../../public/actions/customer/claim_reward.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ customer_id: currentCustomerId, reward_id: currentRewardId })
-                })
-                .then(r => r.json())
-                .then(json => {
-                    if (json.success) {
-                        claimModalContent.innerHTML = `
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            customer_id: currentCustomerId,
+                            reward_id: currentRewardId
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(json => {
+                        if (json.success) {
+                            claimModalContent.innerHTML = `
                             <h3 class="claim-modal-success">✓ Success</h3>
                             <p>Reward claimed successfully!</p>
                             <div class="claim-modal-buttons">
                                 <button class="claim-modal-btn claim-modal-btn-primary" id="claim-modal-done">OK</button>
                             </div>
                         `;
-                        document.getElementById('claim-modal-done').addEventListener('click', function() {
-                            closeClaim();
-                            window.location.reload();
-                        });
-                    } else {
-                        claimModalContent.innerHTML = `
+                            document.getElementById('claim-modal-done').addEventListener('click', function() {
+                                closeClaim();
+                                window.location.reload();
+                            });
+                        } else {
+                            claimModalContent.innerHTML = `
                             <h3 style="color:#d9534f;">Error</h3>
                             <p>${json.message || 'Failed to claim reward'}</p>
                             <div class="claim-modal-buttons">
                                 <button class="claim-modal-btn claim-modal-btn-primary" id="claim-modal-done">OK</button>
                             </div>
                         `;
-                        document.getElementById('claim-modal-done').addEventListener('click', closeClaim);
-                    }
-                })
-                .catch(err => {
-                    console.error('Claim error', err);
-                    claimModalContent.innerHTML = `
+                            document.getElementById('claim-modal-done').addEventListener('click', closeClaim);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Claim error', err);
+                        claimModalContent.innerHTML = `
                         <h3 style="color:#d9534f;">Error</h3>
                         <p>An error occurred while claiming the reward.</p>
                         <div class="claim-modal-buttons">
                             <button class="claim-modal-btn claim-modal-btn-primary" id="claim-modal-done">OK</button>
                         </div>
                     `;
-                    document.getElementById('claim-modal-done').addEventListener('click', closeClaim);
-                });
+                        document.getElementById('claim-modal-done').addEventListener('click', closeClaim);
+                    });
             }
 
             function closeClaim() {
@@ -797,7 +839,11 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                     document.body.appendChild(tmpDiv);
 
                     try {
-                        new QRCode(tmpDiv, { text: payload, width: 220, height: 220 });
+                        new QRCode(tmpDiv, {
+                            text: payload,
+                            width: 220,
+                            height: 220
+                        });
                     } catch (e) {
                         // If QR generation fails, fall back to plain text display
                         qrContainer.textContent = payload;
@@ -826,7 +872,12 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                             img.crossOrigin = 'anonymous';
                             img.onload = function() {
                                 // Draw QR onto canvas sized to modal container
-                                try { ctx.drawImage(img, 0, 0, size, size); } catch(e) { ctx.fillStyle='#fff'; ctx.fillRect(0,0,size,size); }
+                                try {
+                                    ctx.drawImage(img, 0, 0, size, size);
+                                } catch (e) {
+                                    ctx.fillStyle = '#fff';
+                                    ctx.fillRect(0, 0, size, size);
+                                }
 
                                 // Draw a white rounded background for the logo (smaller so it doesn't obscure finder patterns)
                                 const logoSize = Math.floor(size * 0.18); // ~18% of QR size
@@ -857,38 +908,38 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                                     ctx.drawImage(logo, logoX + padding, logoY + padding, lw, lh);
 
                                     // Style canvas for display
-                                        canvas.style.display = 'block';
-                                        canvas.style.background = '#ffffff';
-                                        canvas.style.borderRadius = '8px';
-                                        canvas.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
+                                    canvas.style.display = 'block';
+                                    canvas.style.background = '#ffffff';
+                                    canvas.style.borderRadius = '8px';
+                                    canvas.style.boxShadow = '0 2px 6px rgba(0,0,0,0.08)';
 
-                                        // Place canvas and download button into a centered wrapper to avoid overlap
-                                        const wrapper = document.createElement('div');
-                                        wrapper.style.display = 'flex';
-                                        wrapper.style.flexDirection = 'column';
-                                        wrapper.style.alignItems = 'center';
-                                        wrapper.style.gap = '8px';
-                                        wrapper.appendChild(canvas);
+                                    // Place canvas and download button into a centered wrapper to avoid overlap
+                                    const wrapper = document.createElement('div');
+                                    wrapper.style.display = 'flex';
+                                    wrapper.style.flexDirection = 'column';
+                                    wrapper.style.alignItems = 'center';
+                                    wrapper.style.gap = '8px';
+                                    wrapper.appendChild(canvas);
 
-                                        const dl = document.createElement('a');
-                                        dl.textContent = 'Download QR';
-                                        dl.href = canvas.toDataURL('image/png');
-                                        dl.download = 'cafe_qr_<?php echo ($customerId ? (int)$customerId : 0); ?>.png';
-                                        dl.style.display = 'inline-block';
-                                        dl.style.marginTop = '4px';
-                                        dl.style.padding = '8px 12px';
-                                        dl.style.background = '#6b4423';
-                                        dl.style.color = '#fff';
-                                        dl.style.borderRadius = '6px';
-                                        dl.style.textDecoration = 'none';
-                                        dl.style.fontFamily = "'Georgia', serif";
-                                        dl.style.fontWeight = '600';
-                                        dl.style.zIndex = '10';
-                                        wrapper.appendChild(dl);
-                                        qrContainer.appendChild(wrapper);
+                                    const dl = document.createElement('a');
+                                    dl.textContent = 'Download QR';
+                                    dl.href = canvas.toDataURL('image/png');
+                                    dl.download = 'cafe_qr_<?php echo ($customerId ? (int)$customerId : 0); ?>.png';
+                                    dl.style.display = 'inline-block';
+                                    dl.style.marginTop = '4px';
+                                    dl.style.padding = '8px 12px';
+                                    dl.style.background = '#6b4423';
+                                    dl.style.color = '#fff';
+                                    dl.style.borderRadius = '6px';
+                                    dl.style.textDecoration = 'none';
+                                    dl.style.fontFamily = "'Georgia', serif";
+                                    dl.style.fontWeight = '600';
+                                    dl.style.zIndex = '10';
+                                    wrapper.appendChild(dl);
+                                    qrContainer.appendChild(wrapper);
 
-                                        // Cleanup
-                                        if (tmpDiv && tmpDiv.parentNode) tmpDiv.parentNode.removeChild(tmpDiv);
+                                    // Cleanup
+                                    if (tmpDiv && tmpDiv.parentNode) tmpDiv.parentNode.removeChild(tmpDiv);
                                 };
 
                                 logo.onerror = function() {
@@ -933,7 +984,11 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                             qrContainer.innerHTML = '';
                             try {
                                 // Render directly into container and wrap the image if possible
-                                new QRCode(qrContainer, { text: payload, width: 220, height: 220 });
+                                new QRCode(qrContainer, {
+                                    text: payload,
+                                    width: 220,
+                                    height: 220
+                                });
                                 // If qrcodejs placed an img directly, wrap it
                                 const directImg = qrContainer.querySelector('img');
                                 if (directImg) {
@@ -990,40 +1045,50 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                     }, 60);
                 });
 
-                qrClose.addEventListener('click', function() { qrModal.style.display = 'none'; });
-                qrModal.addEventListener('click', function(e) { if (e.target === qrModal) qrModal.style.display = 'none'; });
+                qrClose.addEventListener('click', function() {
+                    qrModal.style.display = 'none';
+                });
+                qrModal.addEventListener('click', function(e) {
+                    if (e.target === qrModal) qrModal.style.display = 'none';
+                });
             }
         });
     </script>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
-       
+
         <div class="header-right">
             <nav id="nav-links">
                 <a href="home.php">Home</a>
                 <a href="menu.php">Menu</a>
                 <a href="rewards.php">Rewards</a>
-                
+
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile">
-               
-                 <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+
+                <a href="profile.php">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a>
-              
             </div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php" class="logout-section"><img src="../../public/icons/logout.jpg" alt="Logout"></a>
+                <a href="">QR Code</a>
+            </nav>
+
+
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -1032,33 +1097,33 @@ alt="User">
         </div>
     </header>
 
-        <!-- Profile QR Modal -->
-        <div class="qr-modal" id="profile-qr-modal" style="display:none;">
-            <div class="qr-modal-content" style="max-width:480px;padding:20px;">
-                <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
-                   
-                    <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
-                </div>
-                <div class="qr-modal-body">
-                    <div id="profile-qr-code"></div>
-                    <div style="flex:1;min-width:180px;">
-                        
-                       
-                        <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
-                            <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
-                        </div>
+    <!-- Profile QR Modal -->
+    <div class="qr-modal" id="profile-qr-modal" style="display:none;">
+        <div class="qr-modal-content" style="max-width:480px;padding:20px;">
+            <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
+
+                <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+            </div>
+            <div class="qr-modal-body">
+                <div id="profile-qr-code"></div>
+                <div style="flex:1;min-width:180px;">
+
+
+                    <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
+                        <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Claim Reward Modal -->
-        <div class="claim-modal" id="claim-modal">
-            <div class="claim-modal-content" id="claim-modal-content">
-                <h3>Claim Reward</h3>
-                <p>Loading...</p>
-            </div>
+    <!-- Claim Reward Modal -->
+    <div class="claim-modal" id="claim-modal">
+        <div class="claim-modal-content" id="claim-modal-content">
+            <h3>Claim Reward</h3>
+            <p>Loading...</p>
         </div>
+    </div>
 
     <div class="banner-section">
         <img src="../../public/assets/profile-page.jpg" alt="Profile Banner" class="banner">
@@ -1070,12 +1135,12 @@ alt="User">
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-avatar">
-                     <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
-                </a>
+                    <a href="profile.php">
+                        <img src="<?php echo !empty($_SESSION['profile_image'])
+                                        ? htmlspecialchars($_SESSION['profile_image'])
+                                        : '../../public/icons/logo.png'; ?>"
+                            alt="User">
+                    </a>
                 </div>
                 <div class="serif profile-user-info">
                     <h2><?php echo htmlspecialchars($customerName); ?></h2>
@@ -1086,16 +1151,16 @@ alt="User">
                     <button id="qr-show-btn" title="Show QR" style="background:none;border:none;cursor:pointer;padding:0;margin-right:8px;">
                         <!-- simple QR SVG icon -->
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="3" y="3" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5"/>
-                            <rect x="15" y="3" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5"/>
-                            <rect x="3" y="15" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5"/>
-                            <rect x="11" y="11" width="2" height="2" fill="#6b4423"/>
-                            <rect x="14" y="11" width="2" height="2" fill="#6b4423"/>
-                            <rect x="11" y="14" width="2" height="2" fill="#6b4423"/>
+                            <rect x="3" y="3" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5" />
+                            <rect x="15" y="3" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5" />
+                            <rect x="3" y="15" width="6" height="6" stroke="#6b4423" fill="none" stroke-width="1.5" />
+                            <rect x="11" y="11" width="2" height="2" fill="#6b4423" />
+                            <rect x="14" y="11" width="2" height="2" fill="#6b4423" />
+                            <rect x="11" y="14" width="2" height="2" fill="#6b4423" />
                         </svg>
                     </button>
                     <a href="profile_info.php">
-                    <img src="../../public/icons/settings_icon.jpg" alt="Settings" title="Settings">
+                        <img src="../../public/icons/settings_icon.jpg" alt="Settings" title="Settings">
                     </a>
                 </div>
             </div>
@@ -1112,23 +1177,23 @@ alt="User">
                 <div class="cups-item">
                     <div class="cups-item-label">Expiry Date</div>
                     <?php
-                        // Expiration is customer's last_order + 30 days if available, otherwise fall back to first available reward expiration
-                        $expiryDisplay = 'N/A';
-                        if (!empty($customerLastOrder)) {
-                            $ts = strtotime($customerLastOrder);
-                            if ($ts !== false) {
-                                $expiryTs = strtotime($customerLastOrder . ' +30 days');
-                                if ($expiryTs !== false) {
-                                    if ($expiryTs <= strtotime('today')) {
-                                        $expiryDisplay = 'Expired on ' . date('M d, Y', $expiryTs);
-                                    } else {
-                                        $expiryDisplay = date('M d, Y', $expiryTs);
-                                    }
+                    // Expiration is customer's last_order + 30 days if available, otherwise fall back to first available reward expiration
+                    $expiryDisplay = 'N/A';
+                    if (!empty($customerLastOrder)) {
+                        $ts = strtotime($customerLastOrder);
+                        if ($ts !== false) {
+                            $expiryTs = strtotime($customerLastOrder . ' +30 days');
+                            if ($expiryTs !== false) {
+                                if ($expiryTs <= strtotime('today')) {
+                                    $expiryDisplay = 'Expired on ' . date('M d, Y', $expiryTs);
+                                } else {
+                                    $expiryDisplay = date('M d, Y', $expiryTs);
                                 }
                             }
-                        } elseif (isset($availableRewards[0]['expiration_date']) && $availableRewards[0]['expiration_date']) {
-                            $expiryDisplay = date('M d, Y', strtotime($availableRewards[0]['expiration_date']));
                         }
+                    } elseif (isset($availableRewards[0]['expiration_date']) && $availableRewards[0]['expiration_date']) {
+                        $expiryDisplay = date('M d, Y', strtotime($availableRewards[0]['expiration_date']));
+                    }
                     ?>
                     <div class="cups-item-value"><?php echo htmlspecialchars($expiryDisplay); ?></div>
                 </div>
@@ -1138,7 +1203,7 @@ alt="User">
         <!-- My Rewards Section -->
         <div class="rewards-section">
             <h3 class="serif section-title">My Rewards</h3>
-            
+
             <?php if (count($availableRewards) === 0): ?>
                 <p style="color:#666;">No active rewards available.</p>
             <?php else: ?>
@@ -1159,11 +1224,11 @@ alt="User">
         <!-- Available Rewards to Claim Section -->
         <div class="rewards-section">
             <h3 class="serif section-title">Available Rewards to Claim</h3>
-            
+
             <?php if (count($claimableRewards) === 0): ?>
                 <p style="color:#666;">No rewards available to claim at this time.</p>
             <?php else: ?>
-                <?php 
+                <?php
                 // Fetch list of reward_ids that have been used by this customer
                 $usedRewardIds = [];
                 if ($customerId) {
@@ -1180,16 +1245,16 @@ alt="User">
                 }
                 ?>
                 <?php foreach ($claimableRewards as $cr): ?>
-                    <?php 
+                    <?php
                     $rewardId = (int)$cr['reward_id'];
                     $pointsRequired = (int)($cr['points'] ?? 0);
                     $rewardType = $cr['reward_type'] ?? '';
                     $isUsed = in_array($rewardId, $usedRewardIds);
-                    
+
                     // Birthday vouchers can be claimed on customer's birthday, regardless of points
                     $isBirthdayVoucher = stripos($rewardType, 'Birthday') !== false || stripos($cr['reward_name'], 'Birthday') !== false;
                     $canClaim = !$isUsed && (($isBirthdayVoucher && $isBirthdayToday) || (!$isBirthdayVoucher && $totalPoints >= $pointsRequired));
-                    
+
                     $buttonText = $isUsed ? 'Already Used' : ($canClaim ? 'Claim' : 'Not Eligible');
                     ?>
                     <div class="reward-item" style="<?php echo $canClaim ? '' : 'opacity:0.6;'; ?>">
@@ -1212,7 +1277,9 @@ alt="User">
                             <?php endif; ?>
                         </div>
                         <div class="reward-action">
-                            <button class="serif activate-btn claim-reward-btn" data-reward-id="<?php echo $rewardId; ?>" <?php if (!$canClaim) { echo 'disabled style="opacity:0.5;cursor:not-allowed;"'; } ?>>
+                            <button class="serif activate-btn claim-reward-btn" data-reward-id="<?php echo $rewardId; ?>" <?php if (!$canClaim) {
+                                                                                                                                echo 'disabled style="opacity:0.5;cursor:not-allowed;"';
+                                                                                                                            } ?>>
                                 <?php echo $buttonText; ?>
                             </button>
                         </div>
@@ -1227,6 +1294,7 @@ alt="User">
             <table class="history-table">
                 <thead>
                     <tr>
+                        <th>Receipt Number</th>
                         <th>Date & Time</th>
                         <th>Amount</th>
                         <th>Payment Method</th>
@@ -1235,12 +1303,15 @@ alt="User">
                 </thead>
                 <tbody>
                     <?php if (count($orderHistory) === 0): ?>
-                        <tr><td colspan="4" style="text-align:center; color:#666;">No orders yet.</td></tr>
+                        <tr>
+                            <td colspan="4" style="text-align:center; color:#666;">No orders yet.</td>
+                        </tr>
                     <?php else: ?>
                         <?php foreach ($orderHistory as $oh): ?>
                             <tr>
+                                <td><?php echo htmlspecialchars($oh['order_id'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars(date('M j, Y g:i A', strtotime($oh['payment_datetime']))); ?></td>
-                                <td>₱<?php echo number_format((float)$oh['total_price'],2); ?></td>
+                                <td>₱<?php echo number_format((float)$oh['total_price'], 2); ?></td>
                                 <td><?php echo htmlspecialchars($oh['payment_method'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($oh['payment_reference'] ?? 'N/A'); ?></td>
                             </tr>
@@ -1249,6 +1320,14 @@ alt="User">
                 </tbody>
             </table>
         </div>
+
+        <!-- <div class="form-section">
+            <!-- Logout Section -->
+        <!-- <div class="logout-section">
+            <img src="../../public/icons/logout.jpg" alt="Logout">
+            <span class="logout-text">Log out</span>
+        </div> 
+        </div> -->
     </div>
 
     <footer class="footer">
@@ -1264,11 +1343,12 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

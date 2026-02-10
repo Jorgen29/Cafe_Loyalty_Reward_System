@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
             data.message || "An error occurred. Please try again.";
         }
         errorMessage.style.display = "block";
-      } else {
+        } else {
         // Success
         successMessage.textContent = data.message;
         successMessage.style.display = "block";
@@ -62,8 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Redirecting to:", data.redirect);
 
         // Show login alert
-        const userName = data.user?.name ? data.user.name : "User";
-        alert(`Welcome, ${userName}! You have been successfully logged in.`);
+        //const userName = data.user?.name ? data.user.name : "User";
+        //alert(`Welcome, ${userName}! You have been successfully logged in.`);
 
         // Redirect after 1.5 seconds to ensure user sees success message
         setTimeout(() => {

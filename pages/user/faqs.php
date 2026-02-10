@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 require_once '../../public/actions/auth/db_config.php';
 
@@ -16,41 +16,113 @@ if (!isset($_SESSION['user_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQs - Cafe Loyalty Reward</title>
+    <title>FAQs - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <style>
-        .page-wrap { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-        .faq-header { text-align: center; margin: 30px 0; }
-        .faq-header h2 { font-size: 28px; font-weight: 300; color: #311402; }
-        .tabs { display:flex; gap:12px; justify-content:center; margin-bottom:24px; }
-        .tab { padding:8px 16px; border-radius:20px; background:#f5f1ed; color:#6b4423; cursor:pointer; font-weight:600; }
-        .tab.active { background:#6b4423; color:#fff; }
-        .faq-container { display:grid; grid-template-columns: repeat(2, 1fr); gap:18px; }
-        .faq-card { background:#fff; border-radius:10px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
-        .faq-question { display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:600; color:#2c1810; }
-        .faq-answer { max-height:0; overflow:hidden; transition: max-height 0.28s ease; color:#444; margin-top:12px; }
-        .faq-card.open .faq-answer { max-height:400px; }
-        .faq-meta { font-size:13px; color:#8b6f47; margin-bottom:10px; }
+        .page-wrap {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .faq-header h2 {
+            font-size: 28px;
+            font-weight: 300;
+            color: #311402;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f5f1ed;
+            color: #6b4423;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background: #6b4423;
+            color: #fff;
+        }
+
+        .faq-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .faq-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2c1810;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.28s ease;
+            color: #444;
+            margin-top: 12px;
+        }
+
+        .faq-card.open .faq-answer {
+            max-height: 400px;
+        }
+
+        .faq-meta {
+            font-size: 13px;
+            color: #8b6f47;
+            margin-bottom: 10px;
+        }
 
         @media (max-width: 768px) {
-            .faq-container { grid-template-columns: 1fr; }
-            .page-wrap { margin: 20px auto; }
+            .faq-container {
+                grid-template-columns: 1fr;
+            }
+
+            .page-wrap {
+                margin: 20px auto;
+            }
         }
     </style>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
-        
+
         <div class="header-right">
             <nav id="nav-links">
                 <a href="home.php">Home</a>
@@ -59,11 +131,15 @@ if (!isset($_SESSION['user_id'])) {
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile"> <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a></div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php">Logout</a>
+                <a href="">QR Code</a>
+            </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -181,8 +257,8 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
@@ -190,30 +266,31 @@ alt="User">
 
     <script>
         // nav hamburger
-        document.getElementById('hamburger-btn').addEventListener('click', function(){
+        document.getElementById('hamburger-btn').addEventListener('click', function() {
             document.getElementById('nav-links').classList.toggle('show');
         });
 
         // tabs
-        document.querySelectorAll('.tabs .tab').forEach(function(tab){
-            tab.addEventListener('click', function(){
-                document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.tabs .tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 // show target
                 var target = tab.getAttribute('data-target');
-                document.querySelectorAll('main section.faq-section').forEach(s=>s.style.display='none');
+                document.querySelectorAll('main section.faq-section').forEach(s => s.style.display = 'none');
                 var el = document.getElementById(target);
-                if(el) el.style.display = '';
+                if (el) el.style.display = '';
             });
         });
 
         // accordion
-        document.querySelectorAll('.faq-card .faq-question').forEach(function(q){
-            q.addEventListener('click', function(){
+        document.querySelectorAll('.faq-card .faq-question').forEach(function(q) {
+            q.addEventListener('click', function() {
                 var card = q.closest('.faq-card');
                 card.classList.toggle('open');
             });
         });
     </script>
 </body>
+
 </html>

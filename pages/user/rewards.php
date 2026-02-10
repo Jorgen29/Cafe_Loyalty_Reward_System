@@ -96,10 +96,11 @@ if (isset($conn)) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rewards - Cafe Loyalty Reward</title>
+    <title>Rewards - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <style>
         .rewards-container {
@@ -371,7 +372,7 @@ if (isset($conn)) {
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const navLinks = document.getElementById('nav-links');
-            
+
             if (hamburgerBtn) {
                 hamburgerBtn.addEventListener('click', function() {
                     navLinks.classList.toggle('show');
@@ -379,7 +380,7 @@ if (isset($conn)) {
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     navLinks.classList.remove('show');
                 }
             });
@@ -388,7 +389,7 @@ if (isset($conn)) {
             const navLinks_items = document.querySelectorAll('#nav-links a');
             navLinks_items.forEach(link => {
                 link.addEventListener('click', function() {
-                    if(window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768) {
                         navLinks.classList.remove('show');
                     }
                 });
@@ -418,33 +419,33 @@ if (isset($conn)) {
 
                 // Look for the free refill reward (0 points = special reward)
                 rewardId = null; // Will be fetched or use special handling
-                
+
                 // For now, create/use a special "Free Refill" reward with reward_id = 0 or special handling
                 // OR fetch all rewards and find one marked as "free refill"
                 // For this implementation, we'll assume there's a free refill reward with special logic
-                
+
                 // Make a direct claim with coffee count verification
                 const formData = new FormData();
                 formData.append('customer_id', customerId);
                 formData.append('is_coffee_reward', 1); // Special flag for coffee reward
 
                 fetch('../../public/actions/customer/claim_coffee_reward.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Reward claimed successfully! You have earned a free refill.');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + (data.message || 'Could not claim reward'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error claiming reward');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Reward claimed successfully! You have earned a free refill.');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + (data.message || 'Could not claim reward'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error claiming reward');
+                    });
             } else {
                 // Regular reward claim from the list
                 const row = button.closest('.reward-item');
@@ -460,52 +461,57 @@ if (isset($conn)) {
                 formData.append('reward_id', rewardId);
 
                 fetch('../../public/actions/customer/claim_reward.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Reward claimed successfully!');
-                        location.reload();
-                    } else {
-                        alert('Error: ' + (data.message || 'Could not claim reward'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error claiming reward');
-                });
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Reward claimed successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + (data.message || 'Could not claim reward'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error claiming reward');
+                    });
             }
         }
     </script>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
-       
+
         <div class="header-right">
-             <nav id="nav-links">
+            <nav id="nav-links">
                 <a href="home.php">Home</a>
                 <a href="menu.php">Menu</a>
                 <a href="rewards.php">Rewards</a>
-                
+
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile">
-                 <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+                <a href="profile.php">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a>
             </div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php">Logout</a>
+                <a href="">QR Code</a>
+            </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -523,26 +529,26 @@ alt="User">
         <!-- Progress Section -->
         <div class="progress-section">
             <a class="progress-info" href="faqs.php" title="How to earn points?">?</a>
-                <div class="serif progress-title">
-                    ☕ Order 10 Coffee to get free refill
+            <div class="serif progress-title">
+                ☕ Order 10 Coffee to get free refill
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-bg">
+                    <?php
+                    // compute progress toward 10 coffees
+                    $goal = 10;
+                    $percent = $goal > 0 ? min(100, intval(($coffeeCount / $goal) * 100)) : 0;
+                    echo '<div class="progress-bar-fill" style="width:' . $percent . '%"></div>';
+                    ?>
                 </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-bg">
-                        <?php
-                            // compute progress toward 10 coffees
-                            $goal = 10;
-                            $percent = $goal > 0 ? min(100, intval(($coffeeCount / $goal) * 100)) : 0;
-                            echo '<div class="progress-bar-fill" style="width:' . $percent . '%"></div>';
-                        ?>
-                    </div>
-                    <button class="serif progress-claim-btn">Claim</button>
-                </div>
+                <button class="serif progress-claim-btn">Claim</button>
+            </div>
         </div>
 
         <!-- Redeem Rewards Section -->
         <div class="rewards-list-section">
             <h2 class="serif section-title">Redeem Rewards</h2>
-            
+
             <?php if (count($activeRewards) === 0): ?>
                 <p style="color:#666;">No rewards available at this time.</p>
             <?php else: ?>
@@ -606,11 +612,12 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

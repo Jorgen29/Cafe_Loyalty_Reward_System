@@ -456,7 +456,7 @@ $catDataJson = json_encode($catData);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - Cafe Loyalty Reward</title>
+    <title>Reports - Cups & Stories cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
@@ -801,23 +801,22 @@ $catDataJson = json_encode($catData);
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-               <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
-                
+
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
+
                 <a href="transactions.php" class="nav-link">
                     <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+
                 <a href="rewards.php" class="nav-link">
                     <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
+
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
@@ -825,26 +824,34 @@ $catDataJson = json_encode($catData);
 
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
-                    <span class="nav-text">Inventory Transactions</span>
-
+                    <span class="nav-text">Inventory Usage</span>
                 </a>
+
                 <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
+
                 <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
+
                 <a href="reports.php" class="nav-link active">
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
+
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Page Settings</span>
+                </a>
+
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
                 </a>
-                 
+
             </nav>
         </aside>
 

@@ -31,7 +31,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Cafe Loyalty Reward</title>
+    <title>Admin My Account - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -381,22 +381,22 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
+
                 <a href="menu.php" class="nav-link">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
+
                 <a href="transactions.php" class="nav-link">
                     <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+
                 <a href="rewards.php" class="nav-link">
                     <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
+
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
@@ -404,21 +404,29 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
-                    <span class="nav-text">Inventory Transactions</span>
-
+                    <span class="nav-text">Inventory Usage</span>
                 </a>
+
                 <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
+
                 <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
+
                 <a href="reports.php" class="nav-link">
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
+
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Page Settings</span>
+                </a>
+
                 <a href="settings.php" class="nav-link active">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
@@ -434,7 +442,7 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="serif page-title">Dashboard</h1>
+                    <h1 class="serif page-title">My Account</h1>
                 </div>
                 <div class="header-right">
 

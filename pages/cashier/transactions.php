@@ -86,7 +86,7 @@ function getOrderDetails($conn, $orderId)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions - Cafe Loyalty Reward</title>
+    <title>POS Transactions - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -227,24 +227,11 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailOrderType', orderType || 'N/A');
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
-                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-<<<<<<< Updated upstream
-                
-                const paymentDtEl = document.getElementById('detailPaymentDatetime');
-                if (paymentDtEl) {
-                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
-                        try {
-                            const dt = new Date(paymentDatetime);
-                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
-                        } catch (e) {
-                            paymentDtEl.textContent = 'N/A';
-                        }
-                    } else {
-                        paymentDtEl.textContent = 'N/A';
-                    }
-                }
-
-=======
+                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A'); <<
+                <<
+                <<
+                <
+                Updated upstream
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -260,16 +247,45 @@ function getOrderDetails($conn, $orderId)
                     }
                 }
 
->>>>>>> Stashed changes
+                ===
+                ===
+                =
+
+                const paymentDtEl = document.getElementById('detailPaymentDatetime');
+                if (paymentDtEl) {
+                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
+                        try {
+                            const dt = new Date(paymentDatetime);
+                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
+                        } catch (e) {
+                            paymentDtEl.textContent = 'N/A';
+                        }
+                    } else {
+                        paymentDtEl.textContent = 'N/A';
+                    }
+                }
+
+                >>>
+                >>>
+                >
+                Stashed changes
                 // Populate order items
                 const orderItemsContainer = document.getElementById('orderItemsContainer');
                 if (orderItemsContainer) {
-                    orderItemsContainer.innerHTML = '';
-<<<<<<< Updated upstream
-                    
-=======
+                    orderItemsContainer.innerHTML = ''; <<
+                    <<
+                    <<
+                    <
+                    Updated upstream
 
->>>>>>> Stashed changes
+                        ===
+                        ===
+                        =
+
+                        >>>
+                        >>>
+                        >
+                        Stashed changes
                     orderDetails.forEach(item => {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'order-item';
@@ -326,12 +342,12 @@ function getOrderDetails($conn, $orderId)
                 </a>
                 <a href="transactions.php" class="nav-link active">
                     <span class="nav-icon material-icons">payment</span>
-                    <span class="nav-text">Transactions</span>
+                    <span class="nav-text">POS Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon material-icons">kitchen</span>
-                    <span class="nav-text">Ingredients</span>
+                    <span class="nav-text">Get Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
@@ -346,7 +362,7 @@ function getOrderDetails($conn, $orderId)
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="serif page-title">Transactions</h1>
+                    <h1 class="serif page-title">POS Transactions</h1>
                 </div>
                 <div class="header-right">
                     <div class="admin-profile">
@@ -362,7 +378,7 @@ function getOrderDetails($conn, $orderId)
                 <!-- Controls Section -->
                 <div class="transactions-controls">
                     <div class="sort-container">
-                        <label for="sort-dropdown" class="sort-label">Latest</label>
+                        <label for="sort-dropdown" class="sort-label">Sort by:</label>
                         <select id="sort-dropdown" class="sort-dropdown">
                             <option value="latest">Latest</option>
                             <option value="oldest">Oldest</option>
@@ -370,10 +386,10 @@ function getOrderDetails($conn, $orderId)
                             <option value="lowest">Lowest Amount</option>
                         </select>
                     </div>
-                    <!-- <div class="search-container">
+                    <!--<div class="search-container">
                         <input type="text" class="search-input" placeholder="Search">
                         <span class="search-icon">🔍</span>
-                    </div> -->
+                    </div>-->
                 </div>
 
                 <!-- Transactions Table -->
@@ -425,11 +441,7 @@ function getOrderDetails($conn, $orderId)
                                         <td>' . $customerName . '</td>
                                         <td>₱' . number_format($orderTotal, 2) . '</td>
                                         <td>' . $orderTime . '</td>
-                                        <td>
-    <button class="action-btn " title="View Details">
-        <img class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="View Details">
-    </button>
-</td>
+                                        <td><button class="action-btn " title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
 
                                     </tr>';
                                 }

@@ -74,10 +74,11 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Cafe Loyalty Reward</title>
+    <title>Menu - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
     <style>
         .menu-container {
@@ -255,8 +256,17 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             }
 
             /* hide header search; show mobile search */
-            .header-center .search { display: none; }
-            .mobile-search { display: block; width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid #ddd; }
+            .header-center .search {
+                display: none;
+            }
+
+            .mobile-search {
+                display: block;
+                width: 100%;
+                padding: 10px 12px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+            }
 
             .categories-sidebar h3 {
                 grid-column: 1 / -1;
@@ -394,13 +404,15 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             const card = document.createElement('div');
             card.className = 'product-card';
             const pointsText = product.points > 0 ? product.points + ' point' + (product.points !== 1 ? 's' : '') : 'No points';
-            
+
             const img = document.createElement('img');
             img.src = product.image;
             img.alt = product.name;
             img.className = 'product-img';
-            img.onerror = function() { handleImageError(this); };
-            
+            img.onerror = function() {
+                handleImageError(this);
+            };
+
             const info = document.createElement('div');
             info.className = 'product-info';
             info.innerHTML = `
@@ -408,7 +420,7 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                 <div class="product-points">${pointsText}</div>
                 <div class="product-price">₱${product.price.toFixed(2)}</div>
             `;
-            
+
             card.appendChild(img);
             card.appendChild(info);
             return card;
@@ -432,7 +444,7 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     navLinks.classList.remove('show');
                 }
             });
@@ -474,7 +486,9 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                 for (const cat in productsData) {
                     if (!Array.isArray(productsData[cat])) continue;
                     productsData[cat].forEach(p => {
-                        flat.push(Object.assign({category: cat}, p));
+                        flat.push(Object.assign({
+                            category: cat
+                        }, p));
                     });
                 }
 
@@ -515,34 +529,39 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
         });
     </script>
 </head>
+
 <body>
     <header class="serif header">
-         <a href="home.php">
-        <div class="header-left">
-           
-            <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
-            
-        </div>
+        <a href="home.php">
+            <div class="header-left">
+
+                <img src="../../public/assets/css/images/logo images/cups and stories logo.png" alt="Cafe Logo" class="logo">
+
+            </div>
         </a>
         <!-- <div class="header-center">
             <input type="text" class="search" placeholder="Search menu items...">
         </div> -->
         <div class="header-right">
-             <nav id="nav-links">
+            <nav id="nav-links">
                 <a href="home.php">Home</a>
                 <a href="menu.php">Menu</a>
                 <a href="rewards.php">Rewards</a>
-                
+
                 <a href="faqs.php">FAQs</a>
             </nav>
             <div class="profile">
-                 <a href="profile.php">
-                <img src="<?php echo !empty($_SESSION['profile_image'])
-    ? htmlspecialchars($_SESSION['profile_image'])
-    : '../../public/icons/logo.png'; ?>" 
-alt="User">
+                <a href="profile.php">
+                    <img src="<?php echo !empty($_SESSION['profile_image'])
+                                    ? htmlspecialchars($_SESSION['profile_image'])
+                                    : '../../public/icons/logo.png'; ?>"
+                        alt="User">
                 </a>
             </div>
+            <nav id="nav-links">
+                <a href="../../public/actions/auth/logout.php">Logout</a>
+                <a href="">QR Code</a>
+            </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -600,11 +619,12 @@ alt="User">
             </div>
             <div class="footer-contact-item">
                 <a href="https://web.facebook.com/profile.php?id=100095680143645" style="text-decoration: none;color:white;text-align:center;display: flex;align-items: center; gap: 12px;">
-                <img src="../../public/icons/communication.png" alt="Facebook">
-                <span >CUPS & Stories CAFE</span>
+                    <img src="../../public/icons/communication.png" alt="Facebook">
+                    <span>CUPS & Stories CAFE</span>
                 </a>
             </div>
         </div>
     </footer>
 </body>
+
 </html>

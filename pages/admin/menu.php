@@ -43,7 +43,7 @@ if ($query) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Cafe Loyalty Reward</title>
+    <title>Menu - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
@@ -536,48 +536,57 @@ if ($query) {
                     <span class="nav-icon material-icons">dashboard</span>
                     <span class="nav-text">Dashboard</span>
                 </a>
-                <a href="page_view.php" class="nav-link">
-                    <span class="nav-icon material-icons">description</span>
-                    <span class="nav-text">Pages Settings</span>
-                </a>
 
                 <a href="menu.php" class="nav-link active">
                     <span class="nav-icon material-icons">restaurant</span>
                     <span class="nav-text">Menu</span>
                 </a>
+
                 <!-- Category Filter Buttons -->
                 <div class="category-buttons-container" id="category-buttons-container" style="display: flex; flex-direction: column; gap: 6px; padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
                     <!-- Category buttons will be inserted here -->
                 </div>
+
                 <a href="transactions.php" class="nav-link">
                     <span class="nav-icon material-icons">payment</span>
                     <span class="nav-text">Transactions</span>
                 </a>
+
                 <a href="rewards.php" class="nav-link">
                     <span class="nav-icon material-icons">confirmation_number</span>
                     <span class="nav-text">Rewards</span>
                 </a>
+
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
                     <span class="nav-text">Inventory</span>
                 </a>
+
                 <a href="inventory_reports.php" class="nav-link">
                     <span class="nav-icon material-icons">inventory_2</span>
-                    <span class="nav-text">Inventory Transactions</span>
-
+                    <span class="nav-text">Inventory Usage</span>
                 </a>
+
                 <a href="members_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Members</span>
                 </a>
+
                 <a href="cashiers_list.php" class="nav-link">
                     <span class="nav-icon material-icons">people</span>
                     <span class="nav-text">Cashiers</span>
                 </a>
+
                 <a href="reports.php" class="nav-link">
                     <span class="nav-icon material-icons">assessment</span>
                     <span class="nav-text">Reports</span>
                 </a>
+
+                <a href="page_view.php" class="nav-link">
+                    <span class="nav-icon material-icons">description</span>
+                    <span class="nav-text">Page Settings</span>
+                </a>
+
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>
                     <span class="nav-text">My Account</span>
@@ -611,7 +620,7 @@ if ($query) {
                 <div class="menu-controls">
                     <div class="left-controls">
                         <div class="sort-container">
-                            <label for="sort-dropdown" class="sort-label">Latest</label>
+                            <label for="sort-dropdown" class="sort-label">Sort by:</label>
                             <select id="sort-dropdown" class="sort-dropdown">
                                 <option value="latest">Latest</option>
                                 <option value="oldest">Oldest</option>
@@ -621,6 +630,7 @@ if ($query) {
                         </div>
                         <div class="search-container">
                             <input type="text" class="search-input" placeholder="Search products...">
+                            <span class="search-icon">🔍
                         </div>
                     </div>
                     <button class="serif add-btn" title="Add new menu item"><span class="material-icons">add</span> Add Menu Item</button>
@@ -663,7 +673,7 @@ if ($query) {
                         <option value="Coffee">Coffee</option>
                         <option value="Non-Coffee">Non-Coffee</option>
                         <option value="Frappe">Frappe</option>
-                        <option value="PICA PICA">PICA PICA</option>
+                        <option value="PICA PICA">Pica Pica</option>
                         <option value="Chicken Wings">Chicken Wings</option>
                         <option value="Pasta">Pasta</option>
                         <option value="Rice Meal">Rice Meal</option>

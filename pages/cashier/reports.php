@@ -187,7 +187,7 @@ $catDataJson = json_encode($catData);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports - Cafe Loyalty Reward</title>
+    <title>Reports - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -522,12 +522,12 @@ $catDataJson = json_encode($catData);
                 </a>
                 <a href="transactions.php" class="nav-link ">
                     <span class="nav-icon material-icons">payment</span>
-                    <span class="nav-text">Transactions</span>
+                    <span class="nav-text">POS Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link ">
                     <span class="nav-icon material-icons">kitchen</span>
-                    <span class="nav-text">Ingredients</span>
+                    <span class="nav-text">Get Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link">
                     <span class="nav-icon material-icons">settings</span>

@@ -43,7 +43,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashier Settings - Cafe Loyalty Reward</title>
+    <title>My Account - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -395,11 +395,11 @@ if (isset($_SESSION['user_id'])) {
                 </a>
                 <a href="transactions.php" class="nav-link">
                     <span class="nav-icon material-icons">payment</span>
-                    <span class="nav-text">Transactions</span>
+                    <span class="nav-text">POS Transactions</span>
                 </a>
                 <a href="inventory.php" class="nav-link">
                     <span class="nav-icon material-icons">kitchen</span>
-                    <span class="nav-text">Ingredients</span>
+                    <span class="nav-text">Get Ingredients</span>
                 </a>
                 <a href="settings.php" class="nav-link active">
                     <span class="nav-icon material-icons">settings</span>
@@ -414,7 +414,7 @@ if (isset($_SESSION['user_id'])) {
             <header class="top-header">
                 <div class="header-left">
                     <button class="hamburger-btn" id="hamburger-menu-btn">☰</button>
-                    <h1 class="serif page-title">Settings</h1>
+                    <h1 class="serif page-title">My Account</h1>
                 </div>
                 <div class="header-right">
 

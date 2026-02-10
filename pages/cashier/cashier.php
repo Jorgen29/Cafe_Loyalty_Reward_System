@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cashier POS System Page
  * Protected page - only cashier/staff can access
@@ -78,10 +79,11 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Cashier POS</title>
+    <title>Cashier POS - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
     <link rel="stylesheet" href="../../public/assets/css/cashier-styles.css">
     <!-- Load jsQR library from CDN (fallback to local file can be added if needed) -->
@@ -117,7 +119,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             }
 
             window.addEventListener('resize', function() {
-                if(window.innerWidth > 768) {
+                if (window.innerWidth > 768) {
                     sidebar.classList.remove('active');
                 }
             });
@@ -139,7 +141,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             updateCategoryButtons('all');
             setupCheckoutEvents();
             setupQRScanner();
-            
+
             // Populate discount dropdown with default system discounts (so 20% PWD/Seniors shows even without QR scan)
             populateDiscountDropdown([]);
 
@@ -154,7 +156,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 radio.addEventListener('change', function() {
                     const digitalPaymentSection = document.getElementById('digital-payment-section');
                     const paymentMethod = this.value;
-                    
+
                     if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
                         digitalPaymentSection.style.display = 'block';
                     } else {
@@ -172,7 +174,9 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             // If category is 'all', flatten all items from every category
             let items = [];
             if (category === 'all') {
-                Object.keys(menuData).forEach(k => { items = items.concat(menuData[k] || []); });
+                Object.keys(menuData).forEach(k => {
+                    items = items.concat(menuData[k] || []);
+                });
             } else {
                 items = menuData[category] || [];
             }
@@ -180,7 +184,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 const itemCard = document.createElement('div');
                 itemCard.className = 'menu-item';
                 itemCard.innerHTML = `
-                    <img src="${item.image_path ? item.image_path : '../../public/assets/images/Default.jpg'}" alt="${item.product_name}" class="menu-item-image">
+                    <img src="${item.image_path ? item.image_path : '../../public/assets/images/cafe.jpg'}" alt="${item.product_name}" class="menu-item-image">
                     <div class="menu-item-name">${item.product_name}</div>
                     <div class="menu-item-prices">
                         <div class="menu-item-price-item"><span>₱${parseFloat(item.product_price).toFixed(2)}</span></div>
@@ -196,11 +200,11 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
         function setupCategoryDropdown() {
             const buttonsContainer = document.getElementById('category-buttons-container');
-            
+
             // Populate category buttons for visual display
             if (buttonsContainer) {
                 buttonsContainer.innerHTML = '';
-                
+
                 // Add "All Categories" button
                 const allBtn = document.createElement('button');
                 allBtn.className = 'category-btn active';
@@ -212,7 +216,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     updateCategoryButtons('all');
                 });
                 buttonsContainer.appendChild(allBtn);
-                
+
                 // Add individual category buttons
                 allCategories.forEach(cat => {
                     const btn = document.createElement('button');
@@ -295,14 +299,22 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     alert('Free Refill can only have 1 item. Please remove existing items first.');
                     return;
                 }
-                cartItems.push({...item, quantity: 1, price: parseFloat(item.product_price)});
+                cartItems.push({
+                    ...item,
+                    quantity: 1,
+                    price: parseFloat(item.product_price)
+                });
             } else {
                 // Normal flow
                 const existing = cartItems.find(i => i.product_id === item.product_id);
                 if (existing) {
                     existing.quantity++;
                 } else {
-                    cartItems.push({...item, quantity: 1, price: parseFloat(item.product_price)});
+                    cartItems.push({
+                        ...item,
+                        quantity: 1,
+                        price: parseFloat(item.product_price)
+                    });
                 }
             }
             updateCheckout();
@@ -388,17 +400,17 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 console.log('dataset.amount:', selectedOpt?.dataset?.amount);
                 console.log('dataset.percent:', selectedOpt?.dataset?.percent);
                 console.log('dataset.discountType:', selectedOpt?.dataset?.discountType);
-                
+
                 if (selectedOpt && selectedOpt.dataset) {
                     // Check if this is a Free Refill reward (reward name contains "Free Refill")
                     const rewardName = (selectedOpt.dataset.name || '').toString();
                     const rewardPoints = (selectedOpt.dataset.points || '').toString();
-                    
+
                     console.log('Reward name:', rewardName);
                     console.log('Reward points:', rewardPoints);
                     console.log('Name includes "free refill":', rewardName.toLowerCase().includes('free refill'));
                     console.log('Name includes "refill":', rewardName.toLowerCase().includes('refill'));
-                    
+
                     if (rewardName.toLowerCase().includes('free refill') || rewardName.toLowerCase().includes('refill')) {
                         isFreeRefill = true;
                         console.log('FREE REFILL DETECTED!');
@@ -424,7 +436,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     console.log('Processing discount...');
                     console.log('selectedOpt:', selectedOpt);
                     console.log('selectedOpt.dataset:', selectedOpt?.dataset);
-                    
+
                     if (selectedOpt && selectedOpt.dataset) {
                         console.log('Checking discount type...');
                         // Check for percentage discount
@@ -432,7 +444,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                             discountPercent = parseFloat(selectedOpt.dataset.percent) || 0;
                             discountType = 'percent';
                             console.log('✓ Discount type: PERCENT, value:', discountPercent);
-                        } 
+                        }
                         // Check for amount discount
                         else if (selectedOpt.dataset.amount) {
                             discountAmount = parseFloat(selectedOpt.dataset.amount) || 0;
@@ -473,7 +485,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 console.log('Discount type:', discountType);
                 console.log('Discount percent:', discountPercent);
                 console.log('Discount amount:', discountAmount);
-                
+
                 if (discountType === 'percent') {
                     finalDiscountAmount = subtotal * (discountPercent / 100);
                     console.log('Percent calculation:', subtotal, '*', (discountPercent / 100), '=', finalDiscountAmount);
@@ -498,7 +510,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             const cashPaymentRow = document.querySelector('.total-row.payment');
             const changeRow = document.querySelector('.total-row.change');
             const cashInput = document.getElementById('cash-input');
-            
+
             if (isFreeRefill) {
                 console.log('Hiding payment UI');
                 if (paymentSection) paymentSection.style.display = 'none';
@@ -510,7 +522,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 if (paymentSection) paymentSection.style.display = '';
                 if (cashPaymentRow) cashPaymentRow.style.display = '';
                 if (changeRow) changeRow.style.display = '';
-                
+
                 if (cashInput) {
                     const total = parseFloat(document.getElementById('total').textContent);
                     const cash = parseFloat(cashInput.value || 0);
@@ -542,27 +554,26 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     opt.dataset.name = r.reward_name || '';
                     opt.dataset.points = r.points || '';
                     console.log('Setting dataset.points to:', r.points, 'stringified:', String(r.points));
-                    
+
                     // Handle both discount_percent and discount_amount
                     // Check if discount_amount is GREATER THAN 0 (not just != null, because COALESCE returns 0)
                     const discountAmountValue = parseFloat(r.discount_amount || 0);
                     const discountPercentValue = parseFloat(r.discount_percent || 0);
-                    
+
                     console.log('Reward:', r.reward_name, '| Amount:', discountAmountValue, '| Percent:', discountPercentValue);
-                    
+
                     if (discountAmountValue > 0) {
                         opt.dataset.amount = discountAmountValue;
                         opt.dataset.discountType = 'amount';
                         console.log('✓ Set as AMOUNT discount:', discountAmountValue);
-                    } 
-                    else if (discountPercentValue > 0) {
+                    } else if (discountPercentValue > 0) {
                         opt.dataset.percent = discountPercentValue;
                         opt.dataset.discountType = 'percent';
                         console.log('✓ Set as PERCENT discount:', discountPercentValue);
                     } else {
                         console.log('✗ No discount value set');
                     }
-                    
+
                     opt.dataset.start = r.start_date || '';
                     opt.dataset.expiration = r.expiration_date || '';
                     opt.dataset.rewardId = r.reward_id;
@@ -571,7 +582,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             }
 
             // Also include system static percentage discounts as fallback
-            const sys = [5,10,15,20];
+            const sys = [5, 10, 15, 20];
             sys.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = 'sys_' + p;
@@ -593,11 +604,26 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             const qrCloseModalBtn = document.getElementById('qr-close-modal-btn');
 
             if (!scanBtn) return;
-            scanBtn.addEventListener('click', function() { qrModal.classList.add('active'); });
-            qrCloseBtn.addEventListener('click', function() { stopQRScanner(); qrModal.classList.remove('active'); });
-            qrCloseModalBtn.addEventListener('click', function() { stopQRScanner(); qrModal.classList.remove('active'); });
-            qrStartBtn.addEventListener('click', function() { startQRScanner(); });
-            qrModal.addEventListener('click', function(e) { if (e.target === qrModal) { stopQRScanner(); qrModal.classList.remove('active'); } });
+            scanBtn.addEventListener('click', function() {
+                qrModal.classList.add('active');
+            });
+            qrCloseBtn.addEventListener('click', function() {
+                stopQRScanner();
+                qrModal.classList.remove('active');
+            });
+            qrCloseModalBtn.addEventListener('click', function() {
+                stopQRScanner();
+                qrModal.classList.remove('active');
+            });
+            qrStartBtn.addEventListener('click', function() {
+                startQRScanner();
+            });
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    stopQRScanner();
+                    qrModal.classList.remove('active');
+                }
+            });
         }
 
         function startQRScanner() {
@@ -614,31 +640,50 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 return;
             }
 
-            startBtn.disabled = true; startBtn.textContent = 'Starting camera...';
+            startBtn.disabled = true;
+            startBtn.textContent = 'Starting camera...';
 
             // Try progressive constraints to increase compatibility across devices/browsers
-            const constraintsList = [
-                { video: { facingMode: { ideal: 'environment' } } },
-                { video: { facingMode: 'environment' } },
-                { video: true }
+            const constraintsList = [{
+                    video: {
+                        facingMode: {
+                            ideal: 'environment'
+                        }
+                    }
+                },
+                {
+                    video: {
+                        facingMode: 'environment'
+                    }
+                },
+                {
+                    video: true
+                }
             ];
 
             let attempt = 0;
+
             function tryNextConstraint() {
                 if (attempt >= constraintsList.length) {
-                    startBtn.disabled = false; startBtn.textContent = 'Start Scanning';
+                    startBtn.disabled = false;
+                    startBtn.textContent = 'Start Scanning';
                     alert('Unable to access the camera on this device.');
                     return;
                 }
                 const c = constraintsList[attempt++];
                 navigator.mediaDevices.getUserMedia(c).then(function(stream) {
-                    qrStream = stream; video.srcObject = stream; video.play(); qrScanning = true; startBtn.textContent = 'Scanning...';
+                    qrStream = stream;
+                    video.srcObject = stream;
+                    video.play();
+                    qrScanning = true;
+                    startBtn.textContent = 'Scanning...';
                     scanQRCode();
                 }).catch(function(err) {
                     console.warn('getUserMedia failed with constraints', c, err);
                     // If the user denied permission, don't keep trying other constraints
                     if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
-                        startBtn.disabled = false; startBtn.textContent = 'Start Scanning';
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Start Scanning';
                         alert('Camera permission denied. Please allow camera access in your browser settings.');
                         return;
                     }
@@ -652,8 +697,15 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
         function stopQRScanner() {
             qrScanning = false;
-            if (qrStream) { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
-            const startBtn = document.getElementById('qr-start-btn'); if (startBtn) { startBtn.disabled = false; startBtn.textContent = 'Start Scanning'; }
+            if (qrStream) {
+                qrStream.getTracks().forEach(t => t.stop());
+                qrStream = null;
+            }
+            const startBtn = document.getElementById('qr-start-btn');
+            if (startBtn) {
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Scanning';
+            }
         }
 
         function scanQRCode() {
@@ -661,13 +713,21 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const scanInterval = setInterval(function() {
-                if (!qrScanning) { clearInterval(scanInterval); return; }
+                if (!qrScanning) {
+                    clearInterval(scanInterval);
+                    return;
+                }
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
                     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     const code = jsQR(imageData.data, imageData.width, imageData.height);
-                    if (code) { handleQRResult(code.data); clearInterval(scanInterval); stopQRScanner(); }
+                    if (code) {
+                        handleQRResult(code.data);
+                        clearInterval(scanInterval);
+                        stopQRScanner();
+                    }
                 }
             }, 150);
         }
@@ -675,31 +735,45 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
         function handleQRResult(data) {
             const resultDiv = document.getElementById('qr-result');
             const resultValue = document.getElementById('qr-result-value');
-            resultValue.textContent = data; resultDiv.classList.add('active');
+            resultValue.textContent = data;
+            resultDiv.classList.add('active');
             const parts = data.split('|');
             if (parts.length === 0) return;
             const memberId = parts[0];
-            const memberIdInput = document.querySelector('input[placeholder="Enter ID"]'); if (memberIdInput) memberIdInput.value = memberId;
-            if (parts.length > 1) { const memberNameInput = document.querySelector('input[placeholder="Name"]'); if (memberNameInput) memberNameInput.value = parts[1]; }
+            const memberIdInput = document.querySelector('input[placeholder="Enter ID"]');
+            if (memberIdInput) memberIdInput.value = memberId;
+            if (parts.length > 1) {
+                const memberNameInput = document.querySelector('input[placeholder="Name"]');
+                if (memberNameInput) memberNameInput.value = parts[1];
+            }
 
             // fetch rewards for this customer
-            fetch('../../public/actions/customer/get_rewards.php', { method: 'POST', body: new URLSearchParams({ customer_id: memberId }) })
-            .then(r => r.json())
-            .then(json => {
-                if (json.success) {
-                    populateDiscountDropdown(json.rewards);
-                    displayMemberRewards(json.rewards);
-                    
-                    // Check if today is customer's birthday
-                    if (json.is_birthday) {
-                        alert('🎉 Happy Birthday! 🎉\n\nThis customer is celebrating their birthday today! Consider offering them a special birthday discount or voucher.');
+            fetch('../../public/actions/customer/get_rewards.php', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        customer_id: memberId
+                    })
+                })
+                .then(r => r.json())
+                .then(json => {
+                    if (json.success) {
+                        populateDiscountDropdown(json.rewards);
+                        displayMemberRewards(json.rewards);
+
+                        // Check if today is customer's birthday
+                        if (json.is_birthday) {
+                            alert('🎉 Happy Birthday! 🎉\n\nThis customer is celebrating their birthday today! Consider offering them a special birthday discount or voucher.');
+                        }
+                    } else {
+                        populateDiscountDropdown([]);
+                        displayMemberRewards([]);
                     }
-                } else {
+                })
+                .catch(err => {
+                    console.error('Error fetching rewards', err);
                     populateDiscountDropdown([]);
                     displayMemberRewards([]);
-                }
-            })
-            .catch(err => { console.error('Error fetching rewards', err); populateDiscountDropdown([]); displayMemberRewards([]); });
+                });
         }
 
         function displayMemberRewards(rewards) {
@@ -710,31 +784,31 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 container.innerHTML = '<span style="color:#666;">No active rewards for this member.</span>';
                 return;
             }
-            
+
             // Sort rewards: first by expiration date (soonest first), then by discount value
             rewards.sort((a, b) => {
                 // Convert expiration dates for comparison
                 const dateA = a.expiration_date ? new Date(a.expiration_date).getTime() : Infinity;
                 const dateB = b.expiration_date ? new Date(b.expiration_date).getTime() : Infinity;
-                
+
                 // If expiration dates are different, sort by expiration date
                 if (dateA !== dateB) {
                     return dateA - dateB;
                 }
-                
+
                 // If expiration dates are the same, sort by discount value
                 // For amount-based discounts, use discount_amount; for percent-based, use discount_percent
                 const valueA = parseFloat(a.discount_amount || a.discount_percent || 0);
                 const valueB = parseFloat(b.discount_amount || b.discount_percent || 0);
                 return valueA - valueB;
             });
-            
+
             // Build list
             let html = '<ul style="padding-left:16px;margin:0;font-size:13px;color:#333;">';
             rewards.forEach(r => {
                 const name = r.reward_name || r.reward_type || 'Reward';
                 const exp = r.expiration_date ? ('Expires: ' + r.expiration_date) : '';
-                
+
                 // Format discount display (amount or percent)
                 let discountDisplay = '';
                 if (r.discount_amount && parseFloat(r.discount_amount) > 0) {
@@ -742,11 +816,11 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 } else if (r.discount_percent && parseFloat(r.discount_percent) > 0) {
                     discountDisplay = ' (' + parseFloat(r.discount_percent) + '%)';
                 }
-                
-                html += '<li style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">'
-                    + '<span style="flex:1;">' + escapeHtml(name) + discountDisplay + (exp ? ' <span style="color:#888;font-size:12px;">(' + escapeHtml(exp) + ')</span>' : '') + '</span>'
-                    + '<button type="button" class="use-reward-btn" data-reward-id="' + (r.reward_id || '') + '" style="margin-left:8px;padding:4px 8px;border-radius:4px;border:1px solid #6b4423;background:#fff;color:#6b4423;cursor:pointer;">Use</button>'
-                    + '</li>';
+
+                html += '<li style="margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">' +
+                    '<span style="flex:1;">' + escapeHtml(name) + discountDisplay + (exp ? ' <span style="color:#888;font-size:12px;">(' + escapeHtml(exp) + ')</span>' : '') + '</span>' +
+                    '<button type="button" class="use-reward-btn" data-reward-id="' + (r.reward_id || '') + '" style="margin-left:8px;padding:4px 8px;border-radius:4px;border:1px solid #6b4423;background:#fff;color:#6b4423;cursor:pointer;">Use</button>' +
+                    '</li>';
             });
             html += '</ul>';
             container.innerHTML = html;
@@ -759,9 +833,13 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     // find option in dropdown that matches reward_<id>
                     if (dd) {
                         let found = false;
-                        for (let i=0;i<dd.options.length;i++) {
+                        for (let i = 0; i < dd.options.length; i++) {
                             const opt = dd.options[i];
-                            if (opt.value === 'reward_' + rid) { dd.selectedIndex = i; found = true; break; }
+                            if (opt.value === 'reward_' + rid) {
+                                dd.selectedIndex = i;
+                                found = true;
+                                break;
+                            }
                         }
                         if (!found) {
                             // if not present, append it then select
@@ -773,7 +851,8 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                             dd.value = opt.value;
                         }
                         // trigger change to recalc totals
-                        const evt = new Event('change'); dd.dispatchEvent(evt);
+                        const evt = new Event('change');
+                        dd.dispatchEvent(evt);
                     }
                 });
             });
@@ -786,18 +865,34 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
         function escapeHtml(str) {
             if (!str) return '';
-            return String(str).replace(/[&<>"']/g, function(m) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                })[m];
+            });
         }
 
         /* ---------- CHECKOUT / ORDER ---------- */
         function setupCheckoutEvents() {
             const cancelBtn = document.getElementById('cancel-order-btn');
             const orderBtn = document.getElementById('order-btn');
-            if (cancelBtn) cancelBtn.addEventListener('click', function() { if (confirm('Clear all items?')) { cartItems = []; updateCheckout(); } });
+            if (cancelBtn) cancelBtn.addEventListener('click', function() {
+                if (confirm('Clear all items?')) {
+                    cartItems = [];
+                    updateCheckout();
+                }
+            });
             if (orderBtn) orderBtn.addEventListener('click', function() {
-                if (cartItems.length === 0) { alert('Please add items to proceed'); return; }
+                if (cartItems.length === 0) {
+                    alert('Please add items to proceed');
+                    return;
+                }
                 // Build payload
-                const memberId = (document.querySelector('input[placeholder="Enter ID"]')||{}).value || '';
+                const memberId = (document.querySelector('input[placeholder="Enter ID"]') || {}).value || '';
                 const dd = document.getElementById('discount-dropdown');
                 let reward_id = null;
                 let discountPercent = 0;
@@ -808,7 +903,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
 
                 if (dd && dd.value) {
                     if (dd.value.startsWith('reward_')) {
-                        reward_id = parseInt(dd.value.replace('reward_',''), 10);
+                        reward_id = parseInt(dd.value.replace('reward_', ''), 10);
                     }
                     // extract discount values for order calculation
                     const selectedOpt = dd.options[dd.selectedIndex];
@@ -832,7 +927,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                                 discountType = 'percent';
                             }
                         }
-                        
+
                         // Check if this is a Free Refill reward (reward name contains "Free Refill")
                         const rewardName = (selectedOpt.dataset.name || '').toString();
                         const rewardPoints = (selectedOpt.dataset.points || '').toString();
@@ -863,15 +958,19 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 // Validate digital payment fields (GCash/PayMaya)
                 if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
                     const refNum = document.getElementById('reference-number').value.trim();
-                    
+
                     if (!refNum) {
                         alert('Please enter a reference number for ' + (paymentMethod === 'paymaya' ? 'PayMaya' : 'GCash') + ' payment.');
                         return;
                     }
                 }
 
-                const items = cartItems.map(i => ({ product_id: i.product_id, quantity: i.quantity, price: i.price }));
-                
+                const items = cartItems.map(i => ({
+                    product_id: i.product_id,
+                    quantity: i.quantity,
+                    price: i.price
+                }));
+
                 // Prepare digital payment details if applicable
                 const paymentDetails = {};
                 if (paymentMethod === 'paymaya' || paymentMethod === 'gcash') {
@@ -879,79 +978,86 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 }
 
                 fetch('../../public/actions/orders/save_order.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        items: items, 
-                        customer_id: memberId || null, 
-                        payment_method: paymentMethod, 
-                        reward_id: reward_id, 
-                        discount_percent: discountPercent,
-                        discount_amount: discountAmount,
-                        discount_type: discountType,
-                        store_id: cashierStoreId,
-                        payment_details: paymentDetails
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            items: items,
+                            customer_id: memberId || null,
+                            payment_method: paymentMethod,
+                            reward_id: reward_id,
+                            discount_percent: discountPercent,
+                            discount_amount: discountAmount,
+                            discount_type: discountType,
+                            store_id: cashierStoreId,
+                            payment_details: paymentDetails
+                        })
                     })
-                })
-                .then(r => r.json())
-                .then(json => {
-                    console.log('[ORDER-RESPONSE]', json);
-                    console.log('[EMAIL-STATUS]', 'Status:', json.email_status, 'Message:', json.email_message);
-                    
-                    if (json.success) {
-                        let successMsg = 'Order processed (ID: ' + (json.order_id || '-') + '). ';
-                        if (isFreeRefillVoucher) {
-                            successMsg += 'Free Refill applied!';
-                        } else {
-                            successMsg += 'Total: ₱' + document.getElementById('total').textContent;
-                        }
-                        
-                        // Add email status to alert
-                        if (json.email_status) {
-                            if (json.email_status === 'sent') {
-                                successMsg += '\n✓ Receipt email sent!';
-                                console.log('[EMAIL-SUCCESS] Receipt email sent successfully');
-                            } else if (json.email_status === 'error') {
-                                successMsg += '\n✗ Email failed: ' + json.email_message;
-                                console.error('[EMAIL-ERROR]', json.email_message);
-                            } else if (json.email_status === 'skipped') {
-                                successMsg += '\n⚠ Email skipped: ' + json.email_message;
-                                console.warn('[EMAIL-SKIPPED]', json.email_message);
+                    .then(r => r.json())
+                    .then(json => {
+                        console.log('[ORDER-RESPONSE]', json);
+                        console.log('[EMAIL-STATUS]', 'Status:', json.email_status, 'Message:', json.email_message);
+
+                        if (json.success) {
+                            let successMsg = 'Order processed (ID: ' + (json.order_id || '-') + '). ';
+                            if (isFreeRefillVoucher) {
+                                successMsg += 'Free Refill applied!';
+                            } else {
+                                successMsg += 'Total: ₱' + document.getElementById('total').textContent;
                             }
+
+                            // Add email status to alert
+                            if (json.email_status) {
+                                if (json.email_status === 'sent') {
+                                    successMsg += '\n✓ Receipt email sent!';
+                                    console.log('[EMAIL-SUCCESS] Receipt email sent successfully');
+                                } else if (json.email_status === 'error') {
+                                    successMsg += '\n✗ Email failed: ' + json.email_message;
+                                    console.error('[EMAIL-ERROR]', json.email_message);
+                                } else if (json.email_status === 'skipped') {
+                                    successMsg += '\n⚠ Email skipped: ' + json.email_message;
+                                    console.warn('[EMAIL-SKIPPED]', json.email_message);
+                                }
+                            }
+
+                            alert(successMsg);
+                            // reset local UI state then reload to reflect persisted data
+                            cartItems = [];
+                            updateCheckout();
+                            // stop any running QR scanner and clear member info
+                            try {
+                                stopQRScanner();
+                            } catch (e) {
+                                /* ignore */
+                            }
+                            const memberIdInput = document.querySelector('input[placeholder="Enter ID"]');
+                            if (memberIdInput) memberIdInput.value = '';
+                            const memberNameInput = document.querySelector('input[placeholder="Name"]');
+                            if (memberNameInput) memberNameInput.value = '';
+                            clearMemberRewardsDisplay();
+                            // give the user a brief moment after the alert, then reload
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            alert('Error processing order: ' + (json.message || 'Unknown'));
                         }
-                        
-                        alert(successMsg);
-                        // reset local UI state then reload to reflect persisted data
-                        cartItems = [];
-                        updateCheckout();
-                        // stop any running QR scanner and clear member info
-                        try { stopQRScanner(); } catch (e) { /* ignore */ }
-                        const memberIdInput = document.querySelector('input[placeholder="Enter ID"]'); if (memberIdInput) memberIdInput.value = '';
-                        const memberNameInput = document.querySelector('input[placeholder="Name"]'); if (memberNameInput) memberNameInput.value = '';
-                        clearMemberRewardsDisplay();
-                        // give the user a brief moment after the alert, then reload
-                        setTimeout(function() { window.location.reload(); }, 500);
-                    } else {
-                        alert('Error processing order: ' + (json.message || 'Unknown'));
-                    }
-                })
-                .catch(err => { 
-                    console.error('[ORDER-ERROR]', err); 
-                    console.error('[ORDER-ERROR-DETAILS]', err.message);
-                    alert('Error processing order'); 
-                });
+                    })
+                    .catch(err => {
+                        console.error('[ORDER-ERROR]', err);
+                        console.error('[ORDER-ERROR-DETAILS]', err.message);
+                        alert('Error processing order');
+                    });
             });
         }
-
-        
-
-        
     </script>
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar Navigation -->
-      <aside class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="cafe-logo">
                     <img src="../../public/assets/css/images/logo images/whitelogo.png" alt="Cafe Logo" class="logo-icon">
@@ -970,12 +1076,12 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 </div>
                 <a href="transactions.php" class="nav-link ">
                     <span class="nav-icon material-icons">payment</span>
-                    <span class="nav-text">Transactions</span>
+                    <span class="nav-text">POS Transactions</span>
                 </a>
 
                 <a href="inventory.php" class="nav-link ">
                     <span class="nav-icon material-icons">kitchen</span>
-                    <span class="nav-text">Ingredients</span>
+                    <span class="nav-text">Get Ingredients</span>
                 </a>
 
                 <a href="settings.php" class="nav-link">
@@ -996,7 +1102,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 <div class="header-right">
                     <div class="admin-profile">
                         <span class="admin-label"><?php echo $adminName; ?></span>
-                                                <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
+                        <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '../../public/icons/logo.png'); ?>" alt="User" class="profile-img">
 
                     </div>
                 </div>
@@ -1094,23 +1200,23 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                             <span class="total-label">Total</span>
                             <span class="total-value" id="total">0.00</span>
                         </div>
-                       <div class="total-row payment">
-    <span class="total-label">Cash</span>
-    <input type="number" id="cash-input" value="" style="width: 80px;" min="0" step="0.01">
+                        <div class="total-row payment">
+                            <span class="total-label">Cash</span>
+                            <input type="number" id="cash-input" value="" style="width: 80px;" min="0" step="0.01">
 
-</div>
+                        </div>
 
-<div class="total-row change">
-    <span class="total-label">Change</span>
-    <span class="total-value" id="change">0.00</span>
-</div>
+                        <div class="total-row change">
+                            <span class="total-label">Change</span>
+                            <span class="total-value" id="change">0.00</span>
+                        </div>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <button class="action-btn scan-btn" id="scan-btn">Scan</button>
                         <button class="action-btn cancel-btn" id="cancel-order-btn">Cancel Order</button>
-                        <button class="action-btn order-btn" id="order-btn">Order</button>
+                        <button class="action-btn order-btn" id="order-btn">Place Order</button>
                     </div>
                 </div>
             </div>
@@ -1147,7 +1253,7 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
             </div>
 
             <div class="qr-modal-actions">
-                
+
             </div>
         </div>
     </div>
@@ -1161,27 +1267,34 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const max = 1024;
-                        let w = img.width, h = img.height;
+                        let w = img.width,
+                            h = img.height;
                         if (w > max || h > max) {
                             const ratio = Math.min(max / w, max / h);
                             w = Math.round(w * ratio);
                             h = Math.round(h * ratio);
                         }
-                        canvas.width = w; canvas.height = h;
+                        canvas.width = w;
+                        canvas.height = h;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, w, h);
                         try {
                             const imageData = ctx.getImageData(0, 0, w, h);
                             const code = jsQR(imageData.data, imageData.width, imageData.height);
-                            if (code && code.data) resolve(code.data); else reject(new Error('No QR code found in image'));
+                            if (code && code.data) resolve(code.data);
+                            else reject(new Error('No QR code found in image'));
                         } catch (err) {
                             reject(err);
                         }
                     };
-                    img.onerror = function() { reject(new Error('Failed to load image')); };
+                    img.onerror = function() {
+                        reject(new Error('Failed to load image'));
+                    };
                     img.src = e.target.result;
                 };
-                reader.onerror = function() { reject(new Error('Failed to read file')); };
+                reader.onerror = function() {
+                    reject(new Error('Failed to read file'));
+                };
                 reader.readAsDataURL(file);
             });
         }
@@ -1192,7 +1305,9 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                 const fileInput = document.getElementById('qr-file-input');
                 const status = document.getElementById('qr-upload-status');
                 if (!uploadBtn || !fileInput) return;
-                uploadBtn.addEventListener('click', function() { fileInput.click(); });
+                uploadBtn.addEventListener('click', function() {
+                    fileInput.click();
+                });
                 fileInput.addEventListener('change', function(e) {
                     const f = (e.target.files && e.target.files[0]) || null;
                     if (!f) return;
@@ -1204,10 +1319,14 @@ $menuDataJson = json_encode($menuData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_AP
                         status.textContent = 'No QR found in image';
                         console.warn('Image scan failed', err);
                         alert('Could not find a QR code in the selected image.');
-                    }).finally(() => { fileInput.value = ''; setTimeout(() => status.textContent = '', 2500); });
+                    }).finally(() => {
+                        fileInput.value = '';
+                        setTimeout(() => status.textContent = '', 2500);
+                    });
                 });
             });
         })();
     </script>
 </body>
+
 </html>
