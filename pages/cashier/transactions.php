@@ -88,6 +88,7 @@ function getOrderDetails($conn, $orderId)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS Transactions - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-menu-btn');
@@ -227,11 +228,8 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailOrderType', orderType || 'N/A');
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
-                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A'); <<
-                <<
-                <<
-                <
-                Updated upstream
+                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
+                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -247,45 +245,11 @@ function getOrderDetails($conn, $orderId)
                     }
                 }
 
-                ===
-                ===
-                =
-
-                const paymentDtEl = document.getElementById('detailPaymentDatetime');
-                if (paymentDtEl) {
-                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
-                        try {
-                            const dt = new Date(paymentDatetime);
-                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
-                        } catch (e) {
-                            paymentDtEl.textContent = 'N/A';
-                        }
-                    } else {
-                        paymentDtEl.textContent = 'N/A';
-                    }
-                }
-
-                >>>
-                >>>
-                >
-                Stashed changes
                 // Populate order items
                 const orderItemsContainer = document.getElementById('orderItemsContainer');
                 if (orderItemsContainer) {
-                    orderItemsContainer.innerHTML = ''; <<
-                    <<
-                    <<
-                    <
-                    Updated upstream
+                    orderItemsContainer.innerHTML = '';
 
-                        ===
-                        ===
-                        =
-
-                        >>>
-                        >>>
-                        >
-                        Stashed changes
                     orderDetails.forEach(item => {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'order-item';
@@ -441,7 +405,7 @@ function getOrderDetails($conn, $orderId)
                                         <td>' . $customerName . '</td>
                                         <td>₱' . number_format($orderTotal, 2) . '</td>
                                         <td>' . $orderTime . '</td>
-                                        <td><button class="action-btn " title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
+                                        <td><button class="action-btn" title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
 
                                     </tr>';
                                 }

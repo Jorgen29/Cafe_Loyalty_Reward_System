@@ -33,6 +33,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
     <style>
         .profile-container {
             max-width: 800px;
@@ -299,6 +300,9 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             }
         }
     </style>
+
+    <!-- QR generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
@@ -455,14 +459,14 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
             }
 
             // Logout button
-            const logoutSection = document.querySelector('.logout-section');
-            if (logoutSection) {
-                logoutSection.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to logout?')) {
-                        window.location.href = '../../public/actions/auth/logout.php';
-                    }
-                });
-            }
+            //const logoutSection = document.querySelector('.logout-section');
+            //if (logoutSection) {
+            //logoutSection.addEventListener('click', function() {
+            //if (confirm('Are you sure you want to logout?')) {
+            //window.location.href = '../../public/actions/auth/logout.php';
+            //}
+            //});
+            //}
 
             // Upload photo logic
             const uploadBtn = document.getElementById('uploadPhotoBtn');
@@ -538,6 +542,7 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
                         });
                 });
             }
+
         });
     </script>
 </head>
@@ -572,8 +577,39 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
 
             </div>
             <nav id="nav-links">
-                <a href="../../public/actions/auth/logout.php">Logout</a>
-                <a href="">QR Code</a>
+                <a href="../../public/actions/auth/logout.php" class="logout">
+                    <span class="material-symbols-outlined" alt="logout">logout</span>
+                </a>
+                <button id="qr-show-btn" class="profile-actions" title="Show QR" style="background:none;border:none;cursor:pointer;padding:0;margin-right:8px;">
+                    <!-- simple QR SVG icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="3" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="15" y="3" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="3" y="15" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="11" y="11" width="2" height="2" fill="#ffffff" />
+                        <rect x="14" y="11" width="2" height="2" fill="#ffffff" />
+                        <rect x="11" y="14" width="2" height="2" fill="#ffffff" />
+                    </svg>
+                </button>
+                <!-- Profile QR Modal -->
+                <div class="qr-modal" id="profile-qr-modal" style="display:none;">
+                    <div class="qr-modal-content" style="max-width:480px;padding:20px;">
+                        <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
+
+                            <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+                        </div>
+                        <div class="qr-modal-body">
+                            <div id="profile-qr-code"></div>
+                            <div style="flex:1;min-width:180px;">
+
+
+                                <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
+                                    <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
@@ -677,10 +713,10 @@ $address = htmlspecialchars($_SESSION['address'] ?? '');
         </div>
 
         <!-- Logout Section -->
-        <div class="logout-section">
+        <!--<div class="logout-section">
             <img src="../../public/icons/logout.jpg" alt="Logout">
             <span class="logout-text">Log out</span>
-        </div>
+        </div>-->
     </div>
 
     <footer class="footer">

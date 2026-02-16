@@ -208,6 +208,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Cups & Stories Cafe</title>
     <link rel="stylesheet" href="../../public/assets/css/user-styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=logout" />
     <style>
         .profile-container {
             max-width: 1000px;
@@ -280,6 +281,15 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .profile-actions img:hover {
             opacity: 1;
         }
+
+        .logout {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+
 
         .cups-section,
         .rewards-section,
@@ -665,6 +675,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .logout-section {
             background: white;
             border-radius: 8px;
+            padding: 20px 30px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
@@ -680,6 +691,12 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
         .logout-section img {
             width: 24px;
             height: 24px;
+        }
+
+        .logout-text {
+            color: #d32f2f;
+            font-weight: 600;
+            font-size: 15px;
         }
     </style>
     <!-- QR generation library -->
@@ -709,6 +726,16 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                     }
                 });
             });
+
+            //logout button
+            const logoutSection = document.querySelector('.logout-section');
+            if (logoutSection) {
+                logoutSection.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        window.location.href = '../../public/actions/auth/logout.php';
+                    }
+                });
+            }
 
             // Reward claim modal setup
             const claimModal = document.getElementById('claim-modal');
@@ -1052,6 +1079,7 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                     if (e.target === qrModal) qrModal.style.display = 'none';
                 });
             }
+
         });
     </script>
 </head>
@@ -1084,8 +1112,39 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
                 </a>
             </div>
             <nav id="nav-links">
-                <a href="../../public/actions/auth/logout.php" class="logout-section"><img src="../../public/icons/logout.jpg" alt="Logout"></a>
-                <a href="">QR Code</a>
+                <a href="../../public/actions/auth/logout.php" class="logout">
+                    <span class="material-symbols-outlined" alt="logout">logout</span>
+                </a>
+                <!-- <button id="qr-show-btn" class="profile-actions" title="Show QR" style="background:none;border:none;cursor:pointer;padding:0;margin-right:8px;">-->
+                <!-- simple QR SVG icon -->
+                <!--<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="3" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="15" y="3" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="3" y="15" width="6" height="6" stroke="#ffffff" fill="none" stroke-width="1.5" />
+                        <rect x="11" y="11" width="2" height="2" fill="#ffffff" />
+                        <rect x="14" y="11" width="2" height="2" fill="#ffffff" />
+                        <rect x="11" y="14" width="2" height="2" fill="#ffffff" />
+                    </svg>
+                </button>-->
+                <!-- Profile QR Modal -->
+                <!--<div class="qr-modal" id="profile-qr-modal" style="display:none;">
+                    <div class="qr-modal-content" style="max-width:480px;padding:20px;">
+                        <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
+
+                            <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+                        </div>
+                        <div class="qr-modal-body">
+                            <div id="profile-qr-code"></div>
+                            <div style="flex:1;min-width:180px;">
+
+
+                                <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
+                                    <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
             </nav>
 
 
@@ -1321,13 +1380,13 @@ $pointsNeeded = max(0, $nextThreshold - $customerPoints);
             </table>
         </div>
 
-        <!-- <div class="form-section">
+        <div class="form-section">
             <!-- Logout Section -->
-        <!-- <div class="logout-section">
-            <img src="../../public/icons/logout.jpg" alt="Logout">
-            <span class="logout-text">Log out</span>
-        </div> 
-        </div> -->
+            <div class="logout-section">
+                <img src="../../public/icons/logout.jpg" alt="Logout">
+                <span class="logout-text">Log out</span>
+            </div>
+        </div>
     </div>
 
     <footer class="footer">

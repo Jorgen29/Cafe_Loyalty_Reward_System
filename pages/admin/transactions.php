@@ -212,6 +212,7 @@ function getOrderDetails($conn, $orderId)
                 const paymentMethod = row.getAttribute('data-payment-method');
                 const paymentReference = row.getAttribute('data-payment-reference');
                 const paymentDatetime = row.getAttribute('data-payment-datetime');
+                const paymentDiscount = row.getAttribute('data-payment-discount');
                 const customerId = row.getAttribute('data-customer-id');
                 const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
 
@@ -228,6 +229,7 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
+                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -428,6 +430,7 @@ function getOrderDetails($conn, $orderId)
                                     $paymentMethod = htmlspecialchars($order['payment_method'] ?? 'N/A');
                                     $paymentReference = htmlspecialchars($order['payment_reference'] ?? 'N/A');
                                     $paymentDatetime = $order['payment_datetime'] ?? 'N/A';
+                                    $paymentDiscount = $order['payment_discount'] ?? '0';
                                     $customerId = $order['customer_id'] ?? 'N/A';
 
                                     echo '<tr data-order-id="' . htmlspecialchars($order['order_id']) . '" 
@@ -436,13 +439,14 @@ function getOrderDetails($conn, $orderId)
                                         data-payment-method="' . $paymentMethod . '"
                                         data-payment-reference="' . $paymentReference . '"
                                         data-payment-datetime="' . htmlspecialchars($paymentDatetime) . '"
+                                        data-payment-discount="' . htmlspecialchars($paymentDiscount) . '"
                                         data-customer-id="' . $customerId . '"
                                         data-order-details="' . htmlspecialchars(json_encode($orderDetails)) . '">
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
                                         <td>' . $customerName . '</td>
                                         <td>₱' . number_format($orderTotal, 2) . '</td>
                                         <td>' . $orderTime . '</td>
-                                        <td><button class="action-btn " title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
+                                        <td><button class="action-btn" title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
                                     </tr>';
                                 }
                             } else {
