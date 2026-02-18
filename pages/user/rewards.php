@@ -368,6 +368,84 @@ if (isset($conn)) {
                 gap: 8px;
             }
         }
+
+        /* QR modal default styling (profile page did not include cashier modal CSS) */
+        .qr-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            /* toggled via inline style/show */
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .qr-modal .qr-modal-content {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            max-width: 480px;
+            width: 100%;
+        }
+
+        /* Responsive QR modal layout */
+        .qr-modal .qr-modal-body {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-modal #profile-qr-code {
+            width: 220px;
+            height: 220px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+            flex: 0 0 auto;
+        }
+
+        .qr-modal #profile-qr-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .qr-modal #profile-qr-logo img {
+            max-width: 140px;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            background: #fff;
+            padding: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .qr-modal .qr-modal-content {
+                padding: 14px;
+            }
+
+            .qr-modal .qr-modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-modal #profile-qr-code {
+                width: 160px;
+                height: 160px;
+            }
+
+            .qr-modal #profile-qr-logo img {
+                max-width: 120px;
+                max-height: 60px;
+            }
+        }
     </style>
 
     <!-- QR generation library -->
@@ -641,13 +719,10 @@ if (isset($conn)) {
             // Claim button functionality
             document.querySelectorAll('.reward-btn, .progress-claim-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    claimReward(this);
-
-                    // Change button to claimed state
-                    this.classList.remove('activate-btn', 'reward-btn');
-                    this.classList.add('progress-claim-btn', 'claimed');
+                    this.classList.add('claimed');
                     this.textContent = 'Claimed';
                     this.disabled = true;
+                    claimReward(this);
                 });
             });
 
@@ -781,25 +856,7 @@ if (isset($conn)) {
                         <rect x="11" y="14" width="2" height="2" fill="#ffffff" />
                     </svg>
                 </button>
-                <!-- Profile QR Modal -->
-                <div class="qr-modal" id="profile-qr-modal" style="display:none;">
-                    <div class="qr-modal-content" style="max-width:480px;padding:20px;">
-                        <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
 
-                            <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
-                        </div>
-                        <div class="qr-modal-body">
-                            <div id="profile-qr-code"></div>
-                            <div style="flex:1;min-width:180px;">
-
-
-                                <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
-                                    <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
@@ -808,6 +865,26 @@ if (isset($conn)) {
             </button>
         </div>
     </header>
+
+    <!-- Profile QR Modal -->
+    <div class="qr-modal" id="profile-qr-modal" style="display:none;">
+        <div class="qr-modal-content" style="max-width:480px;padding:20px;">
+            <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
+
+                <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+            </div>
+            <div class="qr-modal-body">
+                <div id="profile-qr-code"></div>
+                <div style="flex:1;min-width:180px;">
+
+
+                    <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
+                        <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="banner-section">
         <img src="../../<?php echo htmlspecialchars($rewards_cover_image); ?>" alt="Rewards Banner" class="banner">

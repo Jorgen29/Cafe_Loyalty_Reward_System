@@ -334,6 +334,84 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                 font-size: 11px;
             }
         }
+
+        /* QR modal default styling (profile page did not include cashier modal CSS) */
+        .qr-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            /* toggled via inline style/show */
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .qr-modal .qr-modal-content {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            max-width: 480px;
+            width: 100%;
+        }
+
+        /* Responsive QR modal layout */
+        .qr-modal .qr-modal-body {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-modal #profile-qr-code {
+            width: 220px;
+            height: 220px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+            flex: 0 0 auto;
+        }
+
+        .qr-modal #profile-qr-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .qr-modal #profile-qr-logo img {
+            max-width: 140px;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            background: #fff;
+            padding: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .qr-modal .qr-modal-content {
+                padding: 14px;
+            }
+
+            .qr-modal .qr-modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-modal #profile-qr-code {
+                width: 160px;
+                height: 160px;
+            }
+
+            .qr-modal #profile-qr-logo img {
+                max-width: 120px;
+                max-height: 60px;
+            }
+        }
     </style>
 
     <!-- QR generation library -->
@@ -452,84 +530,6 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                     navLinks.classList.remove('show');
                 }
             });
-
-            // Track current category
-            let currentCategory = allCategories && allCategories.length ? allCategories[0] : null;
-
-            // Category click handlers
-            categoryItems.forEach(li => {
-                li.addEventListener('click', function() {
-                    // clear search input when selecting a category
-                    if (searchInput) searchInput.value = '';
-                    const cat = this.textContent.trim();
-                    currentCategory = cat;
-                    renderProducts(cat);
-                    // close sidebar on mobile after selection
-                    if (categoriesSidebar && categoriesSidebar.classList.contains('mobile-open')) {
-                        categoriesSidebar.classList.remove('mobile-open');
-                    }
-                });
-            });
-
-            // Search functionality (client-side)
-            const doSearch = debounce(function() {
-                const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
-                if (!q) {
-                    // restore current category
-                    if (currentCategory) {
-                        renderProducts(currentCategory);
-                    } else if (allCategories.length > 0) {
-                        currentCategory = allCategories[0];
-                        renderProducts(currentCategory);
-                    }
-                    return;
-                }
-
-                // Collect all products into a flat list
-                const flat = [];
-                for (const cat in productsData) {
-                    if (!Array.isArray(productsData[cat])) continue;
-                    productsData[cat].forEach(p => {
-                        flat.push(Object.assign({
-                            category: cat
-                        }, p));
-                    });
-                }
-
-                const results = flat.filter(p => p.name.toLowerCase().includes(q));
-                renderProductsByList(results, `Search results for "${q}"`);
-                // remove active class from sidebar while showing search
-                document.querySelectorAll('.categories-sidebar li').forEach(l => l.classList.remove('active'));
-            }, 250);
-
-            if (searchInput) {
-                searchInput.addEventListener('input', doSearch);
-            }
-
-            // Category toggle for mobile
-            if (categoryToggle && categoriesSidebar) {
-                categoryToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    categoriesSidebar.classList.toggle('mobile-open');
-                });
-
-                // close when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 768) {
-                        if (categoriesSidebar.classList.contains('mobile-open')) {
-                            if (!categoriesSidebar.contains(e.target) && !categoryToggle.contains(e.target)) {
-                                categoriesSidebar.classList.remove('mobile-open');
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Initial render: ensure Coffee-first ordering applied server-side
-            if (allCategories.length > 0) {
-                currentCategory = allCategories[0];
-                renderProducts(currentCategory);
-            }
 
             // QR modal handling for showing user's QR code to cashier
             const qrBtn = document.getElementById('qr-show-btn');
@@ -769,6 +769,84 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                     if (e.target === qrModal) qrModal.style.display = 'none';
                 });
             }
+
+            // Track current category
+            let currentCategory = allCategories && allCategories.length ? allCategories[0] : null;
+
+            // Category click handlers
+            categoryItems.forEach(li => {
+                li.addEventListener('click', function() {
+                    // clear search input when selecting a category
+                    if (searchInput) searchInput.value = '';
+                    const cat = this.textContent.trim();
+                    currentCategory = cat;
+                    renderProducts(cat);
+                    // close sidebar on mobile after selection
+                    if (categoriesSidebar && categoriesSidebar.classList.contains('mobile-open')) {
+                        categoriesSidebar.classList.remove('mobile-open');
+                    }
+                });
+            });
+
+            // Search functionality (client-side)
+            const doSearch = debounce(function() {
+                const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                if (!q) {
+                    // restore current category
+                    if (currentCategory) {
+                        renderProducts(currentCategory);
+                    } else if (allCategories.length > 0) {
+                        currentCategory = allCategories[0];
+                        renderProducts(currentCategory);
+                    }
+                    return;
+                }
+
+                // Collect all products into a flat list
+                const flat = [];
+                for (const cat in productsData) {
+                    if (!Array.isArray(productsData[cat])) continue;
+                    productsData[cat].forEach(p => {
+                        flat.push(Object.assign({
+                            category: cat
+                        }, p));
+                    });
+                }
+
+                const results = flat.filter(p => p.name.toLowerCase().includes(q));
+                renderProductsByList(results, `Search results for "${q}"`);
+                // remove active class from sidebar while showing search
+                document.querySelectorAll('.categories-sidebar li').forEach(l => l.classList.remove('active'));
+            }, 250);
+
+            if (searchInput) {
+                searchInput.addEventListener('input', doSearch);
+            }
+
+            // Category toggle for mobile
+            if (categoryToggle && categoriesSidebar) {
+                categoryToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    categoriesSidebar.classList.toggle('mobile-open');
+                });
+
+                // close when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        if (categoriesSidebar.classList.contains('mobile-open')) {
+                            if (!categoriesSidebar.contains(e.target) && !categoryToggle.contains(e.target)) {
+                                categoriesSidebar.classList.remove('mobile-open');
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Initial render: ensure Coffee-first ordering applied server-side
+            if (allCategories.length > 0) {
+                currentCategory = allCategories[0];
+                renderProducts(currentCategory);
+            }
         });
     </script>
 </head>
@@ -816,25 +894,7 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
                         <rect x="11" y="14" width="2" height="2" fill="#ffffff" />
                     </svg>
                 </button>
-                <!-- Profile QR Modal -->
-                <div class="qr-modal" id="profile-qr-modal" style="display:none;">
-                    <div class="qr-modal-content" style="max-width:480px;padding:20px;">
-                        <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
 
-                            <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
-                        </div>
-                        <div class="qr-modal-body">
-                            <div id="profile-qr-code"></div>
-                            <div style="flex:1;min-width:180px;">
-
-
-                                <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
-                                    <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </nav>
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
@@ -843,6 +903,26 @@ $initialCategory = htmlspecialchars($menuCategories[0] ?? 'Coffee');
             </button>
         </div>
     </header>
+
+    <!-- Profile QR Modal -->
+    <div class="qr-modal" id="profile-qr-modal" style="display:none;">
+        <div class="qr-modal-content" style="max-width:480px;padding:20px;">
+            <div style="display:flex;justify-content: flex-end;align-items:center;margin-bottom:12px;">
+
+                <button id="profile-qr-close" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+            </div>
+            <div class="qr-modal-body">
+                <div id="profile-qr-code"></div>
+                <div style="flex:1;min-width:180px;">
+
+
+                    <div id="profile-qr-logo" style="margin-top:12px;display:flex;align-items:center;justify-content: center;">
+                        <img id="profile-qr-logo-img" src="../../public/assets/css/images/logo images/logoName.png" alt="Cafe Logo" style="max-width:140px;max-height:100%;object-fit:contain;border-radius:6px;border:1px solid #eee;background:#fff;padding:6px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="banner-section">
         <img src="../../<?php echo htmlspecialchars($menu_cover_image); ?>" alt="Menu Banner" class="banner">
