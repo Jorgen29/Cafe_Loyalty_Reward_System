@@ -193,7 +193,6 @@ if (!isset($_SESSION['user_id'])) {
     <!-- QR generation library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-<<<<<<< HEAD
         // nav hamburger
         document.getElementById('hamburger-btn').addEventListener('click', function() {
             document.getElementById('nav-links').classList.toggle('show');
@@ -204,13 +203,6 @@ if (!isset($_SESSION['user_id'])) {
         document.addEventListener('DOMContentLoaded', function() {
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const navLinks = document.getElementById('nav-links');
-=======
-        document.addEventListener('DOMContentLoaded', function() {
-            // nav hamburger
-            document.getElementById('hamburger-btn').addEventListener('click', function() {
-                document.getElementById('nav-links').classList.toggle('show');
-            });
->>>>>>> 52d299f6cc7037475d01165b93cc3458956760f6
 
             // QR modal handling for showing user's QR code to cashier
             const qrBtn = document.getElementById('qr-show-btn');
