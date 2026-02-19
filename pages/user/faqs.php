@@ -115,11 +115,11 @@ if (!isset($_SESSION['user_id'])) {
     <!-- QR generation library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        // nav hamburger
-        document.getElementById('hamburger-btn').addEventListener('click', function() {
-            document.getElementById('nav-links').classList.toggle('show');
-            const hamburgerBtn = document.getElementById('hamburger-btn');
-            const navLinks = document.getElementById('nav-links');
+        document.addEventListener('DOMContentLoaded', function() {
+            // nav hamburger
+            document.getElementById('hamburger-btn').addEventListener('click', function() {
+                document.getElementById('nav-links').classList.toggle('show');
+            });
 
             // QR modal handling for showing user's QR code to cashier
             const qrBtn = document.getElementById('qr-show-btn');
@@ -359,26 +359,26 @@ if (!isset($_SESSION['user_id'])) {
                     if (e.target === qrModal) qrModal.style.display = 'none';
                 });
             }
-        });
 
-        // tabs
-        document.querySelectorAll('.tabs .tab').forEach(function(tab) {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                // show target
-                var target = tab.getAttribute('data-target');
-                document.querySelectorAll('main section.faq-section').forEach(s => s.style.display = 'none');
-                var el = document.getElementById(target);
-                if (el) el.style.display = '';
+            // tabs
+            document.querySelectorAll('.tabs .tab').forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    // show target
+                    var target = tab.getAttribute('data-target');
+                    document.querySelectorAll('main section.faq-section').forEach(s => s.style.display = 'none');
+                    var el = document.getElementById(target);
+                    if (el) el.style.display = '';
+                });
             });
-        });
 
-        // accordion
-        document.querySelectorAll('.faq-card .faq-question').forEach(function(q) {
-            q.addEventListener('click', function() {
-                var card = q.closest('.faq-card');
-                card.classList.toggle('open');
+            // accordion
+            document.querySelectorAll('.faq-card .faq-question').forEach(function(q) {
+                q.addEventListener('click', function() {
+                    var card = q.closest('.faq-card');
+                    card.classList.toggle('open');
+                });
             });
         });
     </script>
