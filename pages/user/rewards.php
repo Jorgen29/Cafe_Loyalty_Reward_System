@@ -61,6 +61,8 @@ if ($rstmt) {
 
 // Fetch claimed rewards for the current customer
 $claimedRewardIds = [];
+$coffeeRewardId = null;
+$coffeeRewardClaimed = false;
 if ($customerId) {
     $cstmt = $conn->prepare("SELECT reward_id FROM customerrewards WHERE customer_id = ?");
     if ($cstmt) {
@@ -72,6 +74,19 @@ if ($customerId) {
         }
         $cstmt->close();
     }
+}
+
+// Fetch the coffee/free refill reward (0 points reward)
+$frstmt = $conn->prepare("SELECT reward_id FROM reward WHERE points = 0 AND (reward_type = 'Free Refill' OR reward_name LIKE '%free%refill%') AND (start_date IS NULL OR start_date <= CURDATE()) AND (expiration_date IS NULL OR expiration_date >= CURDATE()) LIMIT 1");
+if ($frstmt) {
+    $frstmt->execute();
+    $frres = $frstmt->get_result();
+    if ($frrow = $frres->fetch_assoc()) {
+        $coffeeRewardId = (int)$frrow['reward_id'];
+        // Check if this reward has been claimed
+        $coffeeRewardClaimed = in_array($coffeeRewardId, $claimedRewardIds);
+    }
+    $frstmt->close();
 }
 
 // Fetch redeem history (orders where a reward was applied)
@@ -180,6 +195,20 @@ if (isset($conn)) {
         .progress-claim-btn:hover {
             background-color: white;
             transform: translateY(-2px);
+        }
+
+        .progress-claim-btn.claimed,
+        .progress-claim-btn:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .progress-claim-btn.claimed:hover,
+        .progress-claim-btn:disabled:hover {
+            background-color: #ccc;
+            transform: none;
         }
 
         .progress-info {
@@ -859,7 +888,11 @@ if (isset($conn)) {
                     echo '<div class="progress-bar-fill" style="width:' . $percent . '%"></div>';
                     ?>
                 </div>
-                <button class="serif progress-claim-btn">Claim</button>
+                <?php if ($coffeeRewardClaimed): ?>
+                    <button class="serif progress-claim-btn claimed" disabled>Claimed</button>
+                <?php else: ?>
+                    <button class="serif progress-claim-btn">Claim</button>
+                <?php endif; ?>
             </div>
         </div>
 
