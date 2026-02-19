@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database Configuration File
  * Handles connection to MySQL database
@@ -17,33 +18,32 @@ define('DB_NAME', 'cf-rw-db');
 
 
 // Database credentials
-// define('DB_HOST', 'localhost');
-// define('DB_USER', 'u491481127_jorgen29');
-// define('DB_PASSWORD', '@Bossbabe010319');
-// define('DB_NAME', 'u491481127_cf_rw_db');
+//define('DB_HOST', 'localhost');
+//define('DB_USER', 'u200817025_cupsandstories');
+//define('DB_PASSWORD', 'Cups&storiescafe00!');
+//define('DB_NAME', 'u200817025_cf_rw_db');
 
 try {
     // Create MySQL connection using MySQLi
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-    
+
     // Check connection
     if ($conn->connect_error) {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
-    
+
     // Set charset to utf8
     $conn->set_charset("utf8mb4");
-    
 } catch (Exception $e) {
     // Create a log file for debugging
     $logFile = __DIR__ . '/../../logs/db_error.log';
     if (!is_dir(dirname($logFile))) {
         mkdir(dirname($logFile), 0777, true);
     }
-    
+
     // Log error 
     error_log("Database Connection Error: " . $e->getMessage() . "\n", 3, $logFile);
-    
+
     // Return JSON error if headers haven't been sent
     if (!headers_sent()) {
         header('Content-Type: application/json');
@@ -52,4 +52,3 @@ try {
     }
     exit;
 }
-?>
