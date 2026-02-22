@@ -111,6 +111,84 @@ if (!isset($_SESSION['user_id'])) {
                 margin: 20px auto;
             }
         }
+
+        /* QR modal default styling (profile page did not include cashier modal CSS) */
+        .qr-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            /* toggled via inline style/show */
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .qr-modal .qr-modal-content {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            max-width: 480px;
+            width: 100%;
+        }
+
+        /* Responsive QR modal layout */
+        .qr-modal .qr-modal-body {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .qr-modal #profile-qr-code {
+            width: 220px;
+            height: 220px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            box-sizing: border-box;
+            flex: 0 0 auto;
+        }
+
+        .qr-modal #profile-qr-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .qr-modal #profile-qr-logo img {
+            max-width: 140px;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            background: #fff;
+            padding: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .qr-modal .qr-modal-content {
+                padding: 14px;
+            }
+
+            .qr-modal .qr-modal-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .qr-modal #profile-qr-code {
+                width: 160px;
+                height: 160px;
+            }
+
+            .qr-modal #profile-qr-logo img {
+                max-width: 120px;
+                max-height: 60px;
+            }
+        }
     </style>
     <!-- QR generation library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

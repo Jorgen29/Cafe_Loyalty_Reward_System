@@ -331,7 +331,7 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount > 0 ? '₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '') : '₱0.00');
+                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -558,7 +558,7 @@ function getOrderDetails($conn, $orderId)
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
                                         <td>' . $customerName . '</td>
                                         <td>
-                                            ₱' . number_format($finalTotal, 2) . '
+                                            ' . number_format($finalTotal, 2) . '
                                             ' . ($paymentDiscount > 0 ? '<br><small style="color: green;">-₱' . number_format($paymentDiscount, 2) . ' (' . htmlspecialchars($rewardName) . ')</small>' : '') . '
                                         </td>
                                         <td>' . $orderTime . '</td>
