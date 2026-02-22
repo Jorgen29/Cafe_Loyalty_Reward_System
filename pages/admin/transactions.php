@@ -231,7 +231,16 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
+                
+                // Handle discount display
+                const discountEl = document.getElementById('detailPaymentDiscount');
+                if (discountEl) {
+                    if (paymentDiscount > 0) {
+                        discountEl.textContent = '-₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '');
+                    } else {
+                        discountEl.textContent = '₱0.00';
+                    }
+                }
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
