@@ -327,11 +327,20 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailReceiptId', receiptId);
                 setElementText('detailDate', orderDate);
                 setElementText('detailCustomer', customer || 'Guest');
-                setElementText('detailAmount', '₱' + amount);
+                setElementText('detailAmount', amount);
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
+                
+                // Handle discount display
+                const discountEl = document.getElementById('detailPaymentDiscount');
+                if (discountEl) {
+                    if (paymentDiscount > 0) {
+                        discountEl.textContent = '-₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '');
+                    } else {
+                        discountEl.textContent = '₱0.00';
+                    }
+                }
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -372,17 +381,6 @@ function getOrderDetails($conn, $orderId)
                 console.error('Error opening transaction detail:', e);
                 alert('Error opening transaction details. Please try again.');
             }
-        }
-        const paymentDiscount = parseFloat(row.getAttribute('data-payment-discount')) || 0;
-        const rewardName = row.getAttribute('data-reward-name') || '';
-
-        const discountRow = document.getElementById('discountRow');
-        const discountEl = document.getElementById('detailPaymentDiscount');
-        if (paymentDiscount > 0) {
-            discountRow.style.display = '';
-            discountEl.textContent = '-₱' + paymentDiscount.toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '');
-        } else {
-            discountRow.style.display = 'none';
         }
     </script>
 </head>
@@ -553,14 +551,12 @@ function getOrderDetails($conn, $orderId)
                                         data-payment-reference="' . $paymentReference . '"
                                         data-payment-datetime="' . htmlspecialchars($paymentDatetime) . '"
                                         data-payment-discount="' . htmlspecialchars($paymentDiscount) . '"
+                                        data-reward-name="' . htmlspecialchars($rewardName) . '"
                                         data-customer-id="' . $customerId . '"
                                         data-order-details="' . htmlspecialchars(json_encode($orderDetails)) . '">
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
                                         <td>' . $customerName . '</td>
-                                        <td>
-                                            ' . number_format($finalTotal, 2) . '
-                                            ' . ($paymentDiscount > 0 ? '<br><small style="color: green;">-₱' . number_format($paymentDiscount, 2) . ' (' . htmlspecialchars($rewardName) . ')</small>' : '') . '
-                                        </td>
+                                        <td>₱' . number_format($finalTotal, 2) . '</td>
                                         <td>' . $orderTime . '</td>
                                         <td><button class="action-btn" title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
                                     </tr>';
@@ -592,10 +588,13 @@ function getOrderDetails($conn, $orderId)
                 <div class="detail-section" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e8ddd0;">
                     <div>
                         <p style="margin: 0; font-size: 14px; color: #666;">Customer: <span id="detailCustomer">Customer</span></p>
+                        
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Time: <span id="detailTime">3:14 PM</span></p>
+                                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Discount: <span id="detailPaymentDiscount">₱0.00</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment: <span id="detailPaymentMethod">N/A</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Reference #: <span id="detailPaymentReference">N/A</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment Date/Time: <span id="detailPaymentDatetime">N/A</span></p>
+
                     </div>
                     <div style="text-align: right;">
                         <p style="margin: 0; font-size: 12px; color: #666;">Amount</p>
