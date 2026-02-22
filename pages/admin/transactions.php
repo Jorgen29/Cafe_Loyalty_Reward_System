@@ -197,85 +197,6 @@ function getOrderDetails($conn, $orderId)
             rows.forEach(row => tbody.appendChild(row));
         }
 
-        function openTransactionDetail(button) {
-            const row = button.closest('tr');
-            if (!row) {
-                console.error('No row found');
-                return;
-            }
-
-            try {
-                const orderId = row.getAttribute('data-order-id');
-                const receiptId = '#' + orderId;
-                const customer = row.querySelector('td:nth-child(2)').textContent;
-                const amount = row.querySelector('td:nth-child(3)').textContent;
-                const time = row.querySelector('td:nth-child(4)').textContent;
-                const orderDate = row.getAttribute('data-order-date');
-                const paymentMethod = row.getAttribute('data-payment-method');
-                const paymentReference = row.getAttribute('data-payment-reference');
-                const paymentDatetime = row.getAttribute('data-payment-datetime');
-                const paymentDiscount = row.getAttribute('data-payment-discount');
-                const customerId = row.getAttribute('data-customer-id');
-                const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
-
-                // Populate modal with transaction details - use null safe method
-                const setElementText = (id, value) => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = value;
-                };
-
-                setElementText('detailReceiptId', receiptId);
-                setElementText('detailDate', orderDate);
-                setElementText('detailCustomer', customer || 'Guest');
-                setElementText('detailAmount', amount);
-                setElementText('detailTime', time);
-                setElementText('detailPaymentMethod', paymentMethod || 'N/A');
-                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
-
-                const paymentDtEl = document.getElementById('detailPaymentDatetime');
-                if (paymentDtEl) {
-                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
-                        try {
-                            const dt = new Date(paymentDatetime);
-                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
-                        } catch (e) {
-                            paymentDtEl.textContent = 'N/A';
-                        }
-                    } else {
-                        paymentDtEl.textContent = 'N/A';
-                    }
-                }
-
-                // Populate order items
-                const orderItemsContainer = document.getElementById('orderItemsContainer');
-                if (orderItemsContainer) {
-                    orderItemsContainer.innerHTML = '';
-
-                    orderDetails.forEach(item => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'order-item';
-                        itemDiv.innerHTML = `
-                            <div>
-                                <p class="item-name">${item.product_name}</p>
-                                <p class="item-qty">${item.qty} x ₱${parseFloat(item.price).toFixed(2)}</p>
-                            </div>
-                            <p class="item-price">₱${(item.qty * item.price).toFixed(2)}</p>
-                        `;
-                        orderItemsContainer.appendChild(itemDiv);
-                    });
-                }
-
-                const modal = document.getElementById('transactionDetailModal');
-                if (modal) {
-                    modal.style.display = 'block';
-                }
-            } catch (e) {
-                console.error('Error opening transaction detail:', e);
-                alert('Error opening transaction details. Please try again.');
-            }
-        }
-
         function closeModal() {
             const modal = document.getElementById('transactionDetailModal');
             modal.style.display = 'none';
@@ -322,7 +243,7 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount > 0 ? '₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '') : '₱0.00');
+                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -549,7 +470,7 @@ function getOrderDetails($conn, $orderId)
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
                                         <td>' . $customerName . '</td>
                                         <td>
-                                            ₱' . number_format($finalTotal, 2) . '
+                                            ' . number_format($finalTotal, 2) . '
                                             ' . ($paymentDiscount > 0 ? '<br><small style="color: green;">-₱' . number_format($paymentDiscount, 2) . ' (' . htmlspecialchars($rewardName) . ')</small>' : '') . '
                                         </td>
                                         <td>' . $orderTime . '</td>
