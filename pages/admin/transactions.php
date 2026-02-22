@@ -231,7 +231,7 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                
+
                 // Handle discount display
                 const discountEl = document.getElementById('detailPaymentDiscount');
                 if (discountEl) {
@@ -331,7 +331,7 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailTime', time);
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                
+
                 // Handle discount display
                 const discountEl = document.getElementById('detailPaymentDiscount');
                 if (discountEl) {
@@ -588,9 +588,9 @@ function getOrderDetails($conn, $orderId)
                 <div class="detail-section" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e8ddd0;">
                     <div>
                         <p style="margin: 0; font-size: 14px; color: #666;">Customer: <span id="detailCustomer">Customer</span></p>
-                        
+
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Time: <span id="detailTime">3:14 PM</span></p>
-                                                <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Discount: <span id="detailPaymentDiscount">₱0.00</span></p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Discount: <span id="detailPaymentDiscount">₱0.00</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment: <span id="detailPaymentMethod">N/A</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Reference #: <span id="detailPaymentReference">N/A</span></p>
                         <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">Payment Date/Time: <span id="detailPaymentDatetime">N/A</span></p>

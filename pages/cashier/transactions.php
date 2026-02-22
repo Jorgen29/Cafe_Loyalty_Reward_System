@@ -29,9 +29,11 @@ $adminName = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_na
 $orders = [];
 $query = $conn->prepare("
     SELECT o.order_id, o.order_date, o.order_time, o.payment_method, o.payment_reference, o.payment_datetime,
-           c.first_name, c.last_name, c.customer_id
+           c.first_name, c.last_name, c.customer_id,
+           r.discount_percent, r.discount_amount, r.reward_name
     FROM `order` o
     LEFT JOIN customer c ON o.customer_id = c.customer_id
+    LEFT JOIN reward r ON o.reward_id = r.reward_id
     ORDER BY o.order_date DESC, o.order_time DESC
 ");
 if ($query) {
@@ -101,6 +103,7 @@ function getOrderDetails($conn, $orderId)
                     sidebar.classList.toggle('active');
                 });
             }
+
             if (sidebarCloseBtn) {
                 sidebarCloseBtn.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -208,10 +211,10 @@ function getOrderDetails($conn, $orderId)
                 const amount = row.querySelector('td:nth-child(3)').textContent;
                 const time = row.querySelector('td:nth-child(4)').textContent;
                 const orderDate = row.getAttribute('data-order-date');
-                const orderType = row.getAttribute('data-order-type');
                 const paymentMethod = row.getAttribute('data-payment-method');
                 const paymentReference = row.getAttribute('data-payment-reference');
                 const paymentDatetime = row.getAttribute('data-payment-datetime');
+                const paymentDiscount = row.getAttribute('data-payment-discount');
                 const customerId = row.getAttribute('data-customer-id');
                 const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
 
@@ -226,10 +229,18 @@ function getOrderDetails($conn, $orderId)
                 setElementText('detailCustomer', customer || 'Guest');
                 setElementText('detailAmount', amount);
                 setElementText('detailTime', time);
-                setElementText('detailOrderType', orderType || 'N/A');
                 setElementText('detailPaymentMethod', paymentMethod || 'N/A');
                 setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
-                setElementText('detailPaymentDiscount', paymentDiscount ? '₱' + parseFloat(paymentDiscount).toFixed(2) : '₱0.00');
+
+                // Handle discount display
+                const discountEl = document.getElementById('detailPaymentDiscount');
+                if (discountEl) {
+                    if (paymentDiscount > 0) {
+                        discountEl.textContent = '-₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '');
+                    } else {
+                        discountEl.textContent = '₱0.00';
+                    }
+                }
 
                 const paymentDtEl = document.getElementById('detailPaymentDatetime');
                 if (paymentDtEl) {
@@ -285,6 +296,92 @@ function getOrderDetails($conn, $orderId)
                 closeModal();
             }
         });
+
+        function openTransactionDetail(button) {
+            const row = button.closest('tr');
+            if (!row) {
+                console.error('No row found');
+                return;
+            }
+
+            try {
+                const orderId = row.getAttribute('data-order-id');
+                const receiptId = '#' + orderId;
+                const customer = row.querySelector('td:nth-child(2)').textContent;
+                const amount = row.querySelector('td:nth-child(3)').firstChild.textContent.trim();
+                const time = row.querySelector('td:nth-child(4)').textContent;
+                const orderDate = row.getAttribute('data-order-date');
+                const paymentMethod = row.getAttribute('data-payment-method');
+                const paymentReference = row.getAttribute('data-payment-reference');
+                const paymentDatetime = row.getAttribute('data-payment-datetime');
+                const paymentDiscount = row.getAttribute('data-payment-discount');
+                const rewardName = row.getAttribute('data-reward-name');
+                const customerId = row.getAttribute('data-customer-id');
+                const orderDetails = JSON.parse(row.getAttribute('data-order-details'));
+
+                const setElementText = (id, value) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = value;
+                };
+
+                setElementText('detailReceiptId', receiptId);
+                setElementText('detailDate', orderDate);
+                setElementText('detailCustomer', customer || 'Guest');
+                setElementText('detailAmount', amount);
+                setElementText('detailTime', time);
+                setElementText('detailPaymentMethod', paymentMethod || 'N/A');
+                setElementText('detailPaymentReference', (paymentReference && paymentReference !== 'N/A' && paymentReference !== 'null') ? paymentReference : 'N/A');
+
+                // Handle discount display
+                const discountEl = document.getElementById('detailPaymentDiscount');
+                if (discountEl) {
+                    if (paymentDiscount > 0) {
+                        discountEl.textContent = '-₱' + parseFloat(paymentDiscount).toFixed(2) + (rewardName ? ' (' + rewardName + ')' : '');
+                    } else {
+                        discountEl.textContent = '₱0.00';
+                    }
+                }
+
+                const paymentDtEl = document.getElementById('detailPaymentDatetime');
+                if (paymentDtEl) {
+                    if (paymentDatetime && paymentDatetime !== 'N/A' && paymentDatetime !== 'null') {
+                        try {
+                            const dt = new Date(paymentDatetime);
+                            paymentDtEl.textContent = isNaN(dt.getTime()) ? 'N/A' : dt.toLocaleString();
+                        } catch (e) {
+                            paymentDtEl.textContent = 'N/A';
+                        }
+                    } else {
+                        paymentDtEl.textContent = 'N/A';
+                    }
+                }
+
+                // Populate order items
+                const orderItemsContainer = document.getElementById('orderItemsContainer');
+                if (orderItemsContainer) {
+                    orderItemsContainer.innerHTML = '';
+                    orderDetails.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'order-item';
+                        itemDiv.innerHTML = `
+                    <div>
+                        <p class="item-name">${item.product_name}</p>
+                        <p class="item-qty">${item.qty} x ₱${parseFloat(item.price).toFixed(2)}</p>
+                    </div>
+                    <p class="item-price">₱${(item.qty * item.price).toFixed(2)}</p>
+                `;
+                        orderItemsContainer.appendChild(itemDiv);
+                    });
+                }
+
+                const modal = document.getElementById('transactionDetailModal');
+                if (modal) modal.style.display = 'block';
+
+            } catch (e) {
+                console.error('Error opening transaction detail:', e);
+                alert('Error opening transaction details. Please try again.');
+            }
+        }
     </script>
 </head>
 
@@ -393,20 +490,36 @@ function getOrderDetails($conn, $orderId)
                                     $paymentDatetime = $order['payment_datetime'] ?? 'N/A';
                                     $customerId = $order['customer_id'] ?? 'N/A';
 
+                                    // Calculate discount
+                                    $discountPercent = $order['discount_percent'] ?? 0;
+                                    $discountAmount = $order['discount_amount'] ?? 0;
+                                    $rewardName = $order['reward_name'] ?? '';
+
+                                    if ($discountPercent > 0) {
+                                        $paymentDiscount = $orderTotal * ($discountPercent / 100);
+                                    } elseif ($discountAmount > 0) {
+                                        $paymentDiscount = $discountAmount;
+                                    } else {
+                                        $paymentDiscount = 0;
+                                    }
+
+                                    $finalTotal = $orderTotal - $paymentDiscount;
+
                                     echo '<tr data-order-id="' . htmlspecialchars($order['order_id']) . '" 
                                         data-order-date="' . htmlspecialchars($displayDate) . '"
                                         data-order-type=""
                                         data-payment-method="' . $paymentMethod . '"
                                         data-payment-reference="' . $paymentReference . '"
                                         data-payment-datetime="' . htmlspecialchars($paymentDatetime) . '"
+                                        data-payment-discount="' . htmlspecialchars($paymentDiscount) . '"
+                                        data-reward-name="' . htmlspecialchars($rewardName) . '"
                                         data-customer-id="' . $customerId . '"
                                         data-order-details="' . htmlspecialchars(json_encode($orderDetails)) . '">
                                         <td>#' . htmlspecialchars($order['order_id']) . '</td>
                                         <td>' . $customerName . '</td>
-                                        <td>₱' . number_format($orderTotal, 2) . '</td>
+                                        <td>₱' . number_format($finalTotal, 2) . '</td>
                                         <td>' . $orderTime . '</td>
                                         <td><button class="action-btn" title="View Details"><img id="eyeIcon" class="view-detail-btn" src="../../public/icons/eye-open.png" width="20" alt="Show/Hide"></button></td>
-
                                     </tr>';
                                 }
                             } else {
